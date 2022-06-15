@@ -16,7 +16,8 @@ const MasterStruktur = () => {
   const [structureType, setStructureType] = useState(4);
   const [departmentList, setDepartmentList] = useState([]);
   const [deptCode, setDeptCode] = useState(0);
-  const [rowData, setRowData] = useState({});
+  const [strukturList, setStrukturList] = useState([]);
+  const [struktur, setStruktur] = useState({});
   const [isEdit, setIsEdit] = useState(false);
 
   const state = {
@@ -24,7 +25,8 @@ const MasterStruktur = () => {
     structureType,
     departmentList,
     deptCode,
-    rowData,
+    strukturList,
+    struktur,
     isEdit,
   };  
 
@@ -32,7 +34,8 @@ const MasterStruktur = () => {
     setStructureType,
     setDepartmentList,
     setDeptCode,
-    setRowData,
+    setStrukturList,
+    setStruktur,
     setIsEdit,
   };
 

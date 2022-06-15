@@ -40,14 +40,27 @@ const FormStruktur = () => {
   };
   
   const btnAddClick = async () => {
-    // console.log(ctx.state.departmentList[ctx.state.deptCode].dpt_name);
+    console.log(ctx.state.isEdit);
+    //await ctx.dispatch.setIsEdit(true);
+    // ctx.dispatch.setIsEdit(!ctx.state.isEdit);
+    console.log(ctx.state.isEdit);
   };
 
+  const btnCancelClick = () => {
+    ctx.dispatch.setIsEdit(!ctx.state.isEdit);
+    // console.log(ctx.state.departmentList[ctx.state.deptCode].dpt_name);
+  };
+  
   const setFormInput = () => {
     if(ctx.state.isEdit === false){
       //ctx.dispatch.setStructureType(ctx.state.structureTypeList[ctx.state.structureType].label);
     }
   };
+
+  // const clearFormInput = () => {
+  //   if(ctx.state.isEdit === false){
+  //   }
+  // };
 
   useEffect(() => {
     setFormInput();
@@ -64,14 +77,12 @@ const FormStruktur = () => {
               <CCol className="mr-3" md={9}>
                 <CRow className="mb-1" >
                   <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="struct-type">{language.pageContent[language.pageLanguage].MS.structuretype}</CLabel>
+                    <CLabel>{language.pageContent[language.pageLanguage].MS.structuretype}</CLabel>
                   </CCol>
                   <CCol className="pr-0">
                     <CInput
                       type="text"
-                      id="struct-type"
                       size="sm"
-                      //placeholder=""
                       value={ctx.state.structureTypeList[ctx.state.structureType].label}
                       disabled
                     />
@@ -79,14 +90,12 @@ const FormStruktur = () => {
                 </CRow>
                 <CRow className="mb-1" >
                   <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="dept">{language.pageContent[language.pageLanguage].MS.divisi}</CLabel>
+                    <CLabel>{language.pageContent[language.pageLanguage].MS.divisi}</CLabel>
                   </CCol>
                   <CCol className="pr-0">
                     <CInput
                       type="text"
-                      id="dept"
                       size="sm"
-                      //placeholder=""
                       value={ctx.state.departmentList.length === 0 ? "" : ctx.state.departmentList[ctx.state.deptCode].dpt_name }
                       disabled
                     />
@@ -94,12 +103,12 @@ const FormStruktur = () => {
                 </CRow>
                 <CRow className="mb-1" >
                   <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="struktur">{language.pageContent[language.pageLanguage].MS.structure}</CLabel>
+                    <CLabel htmlFor="frmstruktur">{language.pageContent[language.pageLanguage].MS.structure}</CLabel>
                   </CCol>
                   <CCol className="pr-0" md={2}>
                     <CInput
                       type="text"
-                      id="struktur-kd"
+                      id="frmstruktur-kd"
                       size="sm"
                       placeholder=""
                       disabled
@@ -108,9 +117,10 @@ const FormStruktur = () => {
                   <CCol className="pl-1 pr-0" md={7}>
                     <CInput
                       type="text"
-                      id="struktur-nm"
+                      id="frmstruktur"
                       size="sm"
                       placeholder=""
+                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                 </CRow>
@@ -127,9 +137,10 @@ const FormStruktur = () => {
                       defaultValue="no"
                       //onClick={() => handleDivisiClick()}
                       //onChange={(e) => handleDummy(e.target.value)}
+                      disabled={!ctx.state.isEdit}
                     >
                       {logicList.map((option) => (
-                        <option value={option.value}>{option.label}</option>
+                        <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -144,6 +155,7 @@ const FormStruktur = () => {
                       id="employee-kd"
                       size="sm"
                       placeholder=""
+                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
@@ -161,6 +173,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       //onClick={btnRefreshClick}
+                      disabled={!ctx.state.isEdit}
                     >
                       ...
                     </CButton>
@@ -178,9 +191,10 @@ const FormStruktur = () => {
                       defaultValue="Manager"
                       //onClick={() => handleDivisiClick()}
                       //onChange={(e) => handleDummy(e.target.value)}
+                      disabled={!ctx.state.isEdit}
                     >
                       {position.map((option) => (
-                        <option value={option.value}>{option.label}</option>
+                        <option  key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -197,9 +211,10 @@ const FormStruktur = () => {
                       defaultValue="Manager"
                       //onClick={() => handleDivisiClick()}
                       onChange={(e) => handleDummy(e.target.value)}
+                      disabled={!ctx.state.isEdit}
                     >
                       {position.map((option) => (
-                        <option value={option.value}>{option.label}</option>
+                        <option  key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -209,7 +224,14 @@ const FormStruktur = () => {
                     <CLabel htmlFor="date-entry">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
                   </CCol>
                   <CCol md="4">
-                    <CInput type="date" id="date-entry" name="date-entry" placeholder="" size="sm" />
+                    <CInput 
+                      type="date" 
+                      id="date-entry"
+                      name="date-entry" 
+                      placeholder="" 
+                      size="sm"
+                      disabled={!ctx.state.isEdit} 
+                    />
                   </CCol>                
                 </CRow>
 
@@ -225,9 +247,10 @@ const FormStruktur = () => {
                       defaultValue="Manager"
                       //onClick={() => handleDivisiClick()}
                       onChange={(e) => handleDummyShadow(e.target.value)}
+                      disabled={!ctx.state.isEdit}
                     >
                       {logicList.map((option) => (
-                        <option value={option.value}>{option.label}</option>
+                        <option  key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -242,6 +265,7 @@ const FormStruktur = () => {
                       id="employeeshadow-kd"
                       size="sm"
                       placeholder=""
+                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
@@ -259,6 +283,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       //onClick={btnRefreshClick}
+                      disabled={!ctx.state.isEdit}
                     >
                       ...
                     </CButton>
@@ -269,7 +294,14 @@ const FormStruktur = () => {
                     <CLabel htmlFor="date-entry-shd">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
                   </CCol>
                   <CCol md="4">
-                    <CInput type="date" id="date-entry-shd" name="date-entry-shd" placeholder="" size="sm" />
+                    <CInput
+                      type="date"
+                      id="date-entry-shd" 
+                      name="date-entry-shd" 
+                      placeholder="" 
+                      size="sm"
+                      disabled={!ctx.state.isEdit}
+                    />
                   </CCol>
                 </CRow>
 
@@ -283,6 +315,7 @@ const FormStruktur = () => {
                       id="directspv-kd"
                       size="sm"
                       placeholder=""
+                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
@@ -300,6 +333,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       //onClick={btnRefreshClick}
+                      disabled={!ctx.state.isEdit}
                     >
                       ...
                     </CButton>
@@ -315,6 +349,7 @@ const FormStruktur = () => {
                       id="workcity-kd"
                       size="sm"
                       placeholder=""
+                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
@@ -332,6 +367,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       //onClick={btnRefreshClick}
+                      disabled={!ctx.state.isEdit}
                     >
                       ...
                     </CButton>
@@ -347,6 +383,7 @@ const FormStruktur = () => {
                       id="branch-kd"
                       size="sm"
                       placeholder=""
+                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
@@ -364,6 +401,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       //onClick={btnRefreshClick}
+                      disabled={!ctx.state.isEdit}
                     >
                       ...
                     </CButton>
@@ -382,6 +420,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         onClick={btnAddClick}
+                        disabled={ctx.state.isEdit}
                       >
                         {language.pageContent[language.pageLanguage].add}
                       </CButton>
@@ -393,6 +432,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         //onClick={btnRefreshClick}
+                        disabled={ctx.state.isEdit}
                       >
                         {language.pageContent[language.pageLanguage].edit}
                       </CButton>
@@ -404,6 +444,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         //onClick={btnRefreshClick}
+                        disabled={!ctx.state.isEdit}
                       >
                         {language.pageContent[language.pageLanguage].save}
                       </CButton>
@@ -414,7 +455,8 @@ const FormStruktur = () => {
                         className="mb-3"
                         block
                         size="sm"
-                        //onClick={btnRefreshClick}
+                        onClick={btnCancelClick}
+                        disabled={!ctx.state.isEdit}
                       >
                         {language.pageContent[language.pageLanguage].cancel}
                       </CButton>
@@ -426,6 +468,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         //onClick={btnRefreshClick}
+                        disabled={ctx.state.isEdit}
                       >
                         {language.pageContent[language.pageLanguage].delete}
                       </CButton>

@@ -63,6 +63,15 @@ const pageContent = {
         directspv: "Atasan Langsung",
         workcity: "Kota Kerja",
         branch: "Cabang",
+        Data:{
+          nip: "NIP",
+          name: "Nama",
+          position: "Jabatan",
+          datein: "Tgl.Masuk",
+          dateout: "Tgl.Kluar",
+          branch: "Cabang",
+          city: "Kota",
+        }
       }
     },
     EN: {
@@ -131,6 +140,15 @@ const pageContent = {
         directspv: "Direct Supervisor",
         workcity: "Work City",
         branch: "Branch",
+        Data:{
+          nip: "NIP",
+          name: "Name",
+          position: "Position",
+          datein: "Date In",
+          dateout: "Date Out",
+          branch: "Branch",
+          city: "City",
+        }
       },
     },
   };

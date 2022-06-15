@@ -15,7 +15,8 @@ import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
 import LanguageContext from "containers/languageContext";
 import DataTable from "reusable/DataTable";
-import { get_department } from "./MasterStrukturLink";
+import { get_department, get_struktur } from "./MasterStrukturLink";
+//import { GlbFormatDate } from "reusable/Helper";
 
 const DataStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -30,6 +31,11 @@ const DataStruktur = () => {
   const handleDeptChange = async (e) => {
     ctx.dispacth.setDeptCode(ctx.state.departmentList.map(object => object.dpt_id).indexOf(parseInt(e)));
   };
+
+  const btnRefreshClick = async () => {
+    getStruktur("groupteri",1,227);
+    //console.log(ctx.state.isEdit);
+  };  
 
   const getDepartments = async () => {
     if (ctx.state.departmentList.length !== 0) return 
@@ -56,23 +62,43 @@ const DataStruktur = () => {
     return false;
   };
 
+  const getStruktur = async (e,f,g) => {
+    //console.log(get_struktur + '/' + e + '?pt_id=' + f + '?dpt_id=' + g);
+    await ctx.dispacth.setStrukturList([]);
+    await ctxspin.setSpinner(true);
+    await axios({
+      method: "get",
+      url: get_struktur + '/' + e + '?pt_id=' + f + '&dpt_id=' + g,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].RO.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
+        }
+        else{
+          ctx.dispacth.setStrukturList(res.data);
+        }
+      })
+      .catch((err) => {
+        window.alert(err);
+      });
+    ctxspin.setSpinner(false);
+    return false;
+  };
+
   // const clearFormInput = () => {
   //   setDepartments([]);
   // };
 
-  const getRowData = (e) => {
-    ctx.dispacth.setRowData(e);
-  };
-
   const fields = [
-    // { key: "ReqProcod", label: language.pageContent[language.pageLanguage].RO.tabelRO.fieldprocod },
-    // { key: "ReqProname", label: language.pageContent[language.pageLanguage].RO.tabelRO.fieldname },
-    // { key: "ReqQtyOrder", label: language.pageContent[language.pageLanguage].RO.tabelRO.fieldqtyOR },
-    // { key: "ReqOrderPackName", label: language.pageContent[language.pageLanguage].RO.tabelRO.fieldunitOR, _style: { width: '100px' } },
-    // // { key: "ReqQtyRec", label: language.pageContent[language.pageLanguage].RO.tabelRO.fieldqtyRec },
-    // // { key: "ReqRemain", label: language.pageContent[language.pageLanguage].RO.tabelRO.fieldsisa },
-    // { key: "ReqHold", label: language.pageContent[language.pageLanguage].RO.holdOR },
-    // { key: "ReqLokalYN", label: language.pageContent[language.pageLanguage].RO.lclprod, _style: { width: '50px' } },
+    { key: "nip", label: language.pageContent[language.pageLanguage].MS.Data.nip },
+    { key: "name", label: language.pageContent[language.pageLanguage].MS.Data.name },
+    { key: "position_name", label: language.pageContent[language.pageLanguage].MS.Data.position },
+    { key: "date_in", label: language.pageContent[language.pageLanguage].MS.Data.datein },
+    { key: "date_out", label: language.pageContent[language.pageLanguage].MS.Data.dateout },
+    { key: "branch_name", label: language.pageContent[language.pageLanguage].MS.Data.branch },
+    { key: "city_name", label: language.pageContent[language.pageLanguage].MS.Data.city /*, _style: { width: '50px' } */ },
   ];
 
   useEffect(() => {
@@ -102,7 +128,7 @@ const DataStruktur = () => {
                       onChange={(e) => handleStructureTypeChange(e.target.value)} 
                     >
                       {ctx.state.structureTypeList.map((option) => (
-                        <option value={option.value}>{option.label}</option>
+                        <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -138,7 +164,7 @@ const DataStruktur = () => {
                       onChange={(e) => handleDeptChange(e.target.value)}
                     >
                       {ctx.state.departmentList.map((option) => (
-                        <option value={option.dpt_id}>{option.dpt_name}</option>
+                        <option key={option.dpt_id} value={option.dpt_id}>{option.dpt_name}</option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -146,13 +172,13 @@ const DataStruktur = () => {
               </CCol>
               <CCol className="mb-3 align-self-end">
                 <CRow className="d-flex flex-row-reverse">
-                  <CCol classname="mb-1" md={10}>
+                  <CCol className="mb-1" md={10}>
                     <CButton
                       color="dark"
                       className=""
                       block
                       size="sm"
-                      //onClick={btnRefreshClick}
+                      onClick={btnRefreshClick}
                     >
                       {language.pageContent[language.pageLanguage].refresh}
                     </CButton>
@@ -162,18 +188,18 @@ const DataStruktur = () => {
             </CRow>
 
             <DataTable
-              items={ctx.state.rowsData}
+              items={ctx.state.strukturList}
               fields={fields}
               // scopedSlots={{
-              //   'ReqQtyOrder': (item)=>(
-              //     <td align="left">{GlbNumberFormat(item.ReqQtyOrder)}</td>
-              //   ),
-              //   'ReqHold': (item)=>(
-              //     <td align="left">{GlbNumberFormat(item.ReqHold)}</td>
-              //   ),
+              //   'date_in': (item)=>(
+              //     <td align="left">{GlbFormatDate(item.date_in)}</td>
+              //   )
+              //   // 'date_out': (item)=>(
+              //   //   <td align="left">{GlbFormatDate(item.date_out)}</td>
+              //   // ),
               // }}
               size="sm"
-              getRowData={(e) => getRowData(e)}
+              //onRowClick={(e) => getStruktur(e)}
             /> 
 
             <CRow className="mr-0 mb-0 d-flex flex-row-reverse">

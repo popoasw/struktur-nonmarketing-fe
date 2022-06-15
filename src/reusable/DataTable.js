@@ -14,7 +14,7 @@ const DataTable = (props) => {
       hover
       clickableRows
       size={props.size}
-      onRowClick={(e) => props.getRowData(e)}
+      onRowClick={(e) => props.onRowClick(e)}
     />
   );
 };
