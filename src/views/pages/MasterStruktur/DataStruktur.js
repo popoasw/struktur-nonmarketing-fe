@@ -33,8 +33,12 @@ const DataStruktur = () => {
   };
 
   const btnRefreshClick = async () => {
-    getStruktur("groupteri",1,227);
-    //console.log(ctx.state.isEdit);
+    if (ctx.state.departmentList.length === 0 || ctx.state.deptCode === 0) {
+      alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
+    }
+    else {
+      getStrukturList("groupteri",1,ctx.state.departmentList[ctx.state.deptCode].dpt_id);
+    }   
   };  
 
   const getDepartments = async () => {
@@ -49,7 +53,7 @@ const DataStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].RO.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
+          alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
         }
         else{
           ctx.dispacth.setDepartmentList(res.data);
@@ -62,7 +66,7 @@ const DataStruktur = () => {
     return false;
   };
 
-  const getStruktur = async (e,f,g) => {
+  const getStrukturList = async (e,f,g) => {
     //console.log(get_struktur + '/' + e + '?pt_id=' + f + '?dpt_id=' + g);
     await ctx.dispacth.setStrukturList([]);
     await ctxspin.setSpinner(true);
@@ -74,7 +78,7 @@ const DataStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].RO.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
+          alert(language.pageContent[language.pageLanguage].MS.structure + " " + language.pageContent[language.pageLanguage].datanotfound)
         }
         else{
           ctx.dispacth.setStrukturList(res.data);
@@ -85,6 +89,10 @@ const DataStruktur = () => {
       });
     ctxspin.setSpinner(false);
     return false;
+  };
+  
+  const getStruktur = (e) => {
+    ctx.dispacth.setStruktur(e);
   };
 
   // const clearFormInput = () => {
@@ -199,7 +207,7 @@ const DataStruktur = () => {
               //   // ),
               // }}
               size="sm"
-              //onRowClick={(e) => getStruktur(e)}
+              onRowClick={(e) => getStruktur(e)}
             /> 
 
             <CRow className="mr-0 mb-0 d-flex flex-row-reverse">

@@ -29,7 +29,7 @@ const pageContent = {
       userLogin: "User",
       company: "Company",
       datanotfound: "tidak ditemukan !\n" +
-                    "Pastikan Nomor Pesanan yang anda masukan sudah benar !",
+                    "Pastikan data yang anda pilih sudah benar !",
       dataconfirm: "sudah di konfirmasi !",
       datanotconfirm: "belum di konfirmasi !",
       confirmsuccess: "berhasil di konfimasi !",
@@ -106,7 +106,7 @@ const pageContent = {
       emptyOR: "Please select Order Number first !",
       emptyprocod: "Please select Product first !",
       datanotfound: "not found !\n" +
-                    "Make sure the inputed number is correct !",
+                    "Make sure the selected data is correct !",
       dataconfirm: "has been confirmed !",
       datanotconfirm: "UnConfirmed !",
       confirmsuccess: "confirm success !",

@@ -194,7 +194,7 @@ const FormStruktur = () => {
                       disabled={!ctx.state.isEdit}
                     >
                       {position.map((option) => (
-                        <option  key={option.value} value={option.value}>{option.label}</option>
+                        <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -214,7 +214,7 @@ const FormStruktur = () => {
                       disabled={!ctx.state.isEdit}
                     >
                       {position.map((option) => (
-                        <option  key={option.value} value={option.value}>{option.label}</option>
+                        <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -250,7 +250,7 @@ const FormStruktur = () => {
                       disabled={!ctx.state.isEdit}
                     >
                       {logicList.map((option) => (
-                        <option  key={option.value} value={option.value}>{option.label}</option>
+                        <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>
