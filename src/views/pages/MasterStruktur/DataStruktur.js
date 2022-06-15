@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import {
   CContainer,
@@ -21,16 +21,19 @@ const DataStruktur = () => {
   let language = React.useContext(LanguageContext);
   let ctx = React.useContext(Context);
   let ctxspin = React.useContext(ContextSpinner);
-  const [departments, setDepartments] = useState([]);
   const date = new Date();
 
   const handleStructureTypeChange = async (e) => {
-    console.log(e);
     ctx.dispacth.setStructureType(e);
   };
 
+  const handleDeptChange = async (e) => {
+    ctx.dispacth.setDeptCode(ctx.state.departmentList.map(object => object.dpt_id).indexOf(parseInt(e)));
+  };
+
   const getDepartments = async () => {
-    setDepartments([]);
+    if (ctx.state.departmentList.length !== 0) return 
+    await ctx.dispacth.setDepartmentList([]);
     await ctxspin.setSpinner(true);
     await axios({
       method: "get",
@@ -43,7 +46,7 @@ const DataStruktur = () => {
           alert(language.pageContent[language.pageLanguage].RO.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
         }
         else{
-          setDepartments(res.data);
+          ctx.dispacth.setDepartmentList(res.data);
         }
       })
       .catch((err) => {
@@ -72,7 +75,7 @@ const DataStruktur = () => {
     // { key: "ReqLokalYN", label: language.pageContent[language.pageLanguage].RO.lclprod, _style: { width: '50px' } },
   ];
 
-  useEffect(() => {    
+  useEffect(() => {
     // console.log('useeffect');
     // setMonth("5");
     // console.log(month);
@@ -87,16 +90,15 @@ const DataStruktur = () => {
               <CCol className="mr-3 mb-3" md={9}>
                 <CRow className="mb-1" >
                   <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="struct-type">
-                      {language.pageContent[language.pageLanguage].MS.structuretype}
-                    </CLabel>
+                    <CLabel htmlFor="struct-type">{language.pageContent[language.pageLanguage].MS.structuretype}</CLabel>
                   </CCol>
                   <CCol className="pl-0 mb-0 d-flex" md={4}>
-                    <CLabel>{ctx.state.structureType.label}</CLabel>
+                    <CLabel>{ctx.state.structureTypeList.label}</CLabel>
                     <CSelect
-                      value={ctx.state.structureType.value}
+                      id="struct-type"
+                      value={ctx.state.structureTypeList.value}
                       size="sm"
-                      defaultValue="4"
+                      defaultValue={ctx.state.structureType}
                       onChange={(e) => handleStructureTypeChange(e.target.value)} 
                     >
                       {ctx.state.structureTypeList.map((option) => (
@@ -123,19 +125,19 @@ const DataStruktur = () => {
                 </CRow>
                 <CRow>
                   <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="divisi">
-                      {language.pageContent[language.pageLanguage].MS.divisi}
-                    </CLabel>
+                    <CLabel htmlFor="divisi">{language.pageContent[language.pageLanguage].MS.divisi}</CLabel>
                   </CCol>
                   <CCol className="pl-0 pr-0 d-flex">
-                    <CLabel>{departments.dpt_name}</CLabel>
+                    <CLabel>{ctx.state.departmentList.dpt_name}</CLabel>
                     <CSelect
-                      value={departments.dpt_id}
+                      id="divisi" 
+                      value={ctx.state.departmentList.dpt_id}
                       size="sm"
-                      defaultValue="4"
+                      //defaultValue="4"
                       onClick={() => getDepartments()}
+                      onChange={(e) => handleDeptChange(e.target.value)}
                     >
-                      {departments.map((option) => (
+                      {ctx.state.departmentList.map((option) => (
                         <option value={option.dpt_id}>{option.dpt_name}</option>
                       ))}
                     </CSelect>

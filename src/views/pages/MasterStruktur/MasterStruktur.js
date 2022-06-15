@@ -13,22 +13,25 @@ const MasterStruktur = () => {
                              {label:'Area',value:'2'},
                              {label:'SubArea',value:'3'},
                              {label:'GT',value:'4'},];
-  const [structureType, setStructureType] = useState(0);
-  const [divCode, setDivCode] = useState("");
+  const [structureType, setStructureType] = useState(4);
+  const [departmentList, setDepartmentList] = useState([]);
+  const [deptCode, setDeptCode] = useState(0);
   const [rowData, setRowData] = useState({});
   const [isEdit, setIsEdit] = useState(false);
 
   const state = {
     structureTypeList,
     structureType,
-    divCode,
+    departmentList,
+    deptCode,
     rowData,
     isEdit,
   };  
 
   const dispacth = {
     setStructureType,
-    setDivCode,
+    setDepartmentList,
+    setDeptCode,
     setRowData,
     setIsEdit,
   };

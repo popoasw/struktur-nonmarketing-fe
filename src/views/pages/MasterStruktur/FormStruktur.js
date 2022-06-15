@@ -17,7 +17,6 @@ import { Context } from "./MasterStruktur";
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
   let ctx = React.useContext(Context);
-  const date = new Date();
   const [modal, setModal] = useState(false);
   const logicList = [{label:'Yes',value:'yes'},
                      {label:'No',value:'no'},];
@@ -27,8 +26,6 @@ const FormStruktur = () => {
                     {label:'Staff',value:'Staff'},];
   const [dummyStat,setDummyStat] = useState('no');
   const [dummyshadowStat,setDummyShadowStat] = useState('no');
-
-  const [structurType,setStructurType] = useState('');
 
   const closeModal = () => {
     setModal(!modal);
@@ -43,14 +40,12 @@ const FormStruktur = () => {
   };
   
   const btnAddClick = async () => {
-    alert(date);
-    alert(date.getMonth());
-    alert(date.getFullYear() + '-' + ("0" + (date.getMonth())).slice(-2));
+    // console.log(ctx.state.departmentList[ctx.state.deptCode].dpt_name);
   };
 
   const setFormInput = () => {
     if(ctx.state.isEdit === false){
-      setStructurType(ctx.state.structureTypeList[ctx.state.structureType].label);
+      //ctx.dispatch.setStructureType(ctx.state.structureTypeList[ctx.state.structureType].label);
     }
   };
 
@@ -76,22 +71,23 @@ const FormStruktur = () => {
                       type="text"
                       id="struct-type"
                       size="sm"
-                      placeholder=""
-                      value={structurType}
+                      //placeholder=""
+                      value={ctx.state.structureTypeList[ctx.state.structureType].label}
                       disabled
                     />
                   </CCol>
                 </CRow>
                 <CRow className="mb-1" >
                   <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="divisi">{language.pageContent[language.pageLanguage].MS.divisi}</CLabel>
+                    <CLabel htmlFor="dept">{language.pageContent[language.pageLanguage].MS.divisi}</CLabel>
                   </CCol>
                   <CCol className="pr-0">
                     <CInput
                       type="text"
-                      id="divisi-nm"
+                      id="dept"
                       size="sm"
-                      placeholder=""
+                      //placeholder=""
+                      value={ctx.state.departmentList.length === 0 ? "" : ctx.state.departmentList[ctx.state.deptCode].dpt_name }
                       disabled
                     />
                   </CCol>

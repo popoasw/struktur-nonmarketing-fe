@@ -1,22 +1,15 @@
-import React /*, { useState } */ from "react";
-// import axios from "axios";
+import React from "react";
 import {
   CContainer,
   CCard,
   CCardBody,
   CRow,
   CCol,
-  CInput,
   CLabel,
 } from "@coreui/react";
 
-import LanguageContext from "containers/languageContext";
-// import { Context } from "./MasterStruktur";
-
 const HeaderStruktur = () => {
   const profile = JSON.parse(localStorage.getItem("profile"));
-  let language = React.useContext(LanguageContext);
-  // let ctx = React.useContext(Context);
 
   return (
     <>
@@ -25,39 +18,15 @@ const HeaderStruktur = () => {
           <CCardBody>
             <CRow>
               <CCol>
-                <div className="mb-3 border-bottom border-1 d-flex">
-                  <h2 className="mr-2">Master Struktur</h2>
-                  <p className="align-self-end mb-2">v1.0.0</p>
-                </div>
-                <CRow className="mb-1">
-                  <CCol className="pr-3" md={2}>
-                    <CLabel htmlFor="user-login">{language.pageContent[language.pageLanguage].userLogin}</CLabel>
-                  </CCol>
-                  <CCol className="pr-0" md={8}>
-                    <CInput
-                      type="text"
-                      id="user-login"
-                      size="sm"
-                      placeholder="user code - user name"
-                      value={profile.mem_nip + ' - ' + profile.mem_username}
-                      disabled
-                    />
-                  </CCol>
+                <CRow className="ml-0 d-flex border-bottom border-1">
+                  <CLabel htmlFor="user-login" className="h1 mr-2">Master Struktur</CLabel>
+                  <CLabel htmlFor="user-login" className="align-self-end mb-2">v1.0.0</CLabel>
                 </CRow>
-                <CRow>
-                  <CCol className="pr-3" md={2}>
-                    <CLabel htmlFor="user-company">{language.pageContent[language.pageLanguage].company}</CLabel>
-                  </CCol>
-                  <CCol className="pr-0" md={8}>
-                    <CInput
-                      type="text"
-                      id="user-company"
-                      size="sm"
-                      placeholder="company code - company name"
-                      value={profile.mem_company}
-                      disabled
-                    />
-                  </CCol>
+              </CCol>
+              <CCol >
+                <CRow className="mr-1 d-flex align-items-end flex-column">
+                  <CLabel htmlFor="user-login" className="mb-0">{profile.mem_nip + ' - ' + profile.mem_username}</CLabel>
+                  <CLabel htmlFor="user-company">{profile.mem_company === "" ? "company code - company name" : profile.mem_company }</CLabel>
                 </CRow>
               </CCol>
             </CRow>
