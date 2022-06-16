@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   CContainer,
@@ -23,29 +23,48 @@ const DataStruktur = () => {
   let ctx = React.useContext(Context);
   let ctxspin = React.useContext(ContextSpinner);
   const date = new Date();
+  const structureTypeList = [{label:'NSM',value:'0'},
+                             {label:'Region',value:'1'},
+                             {label:'Area',value:'2'},
+                             {label:'SubArea',value:'3'},
+                             {label:'GT',value:'4'},];
+  const [departmentList, setDepartmentList] = useState([]);
 
-  const handleStructureTypeChange = async (e) => {
-    ctx.dispacth.setStructureType(e);
+  const handleStructureTypeChange = async (e) => {    
+    ctx.dispacth.setStrukturList([]);
+    if (e === "" || e === undefined ) {
+      return;
+    }
+    ctx.dispacth.setStructureType(structureTypeList[e]);
   };
 
-  const handleDeptChange = async (e) => {
-    ctx.dispacth.setDeptCode(ctx.state.departmentList.map(object => object.dpt_id).indexOf(parseInt(e)));
+  const handleDeptChange = async (e) => {  
+    ctx.dispacth.setStrukturList([]);
+    if (e === "" || e === undefined ) {
+      return;
+    }
+    ctx.dispacth.setDepartment(departmentList[e]);
   };
 
-  const btnRefreshClick = async () => {
-    if (ctx.state.departmentList.length === 0 || ctx.state.deptCode === 0) {
-      alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
+  const btnRefreshClick = () => {
+    ctx.dispacth.setStrukturList([]);
+    if (ctx.state.structureType.label === "" || ctx.state.department.dpt_id === "" || ctx.state.structureType.label === undefined || ctx.state.department.dpt_id === undefined) {
+      if (ctx.state.structureType.label === "" || ctx.state.structureType.label === undefined ) {
+        alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].datanotfound);
+        return;
+      }
+      if (ctx.state.department.dpt_name === "" || ctx.state.department.dpt_name === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound);
+        return;
+      }
     }
     else {
-      getStrukturList("groupteri",1,ctx.state.departmentList[ctx.state.deptCode].dpt_id);
-    }   
-  };  
+      getStrukturList(ctx.state.structureType.label,1,ctx.state.department.dpt_id);
+    }
+  };
 
-  const getDepartments = async () => {
-    if (ctx.state.departmentList.length !== 0) return 
-    await ctx.dispacth.setDepartmentList([]);
-    await ctxspin.setSpinner(true);
-    await axios({
+  useEffect(() => {
+    axios({
       method: "get",
       url: get_department + 's',
       responseType: "json",
@@ -53,26 +72,55 @@ const DataStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
+          alert('kosong')
         }
         else{
-          ctx.dispacth.setDepartmentList(res.data);
+          setDepartmentList(res.data);
         }
       })
       .catch((err) => {
         window.alert(err);
       });
-    ctxspin.setSpinner(false);
-    return false;
-  };
+  },[]);
+
+  // const getDepartments = async () => {
+  //   if (departmentList.length !== 0) return 
+  //   await setDepartmentList([]);
+  //   await ctxspin.setSpinner(true);
+  //   await axios({
+  //     method: "get",
+  //     url: get_department + 's',
+  //     responseType: "json",
+  //   })
+  //     .then((res) => {
+  //       res = res.data;
+  //       if(res.error.status){
+  //         alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
+  //       }
+  //       else{
+  //         setDepartmentList(res.data);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+  //     });
+  //   ctxspin.setSpinner(false);
+  //   return false;
+  // };
 
   const getStrukturList = async (e,f,g) => {
-    //console.log(get_struktur + '/' + e + '?pt_id=' + f + '?dpt_id=' + g);
     await ctx.dispacth.setStrukturList([]);
     await ctxspin.setSpinner(true);
+    const params = {
+      pt_id: f,
+      dpt_id: g,
+    }
+    let url = get_struktur(e);
+    //url = url + '/' + h;
     await axios({
       method: "get",
-      url: get_struktur + '/' + e + '?pt_id=' + f + '&dpt_id=' + g,
+      url: url,
+      params: params,
       responseType: "json",
     })
       .then((res) => {
@@ -85,7 +133,7 @@ const DataStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert(err);
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
       });
     ctxspin.setSpinner(false);
     return false;
@@ -110,6 +158,8 @@ const DataStruktur = () => {
   ];
 
   useEffect(() => {
+    //getDepartments();
+    // initialize();
     // console.log('useeffect');
     // setMonth("5");
     // console.log(month);
@@ -127,16 +177,16 @@ const DataStruktur = () => {
                     <CLabel htmlFor="struct-type">{language.pageContent[language.pageLanguage].MS.structuretype}</CLabel>
                   </CCol>
                   <CCol className="pl-0 mb-0 d-flex" md={4}>
-                    <CLabel>{ctx.state.structureTypeList.label}</CLabel>
                     <CSelect
                       id="struct-type"
-                      value={ctx.state.structureTypeList.value}
                       size="sm"
-                      defaultValue={ctx.state.structureType}
                       onChange={(e) => handleStructureTypeChange(e.target.value)} 
                     >
-                      {ctx.state.structureTypeList.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
+                      <option value={""}></option>
+                      {structureTypeList.map((option, idx) => (
+                        <option key={idx} value={idx}>
+                          {option.label}
+                        </option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -162,17 +212,17 @@ const DataStruktur = () => {
                     <CLabel htmlFor="divisi">{language.pageContent[language.pageLanguage].MS.divisi}</CLabel>
                   </CCol>
                   <CCol className="pl-0 pr-0 d-flex">
-                    <CLabel>{ctx.state.departmentList.dpt_name}</CLabel>
                     <CSelect
-                      id="divisi" 
-                      value={ctx.state.departmentList.dpt_id}
+                      id="divisi"
                       size="sm"
-                      //defaultValue="4"
-                      onClick={() => getDepartments()}
+                      //onClick={() => getDepartments()}
                       onChange={(e) => handleDeptChange(e.target.value)}
                     >
-                      {ctx.state.departmentList.map((option) => (
-                        <option key={option.dpt_id} value={option.dpt_id}>{option.dpt_name}</option>
+                      <option value={""}></option>
+                      {departmentList.map((option, idx) => (
+                        <option key={idx} value={idx}>
+                          {option.dpt_name}
+                        </option>
                       ))}
                     </CSelect>
                   </CCol>

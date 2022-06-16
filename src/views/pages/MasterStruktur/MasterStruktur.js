@@ -8,23 +8,15 @@ export const Context = React.createContext();
 const Provider = Context.Provider;
 
 const MasterStruktur = () => {
-  const structureTypeList = [{label:'NSM',value:'0'},
-                             {label:'Region',value:'1'},
-                             {label:'Area',value:'2'},
-                             {label:'SubArea',value:'3'},
-                             {label:'GT',value:'4'},];
-  const [structureType, setStructureType] = useState(4);
-  const [departmentList, setDepartmentList] = useState([]);
-  const [deptCode, setDeptCode] = useState(0);
+  const [structureType, setStructureType] = useState({});
+  const [department, setDepartment] = useState({});
   const [strukturList, setStrukturList] = useState([]);
   const [struktur, setStruktur] = useState({});
   const [isEdit, setIsEdit] = useState(false);
 
   const state = {
-    structureTypeList,
     structureType,
-    departmentList,
-    deptCode,
+    department,
     strukturList,
     struktur,
     isEdit,
@@ -32,8 +24,7 @@ const MasterStruktur = () => {
 
   const dispacth = {
     setStructureType,
-    setDepartmentList,
-    setDeptCode,
+    setDepartment,
     setStrukturList,
     setStruktur,
     setIsEdit,
@@ -49,7 +40,7 @@ const MasterStruktur = () => {
       >
           <HeaderStruktur />
           <DataStruktur />
-          <FormStruktur /> 
+          <FormStruktur />
       </Provider>
     </>
   );

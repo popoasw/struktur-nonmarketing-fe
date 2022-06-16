@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   CContainer,
   CCard,
@@ -13,10 +14,13 @@ import {
 import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
+import { ContextSpinner } from "containers/TheLayout";
+import { get_position } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
   let ctx = React.useContext(Context);
+  let ctxspin = React.useContext(ContextSpinner);
   const [modal, setModal] = useState(false);
   const logicList = [{label:'Yes',value:'yes'},
                      {label:'No',value:'no'},];
@@ -26,6 +30,14 @@ const FormStruktur = () => {
                     {label:'Staff',value:'Staff'},];
   const [dummyStat,setDummyStat] = useState('no');
   const [dummyshadowStat,setDummyShadowStat] = useState('no');
+
+  const [groupCodeText, setGroupCodeText] = useState("");
+  const [groupNameText, setGroupNameText] = useState("");
+  const [nipText, setNipText] = useState("");
+  const [nameText, setNameText] = useState("");
+  const [positionList, setPositionList] = useState([]);
+  const [positionIdText, setPositionIdText] = useState(0);
+  const [positionNameText, setPositionNameText] = useState("");
 
   const closeModal = () => {
     setModal(!modal);
@@ -40,19 +52,46 @@ const FormStruktur = () => {
   };
   
   const btnAddClick = async () => {
-    console.log(ctx.state.isEdit);
-    //await ctx.dispatch.setIsEdit(true);
-    // ctx.dispatch.setIsEdit(!ctx.state.isEdit);
-    console.log(ctx.state.isEdit);
+    await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
 
   const btnCancelClick = () => {
     ctx.dispatch.setIsEdit(!ctx.state.isEdit);
-    // console.log(ctx.state.departmentList[ctx.state.deptCode].dpt_name);
+  };
+
+  const getPositionDept = async (e) => {
+    setPositionList([]);
+    await ctxspin.setSpinner(true);
+    await axios({
+      method: "get",
+      url: get_position + '/' + e,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+        }
+        else{
+          setPositionList(res.data);
+        }
+      })
+      .catch((err) => {
+        window.alert(err);
+      });
+    ctxspin.setSpinner(false);
+    return false;
   };
   
-  const setFormInput = () => {
+  const setFormInput = async () => {
     if(ctx.state.isEdit === false){
+      setGroupCodeText(ctx.state.struktur.code_group);
+      setGroupNameText("");
+      setNipText(ctx.state.struktur.nip);
+      setNameText(ctx.state.struktur.name);
+      //await getPositionDept(ctx.state.deptCode);
+      setPositionIdText(ctx.state.struktur.position_id);
+      setPositionNameText(ctx.state.struktur.position_name);
       //ctx.dispatch.setStructureType(ctx.state.structureTypeList[ctx.state.structureType].label);
     }
   };
@@ -83,7 +122,7 @@ const FormStruktur = () => {
                     <CInput
                       type="text"
                       size="sm"
-                      value={ctx.state.structureTypeList[ctx.state.structureType].label}
+                      value={ctx.state.structureType.label}
                       disabled
                     />
                   </CCol>
@@ -96,7 +135,7 @@ const FormStruktur = () => {
                     <CInput
                       type="text"
                       size="sm"
-                      value={ctx.state.departmentList.length === 0 ? "" : ctx.state.departmentList[ctx.state.deptCode].dpt_name }
+                      //value={ctx.state.department.dpt_name}
                       disabled
                     />
                   </CCol>
@@ -111,6 +150,7 @@ const FormStruktur = () => {
                       id="frmstruktur-kd"
                       size="sm"
                       placeholder=""
+                      value={groupCodeText}
                       disabled
                     />
                   </CCol>
@@ -120,6 +160,7 @@ const FormStruktur = () => {
                       id="frmstruktur"
                       size="sm"
                       placeholder=""
+                      value={groupNameText}
                       disabled={!ctx.state.isEdit}
                     />
                   </CCol>
@@ -130,17 +171,17 @@ const FormStruktur = () => {
                     <CLabel htmlFor="dummy">{language.pageContent[language.pageLanguage].MS.dummy}</CLabel>
                   </CCol>
                   <CCol className="d-flex" md={4}>
-                    <CLabel>{dummyStat.label}</CLabel>
                     <CSelect
-                      value={dummyStat.value}
                       size="sm"
                       defaultValue="no"
                       //onClick={() => handleDivisiClick()}
                       //onChange={(e) => handleDummy(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     >
-                      {logicList.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
+                      {logicList.map((option, idx) => (
+                        <option key={idx} value={option.value}>
+                          {option.label}
+                        </option>
                       ))}
                     </CSelect>
                   </CCol>
@@ -155,6 +196,7 @@ const FormStruktur = () => {
                       id="employee-kd"
                       size="sm"
                       placeholder=""
+                      value={nipText}
                       disabled={!ctx.state.isEdit}
                     />
                   </CCol>
@@ -164,6 +206,7 @@ const FormStruktur = () => {
                       id="employee-nm"
                       size="sm"
                       placeholder=""
+                      value={nameText}
                       disabled
                     />
                   </CCol>
@@ -184,19 +227,19 @@ const FormStruktur = () => {
                     <CLabel htmlFor="position">{language.pageContent[language.pageLanguage].MS.position}</CLabel>
                   </CCol>
                   <CCol className="d-flex" md={4}>
-                    <CLabel>{position.label}</CLabel>
+                    {/* <CLabel>{positionList.pos_name}</CLabel>
                     <CSelect
-                      value={position.value}
+                      value={positionList.pos_id}
                       size="sm"
-                      defaultValue="Manager"
+                      //defaultValue="Manager"
                       //onClick={() => handleDivisiClick()}
                       //onChange={(e) => handleDummy(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     >
-                      {position.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
+                      {positionList.map((option) => (
+                        <option key={option.pos_id} value={option.pos_name}>{option.label}</option>
                       ))}
-                    </CSelect>
+                    </CSelect> */}
                   </CCol>
                 </CRow>
                 <CRow className="mb-1" >
@@ -204,8 +247,7 @@ const FormStruktur = () => {
                     <CLabel htmlFor="positionAds">{language.pageContent[language.pageLanguage].MS.positionAds}</CLabel>
                   </CCol>
                   <CCol className="d-flex" md={4}>
-                    <CLabel>{position.label}</CLabel>
-                    <CSelect
+                    {/* <CSelect
                       value={position.value}
                       size="sm"
                       defaultValue="Manager"
@@ -216,7 +258,7 @@ const FormStruktur = () => {
                       {position.map((option) => (
                         <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
-                    </CSelect>
+                    </CSelect> */}
                   </CCol>
                 </CRow>
                 <CRow className="mb-1" >
@@ -240,17 +282,14 @@ const FormStruktur = () => {
                     <CLabel htmlFor="dummyshadow">{language.pageContent[language.pageLanguage].MS.dummyshadow}</CLabel>
                   </CCol>
                   <CCol className="d-flex" md={4}>
-                    <CLabel>{dummyshadowStat.label}</CLabel>
                     <CSelect
                       value={dummyshadowStat.value}
                       size="sm"
-                      defaultValue="Manager"
-                      //onClick={() => handleDivisiClick()}
                       onChange={(e) => handleDummyShadow(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     >
-                      {logicList.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
+                      {logicList.map((option, idx) => (
+                        <option key={idx} value={option.value}>{option.label}</option>
                       ))}
                     </CSelect>
                   </CCol>

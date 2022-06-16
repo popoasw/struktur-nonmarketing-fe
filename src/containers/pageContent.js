@@ -28,8 +28,7 @@ const pageContent = {
       loadingMessage: "Mohon Tunggu Permintaan Anda Sedang Diproses",
       userLogin: "User",
       company: "Company",
-      datanotfound: "tidak ditemukan !\n" +
-                    "Pastikan data yang anda pilih sudah benar !",
+      datanotfound: "tidak ditemukan !\n",
       dataconfirm: "sudah di konfirmasi !",
       datanotconfirm: "belum di konfirmasi !",
       confirmsuccess: "berhasil di konfimasi !",
@@ -105,8 +104,7 @@ const pageContent = {
       company: "Company",
       emptyOR: "Please select Order Number first !",
       emptyprocod: "Please select Product first !",
-      datanotfound: "not found !\n" +
-                    "Make sure the selected data is correct !",
+      datanotfound: "not found !\n",
       dataconfirm: "has been confirmed !",
       datanotconfirm: "UnConfirmed !",
       confirmsuccess: "confirm success !",
