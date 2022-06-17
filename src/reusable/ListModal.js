@@ -18,11 +18,13 @@ const ListModal = (props) => {
       </CModalHeader>
       <CModalBody>
         <CDataTable
+          size="sm"
           responsive
           items={props.items}
           fields={props.fields}
           tableFilter
-          itemsPerPage={5}
+          itemsPerPage={10}
+          itemsPerPageSelect
           pagination
           hover
           clickableRows

@@ -15,7 +15,7 @@ import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
-import { get_position, get_positionAds } from "./MasterStrukturLink";
+import { get_position, get_positionAds, get_cities, get_branch } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -24,11 +24,13 @@ const FormStruktur = () => {
   const [modal, setModal] = useState(false);
   const logicList = [{label:'Yes',value:'Y'},
                      {label:'No',value:'N'},];
+  const [titleModal, setTitleModal] = useState("");
+  const [selectedModal, setSelectedModal] = useState("");
 
   const [groupCodeText, setGroupCodeText] = useState("");
   const [groupNameText, setGroupNameText] = useState("");
   const [nipText, setNipText] = useState("");
-  const [nameText, setNameText] = useState("");  
+  const [nameText, setNameText] = useState("");
   const [positionList, setPositionList] = useState([]);
   const [positionIdText, setPositionIdText] = useState(0);
   const [positionNameText, setPositionNameText] = useState("");
@@ -39,14 +41,12 @@ const FormStruktur = () => {
   const [dummyShadowYN,setDummyShadowYN] = useState("Y");
   const [dateInText, setDateInText] = useState("");
   const [dateShadowInText, setDateShadowInText] = useState("");
-  const [branchIdText, setBranchIdText] = useState("");
-  const [branchNameText, setBranchNameText] = useState("");
   const [cityIdText, setCityIdText] = useState("");
   const [cityNameText, setCityNameText] = useState("");
-
-  const closeModal = () => {
-    setModal(!modal);
-  };
+  const [branchIdText, setBranchIdText] = useState("");
+  const [branchNameText, setBranchNameText] = useState("");
+  const [cityList, setCityList] = useState([]);
+  const [branchList, setBranchList] = useState([]);
 
   const handleDummy = (e) => {
     setDummyYN(e);
@@ -168,7 +168,95 @@ const FormStruktur = () => {
     // ctxspin.setSpinner(false);
     return false;
   };
-  
+
+//=============================================================================  
+//                                   code for modal
+//=============================================================================  
+  const fieldsCities = [
+    { key: "city_id", label: "ID" },
+    { key: "city_name", label: language.pageContent[language.pageLanguage].name },
+  ];
+
+  const fieldsBranch = [
+    { key: "branch_id", label: "ID" },
+    { key: "branch_name", label: language.pageContent[language.pageLanguage].name },
+    { key: "branch_address", label: language.pageContent[language.pageLanguage].address },
+  ];
+
+  const ModalCities = async () => {
+    setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + language.pageContent[language.pageLanguage].MS.workcity);
+    setSelectedModal('cities');
+    await ctxspin.setSpinner(true);
+    await axios({
+      method: "get",
+      url: get_cities,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].datanotfound)
+        }
+        else{
+          setCityList(res.data);
+          setModal(!modal);
+        }
+      })
+      .catch((err) => {
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+      });
+    ctxspin.setSpinner(false);
+    return false;
+  };
+
+  const ModalBranch = async (e) => {
+    if (e === "" || e === undefined) return;
+    setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + language.pageContent[language.pageLanguage].MS.branch);
+    setSelectedModal('branch');
+    await ctxspin.setSpinner(true);
+    await axios({
+      method: "get",
+      url: get_branch + '/' + e,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].datanotfound)
+        }
+        else{
+          setBranchList(res.data);
+          setModal(!modal);
+        }
+      })
+      .catch((err) => {
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+      });
+    ctxspin.setSpinner(false);
+    return false;
+  };
+
+  const selectModal = (e) => {
+    setModal(!modal);
+    switch(selectedModal){
+      case "cities":
+        setCityIdText(e.city_id);
+        setCityNameText(e.city_name);
+        //getProduct(e.ReqProcod);
+        break;
+      default: // 'GT'
+        setBranchIdText(e.branch_id);
+        setBranchNameText(e.branch_name);
+        //getProduct(e.ReqProcod);
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedModal('');
+    setModal(!modal);
+  };
+//=============================================================================  
+
   const setFormInput = () => {
     if(ctx.state.isEdit === false){
       setGroupCodeText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
@@ -178,11 +266,11 @@ const FormStruktur = () => {
       setPositionIdText(ctx.state.struktur.position_id === null ? "" : ctx.state.struktur.position_id);
       setPositionNameText(ctx.state.struktur.position_name === null ? "" : ctx.state.struktur.position_name);
       setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
-      setDateShadowInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);      
-      setBranchIdText(ctx.state.struktur.branch_id === null ? "" : ctx.state.struktur.branch_id);
-      setBranchNameText(ctx.state.struktur.branch_name === null ? "" : ctx.state.struktur.branch_name);
+      setDateShadowInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
       setCityIdText(ctx.state.struktur.city_id === null ? "" : ctx.state.struktur.city_id);
       setCityNameText(ctx.state.struktur.city_name === null ? "" : ctx.state.struktur.city_name);
+      setBranchIdText(ctx.state.struktur.branch_id === null ? "" : ctx.state.struktur.branch_id);
+      setBranchNameText(ctx.state.struktur.branch_name === null ? "" : ctx.state.struktur.branch_name);
     }
   };
 
@@ -504,7 +592,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      //onClick={btnRefreshClick}
+                      onClick={() => ModalCities()}
                       disabled={!ctx.state.isEdit}
                     >
                       ...
@@ -540,7 +628,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      //onClick={btnRefreshClick}
+                      onClick={(e) => ModalBranch(cityIdText)}
                       disabled={!ctx.state.isEdit}
                     >
                       ...
@@ -623,10 +711,10 @@ const FormStruktur = () => {
       <ListModal
         show={modal}
         onClose={closeModal}
-        title="List Product"
-        // fields={fields}
-        // items={listProduct}
-        // getRowData={(e) => selectListProduct(e)}
+        title={titleModal}
+        fields={selectedModal === 'cities' ? fieldsCities : fieldsBranch }
+        items={selectedModal === 'cities' ? cityList : branchList }
+        getRowData={(e) => selectModal(e)}
       />
     </>
   )

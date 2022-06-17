@@ -15,7 +15,7 @@ import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
 import LanguageContext from "containers/languageContext";
 import DataTable from "reusable/DataTable";
-import { get_department, get_struktur } from "./MasterStrukturLink";
+import { get_departments, get_struktur } from "./MasterStrukturLink";
 import { GlbFormatDate } from "reusable/Helper";
 
 const DataStruktur = () => {
@@ -63,13 +63,17 @@ const DataStruktur = () => {
     }
   };
 
+  useEffect(() => {
+    getDepartments();
+  },[]);
+  
   const getDepartments = async () => {
     // if (departmentList.length !== 0) return 
     await setDepartmentList([]);
     // await ctxspin.setSpinner(true);
     await axios({
       method: "get",
-      url: get_department + 's',
+      url: get_departments,
       responseType: "json",
     })
       .then((res) => {
@@ -139,10 +143,6 @@ const DataStruktur = () => {
     { key: "branch_name", label: language.pageContent[language.pageLanguage].MS.Data.branch },
     { key: "city_name", label: language.pageContent[language.pageLanguage].MS.Data.city /*, _style: { width: '50px' } */ },
   ];
-
-  useEffect(() => {
-    getDepartments();
-  },[]);
 
   return (
     <>
