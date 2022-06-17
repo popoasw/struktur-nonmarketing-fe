@@ -355,7 +355,7 @@ const FormStruktur = () => {
                   <CCol md="3">
                     <CLabel htmlFor="date-entry">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
                   </CCol>
-                  <CCol md="4">
+                  <CCol md="5">
                     <CInput 
                       type="date"  
                       id="date-entry"
@@ -427,7 +427,7 @@ const FormStruktur = () => {
                   <CCol md="3">
                     <CLabel htmlFor="date-entry-shd">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
                   </CCol>
-                  <CCol md="4">
+                  <CCol md="5">
                     <CInput 
                       type="date"  
                       id="date-entry-shd"

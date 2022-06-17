@@ -113,8 +113,8 @@ const DataStruktur = () => {
         }
         else{
           for (const obj of res.data) {
-            obj.date_in = obj.date_in.split(' ')[0];
-            obj.date_out = obj.date_out.split(' ')[0];
+            obj.date_in = ( obj.date_in === null ? null : obj.date_in.split(' ')[0] );
+            obj.date_out = ( obj.date_out === null ? null : obj.date_out.split(' ')[0] );
           }
           ctx.dispacth.setStrukturList(res.data);
         }
