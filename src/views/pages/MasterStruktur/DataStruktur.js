@@ -16,7 +16,7 @@ import { ContextSpinner } from "containers/TheLayout";
 import LanguageContext from "containers/languageContext";
 import DataTable from "reusable/DataTable";
 import { get_department, get_struktur } from "./MasterStrukturLink";
-//import { GlbFormatDate } from "reusable/Helper";
+import { GlbFormatDate } from "reusable/Helper";
 
 const DataStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -112,6 +112,10 @@ const DataStruktur = () => {
           alert(language.pageContent[language.pageLanguage].MS.structure + " " + language.pageContent[language.pageLanguage].datanotfound)
         }
         else{
+          for (const obj of res.data) {
+            obj.date_in = obj.date_in.split(' ')[0];
+            obj.date_out = obj.date_out.split(' ')[0];
+          }
           ctx.dispacth.setStrukturList(res.data);
         }
       })
@@ -126,10 +130,6 @@ const DataStruktur = () => {
     ctx.dispacth.setStruktur(e);
   };
 
-  // const clearFormInput = () => {
-  //   setDepartments([]);
-  // };
-
   const fields = [
     { key: "nip", label: language.pageContent[language.pageLanguage].MS.Data.nip },
     { key: "name", label: language.pageContent[language.pageLanguage].MS.Data.name },
@@ -142,10 +142,6 @@ const DataStruktur = () => {
 
   useEffect(() => {
     getDepartments();
-    // initialize();
-    // console.log('useeffect');
-    // setMonth("5");
-    // console.log(month);
   },[]);
 
   return (
@@ -231,14 +227,14 @@ const DataStruktur = () => {
             <DataTable
               items={ctx.state.strukturList}
               fields={fields}
-              // scopedSlots={{
-              //   'date_in': (item)=>(
-              //     <td align="left">{GlbFormatDate(item.date_in)}</td>
-              //   )
-              //   // 'date_out': (item)=>(
-              //   //   <td align="left">{GlbFormatDate(item.date_out)}</td>
-              //   // ),
-              // }}
+              scopedSlots={{
+                'date_in': (item)=>(
+                  <td align="left">{item.date_in === "" || item.date_in === null ? "-" : GlbFormatDate(item.date_in)}</td>
+                ),
+                'date_out': (item)=>(
+                  <td align="left">{item.date_out === "" || item.date_out === null ? "-" : GlbFormatDate(item.date_out)}</td>
+                ),
+              }}
               size="sm"
               onRowClick={(e) => getStruktur(e)}
             /> 

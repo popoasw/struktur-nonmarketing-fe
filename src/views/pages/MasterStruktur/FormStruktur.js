@@ -37,6 +37,12 @@ const FormStruktur = () => {
   const [positionNameAdsText, setPositionNameAdsText] = useState("");
   const [dummyYN,setDummyYN] = useState("N");
   const [dummyShadowYN,setDummyShadowYN] = useState("Y");
+  const [dateInText, setDateInText] = useState("");
+  const [dateShadowInText, setDateShadowInText] = useState("");
+  const [branchIdText, setBranchIdText] = useState("");
+  const [branchNameText, setBranchNameText] = useState("");
+  const [cityIdText, setCityIdText] = useState("");
+  const [cityNameText, setCityNameText] = useState("");
 
   const closeModal = () => {
     setModal(!modal);
@@ -67,12 +73,20 @@ const FormStruktur = () => {
     }
     setPositionIdAdsText(positionAdsList.find(arrlist => arrlist.iklan_name === e));
   };
+  
+  const handleDateChange = (e) => {
+    setDateInText(e);
+  };
 
   const handleDummyShadow = (e) => {
     setDummyShadowYN(e);
   };
   
-  const btnAddClick = async () => {    
+  const handleDateShadowChange = (e) => {
+    setDateShadowInText(e);
+  };
+  
+  const btnAddClick = async () => {
     await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
 
@@ -157,13 +171,18 @@ const FormStruktur = () => {
   
   const setFormInput = () => {
     if(ctx.state.isEdit === false){
-      setGroupCodeText(ctx.state.struktur.code_group);
-      setGroupNameText(ctx.state.struktur.code_group);
-      setNipText(ctx.state.struktur.nip);
-      setNameText(ctx.state.struktur.name);
-      setPositionIdText(ctx.state.struktur.position_id);
-      setPositionNameText(ctx.state.struktur.position_name);
-      //ctx.dispatch.setStructureType(ctx.state.structureTypeList[ctx.state.structureType].label);
+      setGroupCodeText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
+      setGroupNameText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
+      setNipText(ctx.state.struktur.nip === null ? "" : ctx.state.struktur.nip);
+      setNameText(ctx.state.struktur.name === null ? "" : ctx.state.struktur.name);
+      setPositionIdText(ctx.state.struktur.position_id === null ? "" : ctx.state.struktur.position_id);
+      setPositionNameText(ctx.state.struktur.position_name === null ? "" : ctx.state.struktur.position_name);
+      setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
+      setDateShadowInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);      
+      setBranchIdText(ctx.state.struktur.branch_id === null ? "" : ctx.state.struktur.branch_id);
+      setBranchNameText(ctx.state.struktur.branch_name === null ? "" : ctx.state.struktur.branch_name);
+      setCityIdText(ctx.state.struktur.city_id === null ? "" : ctx.state.struktur.city_id);
+      setCityNameText(ctx.state.struktur.city_name === null ? "" : ctx.state.struktur.city_name);
     }
   };
 
@@ -338,14 +357,16 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol md="4">
                     <CInput 
-                      type="date" 
+                      type="date"  
                       id="date-entry"
-                      name="date-entry" 
-                      placeholder="" 
                       size="sm"
+                      name="date-entry"
+                      value={dateInText}
+                      placeholder=""
+                      onChange={(e) => handleDateChange(e.target.value)}
                       disabled={!ctx.state.isEdit} 
                     />
-                  </CCol>                
+                  </CCol>
                 </CRow>
 
                 <CRow className="mt-3 mb-1" >
@@ -407,13 +428,15 @@ const FormStruktur = () => {
                     <CLabel htmlFor="date-entry-shd">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
                   </CCol>
                   <CCol md="4">
-                    <CInput
-                      type="date"
-                      id="date-entry-shd" 
-                      name="date-entry-shd" 
-                      placeholder="" 
+                    <CInput 
+                      type="date"  
+                      id="date-entry-shd"
                       size="sm"
-                      disabled={!ctx.state.isEdit}
+                      name="date-entry-shd"
+                      //value={dateInText}
+                      placeholder=""
+                      onChange={(e) => handleDateShadowChange(e.target.value)}
+                      disabled={!ctx.state.isEdit} 
                     />
                   </CCol>
                 </CRow>
@@ -459,8 +482,9 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={2}>
                     <CInput
                       type="text"
-                      id="workcity-kd"
+                      id="workcity"
                       size="sm"
+                      value={cityIdText}
                       placeholder=""
                       disabled={!ctx.state.isEdit}
                     />
@@ -470,6 +494,7 @@ const FormStruktur = () => {
                       type="text"
                       id="workcity-nm"
                       size="sm"
+                      value={cityNameText}
                       placeholder=""
                       disabled
                     />
@@ -493,8 +518,9 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={2}>
                     <CInput
                       type="text"
-                      id="branch-kd"
+                      id="branch"
                       size="sm"
+                      value={branchIdText}
                       placeholder=""
                       disabled={!ctx.state.isEdit}
                     />
@@ -504,6 +530,7 @@ const FormStruktur = () => {
                       type="text"
                       id="branch-nm"
                       size="sm"
+                      value={branchNameText}
                       placeholder=""
                       disabled
                     />

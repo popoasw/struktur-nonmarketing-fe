@@ -13,16 +13,18 @@ export const GlbNumberFormat = (amount) => {
 };
 
 // merubah format tanggal inputan menjadi dd MMM yyyy
+// cara pangil : tgl === "" ? tgl : GlbFormatDate(item.date_in)
+//               tidak boleh kondisi "" ketika dipanggil GlbFormatDate
 export const GlbFormatDate = (e) => {
-    const date = new Date(e);    
+    const date = new Date(e);
     let language = React.useContext(LanguageContext);
     
-    let monthNames = language.pageContent[language.pageLanguage].MonthList;
+    let monthNames = language.pageContent[language.pageLanguage].monthlist;
     let day = date.getDate();
     let monthIndex = date.getMonth();
-    let monthName = monthNames[monthIndex];
+    let monthName = monthNames[monthIndex].label;
     let year = date.getFullYear();
   
-    let newDate = `${day}-${monthName}-${year}`;  
+    let newDate = `${day}-${monthName}-${year}`;
     return newDate;
   };
