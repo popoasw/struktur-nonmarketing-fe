@@ -15,53 +15,83 @@ import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
-import { get_position } from "./MasterStrukturLink";
+import { get_position, get_positionAds } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
   let ctx = React.useContext(Context);
   let ctxspin = React.useContext(ContextSpinner);
   const [modal, setModal] = useState(false);
-  const logicList = [{label:'Yes',value:'yes'},
-                     {label:'No',value:'no'},];
-  const position = [{label:'Grand Manager',value:'Grand Manager'},
-                    {label:'Manager',value:'Manager'},
-                    {label:'Supervisor',value:'Supervisor'},
-                    {label:'Staff',value:'Staff'},];
-  const [dummyStat,setDummyStat] = useState('no');
-  const [dummyshadowStat,setDummyShadowStat] = useState('no');
+  const logicList = [{label:'Yes',value:'Y'},
+                     {label:'No',value:'N'},];
+  const [dummyYN,setDummyYN] = useState("N");
+  const [dummyShadowYN,setDummyShadowYN] = useState("Y");
 
   const [groupCodeText, setGroupCodeText] = useState("");
   const [groupNameText, setGroupNameText] = useState("");
   const [nipText, setNipText] = useState("");
   const [nameText, setNameText] = useState("");
+  
   const [positionList, setPositionList] = useState([]);
   const [positionIdText, setPositionIdText] = useState(0);
   const [positionNameText, setPositionNameText] = useState("");
+
+  const [positionAdsList, setPositionAdsList] = useState([]);
+  const [positionIdAdsText, setPositionIdAdsText] = useState(0);
+  const [positionNameAdsText, setPositionNameAdsText] = useState("");
 
   const closeModal = () => {
     setModal(!modal);
   };
 
   const handleDummy = (e) => {
-    setDummyStat(e);
+    setDummyYN(e);
+  };
+
+  const handlePosition = (e) => {
+    if (e === "" || e === undefined) {
+      return;
+    }
+    setPositionNameText(e);
+    if (positionList.length === 0 || positionList === undefined) {
+      return;
+    }
+    setPositionIdText(positionList.find(arrlist => arrlist.pos_name === e));
+  };
+
+  const handlePositionAds = (e) => {
+    if (e === "" || e === undefined ) {
+      return;
+    }
+    setPositionNameAdsText(e);
+    if (positionAdsList.length === 0 || positionAdsList === undefined) {
+      return;
+    }
+    setPositionIdAdsText(positionAdsList.find(arrlist => arrlist.iklan_name === e));
   };
 
   const handleDummyShadow = (e) => {
-    setDummyShadowStat(e);
+    setDummyShadowYN(e);
   };
   
-  const btnAddClick = async () => {
+  const btnAddClick = async () => {    
     await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
 
   const btnCancelClick = () => {
-    ctx.dispatch.setIsEdit(!ctx.state.isEdit);
+    ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
+  
+  useEffect(() => {
+    // ctxspin.setSpinner(true);
+    getPosition(ctx.state.department.dpt_id);
+    // ctxspin.setSpinner(false);
+  },[ctxspin,ctx.state.department.dpt_id]);
 
-  const getPositionDept = async (e) => {
+  const getPosition = async (e) => {
+    // e = dpt_id
     setPositionList([]);
-    await ctxspin.setSpinner(true);
+    // await ctxspin.setSpinner(true);
     await axios({
       method: "get",
       url: get_position + '/' + e,
@@ -70,26 +100,69 @@ const FormStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+          // alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+          alert('Data not found !')
         }
         else{
           setPositionList(res.data);
         }
       })
       .catch((err) => {
+        // window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
         window.alert(err);
       });
-    ctxspin.setSpinner(false);
+    // ctxspin.setSpinner(false);
+    return false;
+  };
+
+  useEffect(() => {
+    // ctxspin.setSpinner(true);
+    getPositionAds(ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id)
+    // ctxspin.setSpinner(false);
+  },[ctxspin,ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id]);
+
+  const getPositionAds = async (e,f,g) => {
+    // e = pt_id , f = jab_id, g = dpt_id
+    if(e === undefined || f === undefined || g === undefined || e === "" || f === "" || g === "") return;
+    setPositionAdsList([]);
+    // await ctxspin.setSpinner(true);
+    let url = get_positionAds;
+    //url = url + '/' + h;
+    const params = {
+      pt_id: e,
+      jab_id: f,
+      dpt_id: g,
+    }
+    await axios({
+      method: "get",
+      url: url,
+      params: params,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          // alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+          alert('Data PositionAds not found !')
+        }
+        else{
+          setPositionAdsList(res.data);
+        }
+      })
+      .catch((err) => {
+        // window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        window.alert(err);
+      });
+    // ctxspin.setSpinner(false);
     return false;
   };
   
-  const setFormInput = async () => {
+  const setFormInput = () => {
     if(ctx.state.isEdit === false){
       setGroupCodeText(ctx.state.struktur.code_group);
-      setGroupNameText("");
+      setGroupNameText(ctx.state.struktur.code_group);
       setNipText(ctx.state.struktur.nip);
       setNameText(ctx.state.struktur.name);
-      //await getPositionDept(ctx.state.deptCode);
       setPositionIdText(ctx.state.struktur.position_id);
       setPositionNameText(ctx.state.struktur.position_name);
       //ctx.dispatch.setStructureType(ctx.state.structureTypeList[ctx.state.structureType].label);
@@ -135,7 +208,7 @@ const FormStruktur = () => {
                     <CInput
                       type="text"
                       size="sm"
-                      //value={ctx.state.department.dpt_name}
+                      value={ctx.state.department.dpt_name}
                       disabled
                     />
                   </CCol>
@@ -170,12 +243,12 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="dummy">{language.pageContent[language.pageLanguage].MS.dummy}</CLabel>
                   </CCol>
-                  <CCol className="d-flex" md={4}>
+                  <CCol className="d-flex" md={5}>
                     <CSelect
+                      id="dummy"
                       size="sm"
-                      defaultValue="no"
-                      //onClick={() => handleDivisiClick()}
-                      //onChange={(e) => handleDummy(e.target.value)}
+                      value={dummyYN}
+                      onChange={(e) => handleDummy(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     >
                       {logicList.map((option, idx) => (
@@ -197,6 +270,7 @@ const FormStruktur = () => {
                       size="sm"
                       placeholder=""
                       value={nipText}
+                      //onChange={(e) => getPositionDept(ctx.state.deptCode)}
                       disabled={!ctx.state.isEdit}
                     />
                   </CCol>
@@ -226,39 +300,38 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="position">{language.pageContent[language.pageLanguage].MS.position}</CLabel>
                   </CCol>
-                  <CCol className="d-flex" md={4}>
-                    {/* <CLabel>{positionList.pos_name}</CLabel>
+                  <CCol className="d-flex" md={5}>
                     <CSelect
-                      value={positionList.pos_id}
+                      id="position"
                       size="sm"
-                      //defaultValue="Manager"
-                      //onClick={() => handleDivisiClick()}
-                      //onChange={(e) => handleDummy(e.target.value)}
+                      value={positionNameText}
+                      onChange={(e) => handlePosition(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     >
-                      {positionList.map((option) => (
-                        <option key={option.pos_id} value={option.pos_name}>{option.label}</option>
+                      <option value={""}></option>
+                      {positionList.map((option, idx) => (
+                        <option key={idx} value={option.pos_name}>{option.pos_name}</option>
                       ))}
-                    </CSelect> */}
+                    </CSelect>
                   </CCol>
                 </CRow>
                 <CRow className="mb-1" >
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="positionAds">{language.pageContent[language.pageLanguage].MS.positionAds}</CLabel>
                   </CCol>
-                  <CCol className="d-flex" md={4}>
-                    {/* <CSelect
-                      value={position.value}
+                  <CCol className="d-flex" md={5}>
+                    <CSelect
+                      id="positionAds"
                       size="sm"
-                      defaultValue="Manager"
-                      //onClick={() => handleDivisiClick()}
-                      onChange={(e) => handleDummy(e.target.value)}
+                      value={positionNameAdsText}
+                      onChange={(e) => handlePositionAds(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     >
-                      {position.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
+                      <option value={""}></option>
+                      {positionAdsList.map((option, idx) => (
+                        <option key={idx} value={option.iklan_name}>{option.iklan_name}</option>
                       ))}
-                    </CSelect> */}
+                    </CSelect>
                   </CCol>
                 </CRow>
                 <CRow className="mb-1" >
@@ -281,15 +354,18 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="dummyshadow">{language.pageContent[language.pageLanguage].MS.dummyshadow}</CLabel>
                   </CCol>
-                  <CCol className="d-flex" md={4}>
+                  <CCol className="d-flex" md={5}>
                     <CSelect
-                      value={dummyshadowStat.value}
+                      id="dummyshadow"
                       size="sm"
+                      value={dummyShadowYN}
                       onChange={(e) => handleDummyShadow(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     >
                       {logicList.map((option, idx) => (
-                        <option key={idx} value={option.value}>{option.label}</option>
+                        <option key={idx} value={option.value}>
+                          {option.label}
+                        </option>
                       ))}
                     </CSelect>
                   </CCol>

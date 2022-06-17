@@ -30,7 +30,7 @@ const DataStruktur = () => {
                              {label:'GT',value:'4'},];
   const [departmentList, setDepartmentList] = useState([]);
 
-  const handleStructureTypeChange = async (e) => {    
+  const handleStructureTypeChange = async (e) => {
     ctx.dispacth.setStrukturList([]);
     if (e === "" || e === undefined ) {
       return;
@@ -38,7 +38,7 @@ const DataStruktur = () => {
     ctx.dispacth.setStructureType(structureTypeList[e]);
   };
 
-  const handleDeptChange = async (e) => {  
+  const handleDeptChange = async (e) => {
     ctx.dispacth.setStrukturList([]);
     if (e === "" || e === undefined ) {
       return;
@@ -63,8 +63,11 @@ const DataStruktur = () => {
     }
   };
 
-  useEffect(() => {
-    axios({
+  const getDepartments = async () => {
+    // if (departmentList.length !== 0) return 
+    await setDepartmentList([]);
+    // await ctxspin.setSpinner(true);
+    await axios({
       method: "get",
       url: get_department + 's',
       responseType: "json",
@@ -72,51 +75,31 @@ const DataStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          alert('kosong')
+          //alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
+          alert('Data not found !')
         }
         else{
           setDepartmentList(res.data);
         }
       })
       .catch((err) => {
+        //window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
         window.alert(err);
       });
-  },[]);
-
-  // const getDepartments = async () => {
-  //   if (departmentList.length !== 0) return 
-  //   await setDepartmentList([]);
-  //   await ctxspin.setSpinner(true);
-  //   await axios({
-  //     method: "get",
-  //     url: get_department + 's',
-  //     responseType: "json",
-  //   })
-  //     .then((res) => {
-  //       res = res.data;
-  //       if(res.error.status){
-  //         alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
-  //       }
-  //       else{
-  //         setDepartmentList(res.data);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-  //     });
-  //   ctxspin.setSpinner(false);
-  //   return false;
-  // };
+    // ctxspin.setSpinner(false);
+    return false;
+  };
 
   const getStrukturList = async (e,f,g) => {
+    // e = strukturType , f = pt_id, g = dpt_id
     await ctx.dispacth.setStrukturList([]);
     await ctxspin.setSpinner(true);
+    let url = get_struktur(e);
+    //url = url + '/' + h;
     const params = {
       pt_id: f,
       dpt_id: g,
     }
-    let url = get_struktur(e);
-    //url = url + '/' + h;
     await axios({
       method: "get",
       url: url,
@@ -158,7 +141,7 @@ const DataStruktur = () => {
   ];
 
   useEffect(() => {
-    //getDepartments();
+    getDepartments();
     // initialize();
     // console.log('useeffect');
     // setMonth("5");
