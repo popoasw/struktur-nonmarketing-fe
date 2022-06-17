@@ -24,21 +24,19 @@ const FormStruktur = () => {
   const [modal, setModal] = useState(false);
   const logicList = [{label:'Yes',value:'Y'},
                      {label:'No',value:'N'},];
-  const [dummyYN,setDummyYN] = useState("N");
-  const [dummyShadowYN,setDummyShadowYN] = useState("Y");
 
   const [groupCodeText, setGroupCodeText] = useState("");
   const [groupNameText, setGroupNameText] = useState("");
   const [nipText, setNipText] = useState("");
-  const [nameText, setNameText] = useState("");
-  
+  const [nameText, setNameText] = useState("");  
   const [positionList, setPositionList] = useState([]);
   const [positionIdText, setPositionIdText] = useState(0);
   const [positionNameText, setPositionNameText] = useState("");
-
   const [positionAdsList, setPositionAdsList] = useState([]);
   const [positionIdAdsText, setPositionIdAdsText] = useState(0);
   const [positionNameAdsText, setPositionNameAdsText] = useState("");
+  const [dummyYN,setDummyYN] = useState("N");
+  const [dummyShadowYN,setDummyShadowYN] = useState("Y");
 
   const closeModal = () => {
     setModal(!modal);
@@ -84,11 +82,11 @@ const FormStruktur = () => {
   
   useEffect(() => {
     // ctxspin.setSpinner(true);
-    getPosition(ctx.state.department.dpt_id);
+    getPosition(ctx.state.department.dpt_id,language);
     // ctxspin.setSpinner(false);
-  },[ctxspin,ctx.state.department.dpt_id]);
+  },[ctxspin,language,ctx.state.department.dpt_id]);
 
-  const getPosition = async (e) => {
+  const getPosition = async (e,language) => {
     // e = dpt_id
     setPositionList([]);
     // await ctxspin.setSpinner(true);
@@ -100,16 +98,16 @@ const FormStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          // alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
-          alert('Data not found !')
+          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+          //alert('Data not found !')
         }
         else{
           setPositionList(res.data);
         }
       })
       .catch((err) => {
-        // window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-        window.alert(err);
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        //window.alert(err);
       });
     // ctxspin.setSpinner(false);
     return false;
@@ -117,11 +115,11 @@ const FormStruktur = () => {
 
   useEffect(() => {
     // ctxspin.setSpinner(true);
-    getPositionAds(ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id)
+    getPositionAds(ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id,language)
     // ctxspin.setSpinner(false);
-  },[ctxspin,ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id]);
+  },[ctxspin,language,ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id]);
 
-  const getPositionAds = async (e,f,g) => {
+  const getPositionAds = async (e,f,g,language) => {
     // e = pt_id , f = jab_id, g = dpt_id
     if(e === undefined || f === undefined || g === undefined || e === "" || f === "" || g === "") return;
     setPositionAdsList([]);
@@ -142,16 +140,16 @@ const FormStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          // alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
-          alert('Data PositionAds not found !')
+          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+          //alert('Data PositionAds not found !')
         }
         else{
           setPositionAdsList(res.data);
         }
       })
       .catch((err) => {
-        // window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-        window.alert(err);
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        //window.alert(err);
       });
     // ctxspin.setSpinner(false);
     return false;
