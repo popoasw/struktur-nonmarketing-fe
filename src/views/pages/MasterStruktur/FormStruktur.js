@@ -15,7 +15,7 @@ import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
-import { get_position, get_positionAds, get_cities, get_cityId, get_branch } from "./MasterStrukturLink";
+import { get_position, get_positionAds, get_city, get_branch } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -42,12 +42,12 @@ const FormStruktur = () => {
   const [dummyShadowYN,setDummyShadowYN] = useState("Y");
   const [dateInText, setDateInText] = useState("");
   const [dateShadowInText, setDateShadowInText] = useState("");
+  const [cityList, setCityList] = useState([]);
   const [cityIdText, setCityIdText] = useState("");
   const [cityNameText, setCityNameText] = useState("");
+  const [branchList, setBranchList] = useState([]);
   const [branchIdText, setBranchIdText] = useState("");
   const [branchNameText, setBranchNameText] = useState("");
-  const [cityList, setCityList] = useState([]);
-  const [branchList, setBranchList] = useState([]);
 
   const handleDummy = (e) => {
     setDummyYN(e);
@@ -91,28 +91,29 @@ const FormStruktur = () => {
     setBranchIdText('');
     setBranchNameText('');
     setIsBlur(true);
-    setCityIdText(e);
+    setCityIdText('');
+    setCityNameText(e);
   }  
   const handleCityKeyUp = async (e) => {
     if (e.keyCode === 13) {
-      e.preventDefault();
-      await getCityId(cityIdText);
+      //e.preventDefault();
+      await ModalCity(e.target.value);
       setIsBlur(false);
     }
   }
   const handlingCityBlur = async (e) => {
     if (cityIdText !== '' && IsBlur === true) {
-      setCityNameText("");
-      await getCityId(cityIdText);
+      setCityNameText(e);
+      await ModalCity(e)
       setIsBlur(false);
     }
   };
-  
-  const handleBranchChange = (e) => {
-    //getBranchId(e);
-  }
 
-  const btnAddClick = async () => {    
+  const btnAddClick = async () => {
+    if (ctx.state.strukturList.lenght === 0 || ctx.state.strukturList === undefined) {
+      alert("");
+      return;
+    }
     await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
 
@@ -198,65 +199,10 @@ const FormStruktur = () => {
     return false;
   };
 
-  const getCityId = async (e) => {
-    // e = city_id
-    await ctxspin.setSpinner(true);
-    const params = {
-      type: "id",
-      value: e,
-    }
-    await axios({
-      method: "get",
-      url: get_cityId,
-      params: params,
-      responseType: "json",
-    })
-      .then((res) => {
-        res = res.data;
-        if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].datanotfound)
-        }
-        else{
-          setCityNameText(res.data.city_name);
-        }
-      })
-      .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-      });
-    ctxspin.setSpinner(false);
-  };
-
-  //mau bikin baru atau ambil disamakan modalBranch
-  // const getBranchId = async (e) => {
-  //   // e = branch_id
-  //   if(e === undefined || e === "") return;
-  //   setBranchNameText("");
-  //   await ctxspin.setSpinner(true);
-  //   await axios({
-  //     method: "get",
-  //     url: get_branchId,
-  //     responseType: "json",
-  //   })
-  //     .then((res) => {
-  //       res = res.data;
-  //       if(res.error.status){
-  //         alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].datanotfound)
-  //       }
-  //       else{
-  //         setBranchNameText(res.data.branch_name);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-  //     });
-  //   ctxspin.setSpinner(false);
-  //   return false;
-  // };
-
 //=============================================================================  
 //                                   code for modal
 //=============================================================================  
-  const fieldsCities = [
+  const fieldsCity = [
     { key: "city_id", label: "ID" },
     { key: "city_name", label: language.pageContent[language.pageLanguage].name },
   ];
@@ -267,13 +213,18 @@ const FormStruktur = () => {
     { key: "branch_address", label: language.pageContent[language.pageLanguage].address },
   ];
 
-  const ModalCities = async () => {
+  const ModalCity = async (e) => {
     setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + language.pageContent[language.pageLanguage].MS.workcity);
-    setSelectedModal('cities');
+    setSelectedModal('city');
     await ctxspin.setSpinner(true);
+    const params = {
+      type: "name",
+      value: e,
+    }
     await axios({
       method: "get",
-      url: get_cities,
+      url: get_city,
+      params: params,
       responseType: "json",
     })
       .then((res) => {
@@ -294,8 +245,16 @@ const FormStruktur = () => {
   };
 
   const ModalBranch = async (e) => {
-    if (e === "" || e === undefined) return;
-    setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + language.pageContent[language.pageLanguage].MS.branch);
+    // e = city_id
+    if (cityNameText === "" || cityNameText === undefined) {
+      alert(language.pageContent[language.pageLanguage].MS.workcitynotfound);
+      return;
+    }
+    setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + 
+                  language.pageContent[language.pageLanguage].MS.branch  + ' ' +
+                  language.pageContent[language.pageLanguage].for + ' ' +  
+                  language.pageContent[language.pageLanguage].MS.workcity + ' ' +  
+                  cityNameText);
     setSelectedModal('branch');
     await ctxspin.setSpinner(true);
     await axios({
@@ -323,13 +282,13 @@ const FormStruktur = () => {
   const selectModal = (e) => {
     setModal(!modal);
     switch(selectedModal){
-      case "cities":
+      case "city":
         setCityIdText(e.city_id);
-        //setCityNameText(e.city_name);
+        setCityNameText(e.city_name);
         break;
       default: // 'GT'
         setBranchIdText(e.branch_id);
-        //setBranchNameText(e.branch_name);
+        setBranchNameText(e.branch_name);
     }
   };
 
@@ -657,24 +616,23 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={2}>
                     <CInput
                       type="text"
-                      id="workcity"
                       size="sm"
                       value={cityIdText}
                       placeholder=""
-                      onKeyUp={(e) => handleCityKeyUp(e)}
-                      onChange={(e) => handleCityChange(e.target.value)}
-                      onBlur={(e) => handlingCityBlur(e)}
-                      disabled={!ctx.state.isEdit}
+                      disabled
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CInput
                       type="text"
-                      id="workcity-nm"
+                      id="workcity"
                       size="sm"
                       value={cityNameText}
                       placeholder=""
-                      disabled
+                      onKeyUp={(e) => handleCityKeyUp(e)}
+                      onChange={(e) => handleCityChange(e.target.value)}
+                      onBlur={(e) => handlingCityBlur(e.target.value)}
+                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={1}>
@@ -682,7 +640,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      onClick={() => ModalCities()}
+                      onClick={(e) => ModalCity(cityNameText === undefined ? "" : cityNameText)}
                       disabled={!ctx.state.isEdit}
                     >
                       ...
@@ -696,18 +654,16 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={2}>
                     <CInput
                       type="text"
-                      id="branch"
                       size="sm"
                       value={branchIdText}
                       placeholder=""
-                      onChange={(e) => handleBranchChange(e.target.value)}
-                      disabled={!ctx.state.isEdit}
+                      disabled
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CInput
                       type="text"
-                      id="branch-nm"
+                      id="branch"
                       size="sm"
                       value={branchNameText}
                       placeholder=""
@@ -803,8 +759,8 @@ const FormStruktur = () => {
         show={modal}
         onClose={closeModal}
         title={titleModal}
-        fields={selectedModal === 'cities' ? fieldsCities : fieldsBranch }
-        items={selectedModal === 'cities' ? cityList : branchList }
+        fields={selectedModal === 'branch' ? fieldsBranch : fieldsCity }
+        items={selectedModal === 'branch' ? branchList : cityList }
         getRowData={(e) => selectModal(e)}
       />
     </>

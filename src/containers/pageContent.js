@@ -50,6 +50,7 @@ const pageContent = {
       print: "Cetak",
       updateBy: "User Ubah",
       updateDate: "Tgl. Ubah",
+      for: "untuk",
       MS:{
         structuretype: "Jenis Struktur",
         structure: "Struktur",
@@ -64,6 +65,7 @@ const pageContent = {
         dateentry: "Tanggal Masuk",
         directspv: "Atasan Langsung",
         workcity: "Kota Kerja",
+        workcitynotfound: "Kota Kerja tidak ditemukan",
         branch: "Cabang",
         Data:{
           nip: "NIP",
@@ -129,6 +131,7 @@ const pageContent = {
       print: "Print",
       updateBy: "User Update",
       updateDate: "Update Date",
+      for: "for",
       MS:{
         structuretype: "Structure Type",
         structure: "Structure",
@@ -143,6 +146,7 @@ const pageContent = {
         dateentry: "Date of entry",
         directspv: "Direct Supervisor",
         workcity: "Work City",
+        workcitynotfound: "Work City not found",
         branch: "Branch",
         Data:{
           nip: "NIP",
