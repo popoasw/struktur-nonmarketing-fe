@@ -15,7 +15,7 @@ import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
-import { get_position, get_positionAds, get_cities, get_branch } from "./MasterStrukturLink";
+import { get_position, get_positionAds, get_cities, get_cityId, get_branch } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -26,6 +26,7 @@ const FormStruktur = () => {
                      {label:'No',value:'N'},];
   const [titleModal, setTitleModal] = useState("");
   const [selectedModal, setSelectedModal] = useState("");
+  const [IsBlur, setIsBlur] = useState(false);
 
   const [groupCodeText, setGroupCodeText] = useState("");
   const [groupNameText, setGroupNameText] = useState("");
@@ -85,8 +86,33 @@ const FormStruktur = () => {
   const handleDateShadowChange = (e) => {
     setDateShadowInText(e);
   };
+
+  const handleCityChange = (e) => {
+    setBranchIdText('');
+    setBranchNameText('');
+    setIsBlur(true);
+    setCityIdText(e);
+  }  
+  const handleCityKeyUp = async (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      await getCityId(cityIdText);
+      setIsBlur(false);
+    }
+  }
+  const handlingCityBlur = async (e) => {
+    if (cityIdText !== '' && IsBlur === true) {
+      setCityNameText("");
+      await getCityId(cityIdText);
+      setIsBlur(false);
+    }
+  };
   
-  const btnAddClick = async () => {
+  const handleBranchChange = (e) => {
+    //getBranchId(e);
+  }
+
+  const btnAddClick = async () => {    
     await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
 
@@ -94,6 +120,9 @@ const FormStruktur = () => {
     ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
   
+//=============================================================================  
+//                                   code for GET
+//=============================================================================  
   useEffect(() => {
     // ctxspin.setSpinner(true);
     getPosition(ctx.state.department.dpt_id,language);
@@ -169,6 +198,61 @@ const FormStruktur = () => {
     return false;
   };
 
+  const getCityId = async (e) => {
+    // e = city_id
+    await ctxspin.setSpinner(true);
+    const params = {
+      type: "id",
+      value: e,
+    }
+    await axios({
+      method: "get",
+      url: get_cityId,
+      params: params,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].datanotfound)
+        }
+        else{
+          setCityNameText(res.data.city_name);
+        }
+      })
+      .catch((err) => {
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+      });
+    ctxspin.setSpinner(false);
+  };
+
+  //mau bikin baru atau ambil disamakan modalBranch
+  // const getBranchId = async (e) => {
+  //   // e = branch_id
+  //   if(e === undefined || e === "") return;
+  //   setBranchNameText("");
+  //   await ctxspin.setSpinner(true);
+  //   await axios({
+  //     method: "get",
+  //     url: get_branchId,
+  //     responseType: "json",
+  //   })
+  //     .then((res) => {
+  //       res = res.data;
+  //       if(res.error.status){
+  //         alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].datanotfound)
+  //       }
+  //       else{
+  //         setBranchNameText(res.data.branch_name);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+  //     });
+  //   ctxspin.setSpinner(false);
+  //   return false;
+  // };
+
 //=============================================================================  
 //                                   code for modal
 //=============================================================================  
@@ -241,13 +325,11 @@ const FormStruktur = () => {
     switch(selectedModal){
       case "cities":
         setCityIdText(e.city_id);
-        setCityNameText(e.city_name);
-        //getProduct(e.ReqProcod);
+        //setCityNameText(e.city_name);
         break;
       default: // 'GT'
         setBranchIdText(e.branch_id);
-        setBranchNameText(e.branch_name);
-        //getProduct(e.ReqProcod);
+        //setBranchNameText(e.branch_name);
     }
   };
 
@@ -274,15 +356,20 @@ const FormStruktur = () => {
     }
   };
 
-  // const clearFormInput = () => {
-  //   if(ctx.state.isEdit === false){
-  //   }
-  // };
+  const clearFormInput = () => {
+    if(ctx.state.isEdit === false){
+      setCityNameText("");
+    }
+  };
 
   useEffect(() => {
+    clearFormInput();
     setFormInput();
   });
 
+//=============================================================================  
+//                                   code for render
+//=============================================================================  
   return (
     <>
       <CContainer fluid>
@@ -574,6 +661,9 @@ const FormStruktur = () => {
                       size="sm"
                       value={cityIdText}
                       placeholder=""
+                      onKeyUp={(e) => handleCityKeyUp(e)}
+                      onChange={(e) => handleCityChange(e.target.value)}
+                      onBlur={(e) => handlingCityBlur(e)}
                       disabled={!ctx.state.isEdit}
                     />
                   </CCol>
@@ -610,6 +700,7 @@ const FormStruktur = () => {
                       size="sm"
                       value={branchIdText}
                       placeholder=""
+                      onChange={(e) => handleBranchChange(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     />
                   </CCol>
