@@ -32,6 +32,7 @@ const DataStruktur = () => {
 
   const handleStructureTypeChange = async (e) => {
     ctx.dispacth.setStrukturList([]);
+    ctx.dispacth.setStruktur({});
     if (e === "" || e === undefined ) {
       return;
     }
@@ -40,6 +41,7 @@ const DataStruktur = () => {
 
   const handleDeptChange = async (e) => {
     ctx.dispacth.setStrukturList([]);
+    ctx.dispacth.setStruktur({});
     if (e === "" || e === undefined ) {
       return;
     }
@@ -48,6 +50,7 @@ const DataStruktur = () => {
 
   const btnRefreshClick = () => {
     ctx.dispacth.setStrukturList([]);
+    ctx.dispacth.setStruktur({});
     if (ctx.state.structureType.label === "" || ctx.state.department.dpt_id === "" || ctx.state.structureType.label === undefined || ctx.state.department.dpt_id === undefined) {
       if (ctx.state.structureType.label === "" || ctx.state.structureType.label === undefined ) {
         alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].datanotfound);
@@ -159,7 +162,8 @@ const DataStruktur = () => {
                     <CSelect
                       id="struct-type"
                       size="sm"
-                      onChange={(e) => handleStructureTypeChange(e.target.value)} 
+                      onChange={(e) => handleStructureTypeChange(e.target.value)}
+                      disabled={ctx.state.isEdit}
                     >
                       <option value={""}></option>
                       {structureTypeList.map((option, idx) => (
@@ -183,6 +187,7 @@ const DataStruktur = () => {
                       placeholder="" 
                       defaultValue = {date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2)}
                       //onChange={(e) => handleMonthChange(e.target.value)}
+                        disabled={ctx.state.isEdit}
                       />
                   </CCol>
                 </CRow>
@@ -196,6 +201,7 @@ const DataStruktur = () => {
                       size="sm"
                       //onClick={() => getDepartments()}
                       onChange={(e) => handleDeptChange(e.target.value)}
+                      disabled={ctx.state.isEdit}
                     >
                       <option value={""}></option>
                       {departmentList.map((option, idx) => (
@@ -216,6 +222,7 @@ const DataStruktur = () => {
                       block
                       size="sm"
                       onClick={btnRefreshClick}
+                      disabled={ctx.state.isEdit}
                     >
                       {language.pageContent[language.pageLanguage].refresh}
                     </CButton>
@@ -237,6 +244,7 @@ const DataStruktur = () => {
               }}
               size="sm"
               onRowClick={(e) => getStruktur(e)}
+              disabled={ctx.state.isEdit}
             /> 
 
             <CRow className="mr-0 mb-0 d-flex flex-row-reverse">
@@ -247,6 +255,7 @@ const DataStruktur = () => {
                   block
                   size="sm"
                   //onClick={btnCancelClick}
+                  disabled={ctx.state.isEdit}
                 >
                   {language.pageContent[language.pageLanguage].history}
                 </CButton>
@@ -258,6 +267,7 @@ const DataStruktur = () => {
                   block
                   size="sm"
                   //onClick={btnCancelClick}
+                  disabled={ctx.state.isEdit}
                 >
                   {language.pageContent[language.pageLanguage].print}
                 </CButton>

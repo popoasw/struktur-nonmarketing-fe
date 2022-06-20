@@ -67,6 +67,12 @@ const pageContent = {
         workcity: "Kota Kerja",
         workcitynotfound: "Kota Kerja tidak ditemukan",
         branch: "Cabang",
+        errorAdd: "Gagal melakukan proses Tambah, coba lakukan langkah berikut :\n" +
+                  "1. Pastikan ( Jenis Struktur - Periode - Divisi ), sudah terpilih \n" +
+                  "2. Tekan tombol Refresh kembali \n" +
+                  "3. Press the Add button again",
+        errorUpdate: "Gagal Ubah data, \n" +
+                     "Pilih data terlebih dahulu !",
         Data:{
           nip: "NIP",
           name: "Nama",
@@ -148,6 +154,12 @@ const pageContent = {
         workcity: "Work City",
         workcitynotfound: "Work City not found",
         branch: "Branch",
+        errorAdd: "Add proccess Fail, try to do this step :\n" +
+                  "1. Make sure ( Struktur Type - Periode - Divisi ), already selected \n" +
+                  "2. Press the Refresh button again \n" +
+                  "3. Tekan tombol tambah kembali",
+        errorUpdate: "Update data failed, \n" +
+                     "Select the data first !",
         Data:{
           nip: "NIP",
           name: "Name",

@@ -110,12 +110,28 @@ const FormStruktur = () => {
   };
 
   const btnAddClick = async () => {
-    if (ctx.state.strukturList.lenght === 0 || ctx.state.strukturList === undefined) {
-      alert("");
+    if (ctx.state.strukturList.length === 0 || ctx.state.strukturList === undefined) {
+      alert(language.pageContent[language.pageLanguage].MS.errorAdd);
       return;
     }
     await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
+
+  const btnUpdateClick = async () => {
+    if (Object.keys(ctx.state.struktur).length === 0 || Object.keys(ctx.state.struktur).length === undefined) {
+      alert(language.pageContent[language.pageLanguage].MS.errorUpdate);
+      return;
+    }
+    await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
+  };  
+
+  const btnDeleteClick = async () => {
+    if (Object.keys(ctx.state.struktur).length === 0 || Object.keys(ctx.state.struktur).length === undefined) {
+      alert(language.pageContent[language.pageLanguage].MS.errorUpdate);
+      return;
+    }
+    await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
+  }; 
 
   const btnCancelClick = () => {
     ctx.dispacth.setIsEdit(!ctx.state.isEdit);
@@ -317,13 +333,26 @@ const FormStruktur = () => {
 
   const clearFormInput = () => {
     if(ctx.state.isEdit === false){
-      setCityNameText("");
+      setGroupCodeText('');
+      setGroupNameText('');
+      setNipText('');
+      setNameText('');
+      setPositionIdText('');
+      setPositionNameText('');
+      setDateInText('');
+      setDateShadowInText('');
+      setCityIdText('');
+      setCityNameText('');
+      setBranchIdText('');
+      setBranchNameText('');
     }
   };
 
   useEffect(() => {
     clearFormInput();
-    setFormInput();
+    if (Object.keys(ctx.state.struktur).length !== 0 && Object.keys(ctx.state.struktur).length !== undefined) {
+      setFormInput();
+    }
   });
 
 //=============================================================================  
@@ -706,7 +735,7 @@ const FormStruktur = () => {
                         className="mb-3"
                         block
                         size="sm"
-                        //onClick={btnRefreshClick}
+                        onClick={btnUpdateClick}
                         disabled={ctx.state.isEdit}
                       >
                         {language.pageContent[language.pageLanguage].edit}
@@ -742,7 +771,7 @@ const FormStruktur = () => {
                         className="mt-3 mb-0"
                         block
                         size="sm"
-                        //onClick={btnRefreshClick}
+                        onClick={btnDeleteClick}
                         disabled={ctx.state.isEdit}
                       >
                         {language.pageContent[language.pageLanguage].delete}
