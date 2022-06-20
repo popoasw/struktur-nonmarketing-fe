@@ -155,7 +155,7 @@ const DataStruktur = () => {
             <CRow className="mb-3 border-bottom border-1">
               <CCol className="mr-3 mb-3" md={9}>
                 <CRow className="mb-1" >
-                  <CCol className="pr-0" md={3}>
+                  <CCol className="pr-0" md={ctx.state.sidebarShow === 'responsive' ? 3 : 2}>
                     <CLabel htmlFor="struct-type">{language.pageContent[language.pageLanguage].MS.structuretype}</CLabel>
                   </CCol>
                   <CCol className="pl-0 mb-0 d-flex" md={4}>
@@ -175,7 +175,7 @@ const DataStruktur = () => {
                   </CCol>
                 </CRow>
                 <CRow className="mb-1" >
-                  <CCol className="pr-0" md={3}>
+                  <CCol className="pr-0" md={ctx.state.sidebarShow === 'responsive' ? 3 : 2}>
                     <CLabel htmlFor="period">{language.pageContent[language.pageLanguage].MS.period}</CLabel>
                   </CCol>
                   <CCol className="pl-0" md="4">
@@ -192,7 +192,7 @@ const DataStruktur = () => {
                   </CCol>
                 </CRow>
                 <CRow>
-                  <CCol className="pr-0" md={3}>
+                  <CCol className="pr-0" md={ctx.state.sidebarShow === 'responsive' ? 3 : 2}>
                     <CLabel htmlFor="divisi">{language.pageContent[language.pageLanguage].MS.divisi}</CLabel>
                   </CCol>
                   <CCol className="pl-0 pr-0 d-flex">
