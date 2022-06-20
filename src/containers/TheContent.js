@@ -34,7 +34,8 @@ const TheContent = () => {
                 )
               );
             })}
-            <Redirect from="/" to="/dashboard" />
+            {/* <Redirect from="/" to="/dashboard" /> */}
+            <Redirect from="/" to="/MasterStruktur" />
           </Switch>
         </Suspense>
       </CContainer>
