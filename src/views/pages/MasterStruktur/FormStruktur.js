@@ -423,7 +423,7 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="dummy">{language.pageContent[language.pageLanguage].MS.dummy}</CLabel>
                   </CCol>
-                  <CCol className="d-flex" md={5}>
+                  <CCol className="d-flex" md={ctx.state.sidebarShow === 'responsive' ? 3 : 2}>
                     <CSelect
                       id="dummy"
                       size="sm"
@@ -518,7 +518,7 @@ const FormStruktur = () => {
                   <CCol md="3">
                     <CLabel htmlFor="date-entry">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
                   </CCol>
-                  <CCol md="5">
+                  <CCol md={ctx.state.sidebarShow === 'responsive' ? 4 : 3}>
                     <CInput 
                       type="date"  
                       id="date-entry"
@@ -536,7 +536,7 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="dummyshadow">{language.pageContent[language.pageLanguage].MS.dummyshadow}</CLabel>
                   </CCol>
-                  <CCol className="d-flex" md={5}>
+                  <CCol className="d-flex" md={ctx.state.sidebarShow === 'responsive' ? 3 : 2}>
                     <CSelect
                       id="dummyshadow"
                       size="sm"
@@ -590,7 +590,7 @@ const FormStruktur = () => {
                   <CCol md="3">
                     <CLabel htmlFor="date-entry-shd">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
                   </CCol>
-                  <CCol md="5">
+                  <CCol md={ctx.state.sidebarShow === 'responsive' ? 4 : 3}>
                     <CInput 
                       type="date"  
                       id="date-entry-shd"

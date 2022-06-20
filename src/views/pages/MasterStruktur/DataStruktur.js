@@ -231,6 +231,7 @@ const DataStruktur = () => {
               </CCol>
             </CRow>
 
+            {/* <CRow className=" m-0" > */}
             <DataTable
               items={ctx.state.strukturList}
               fields={fields}
@@ -245,7 +246,8 @@ const DataStruktur = () => {
               size="sm"
               onRowClick={(e) => getStruktur(e)}
               disabled={ctx.state.isEdit}
-            /> 
+            />
+            {/* </CRow>  */}
 
             <CRow className="mr-0 mb-0 d-flex flex-row-reverse">
               <CCol className="p-1" md={2}>
