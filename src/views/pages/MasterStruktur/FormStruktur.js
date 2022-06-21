@@ -15,7 +15,7 @@ import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
-import { get_position, get_positionAds, get_city, get_branch } from "./MasterStrukturLink";
+import { get_struktur, get_position, get_positionAds, get_city, get_branch } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -27,6 +27,7 @@ const FormStruktur = () => {
   const [titleModal, setTitleModal] = useState("");
   const [selectedModal, setSelectedModal] = useState("");
   const [IsBlur, setIsBlur] = useState(false);
+  const [IsDummyShadow, setIsDummyShadow] = useState(true);  
 
   const [groupCodeText, setGroupCodeText] = useState("");
   const [groupNameText, setGroupNameText] = useState("");
@@ -42,6 +43,9 @@ const FormStruktur = () => {
   const [dummyShadowYN,setDummyShadowYN] = useState("Y");
   const [dateInText, setDateInText] = useState("");
   const [dateShadowInText, setDateShadowInText] = useState("");
+  const [directSpvList, setDirectSpvList] = useState([]);
+  const [directSpvIdText, setDirectSpvIdText] = useState("");
+  const [directSpvNameText, setDirectSpvNameText] = useState("");
   const [cityList, setCityList] = useState([]);
   const [cityIdText, setCityIdText] = useState("");
   const [cityNameText, setCityNameText] = useState("");
@@ -80,6 +84,12 @@ const FormStruktur = () => {
   };
 
   const handleDummyShadow = (e) => {
+    if (e === 'Y') {
+      setIsDummyShadow(false);
+    } 
+    else {
+      setIsDummyShadow(true);
+    } 
     setDummyShadowYN(e);
   };
   
@@ -114,6 +124,7 @@ const FormStruktur = () => {
       alert(language.pageContent[language.pageLanguage].MS.errorAdd);
       return;
     }
+    clearFormInput();
     await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
   };
 
@@ -218,6 +229,12 @@ const FormStruktur = () => {
 //=============================================================================  
 //                                   code for modal
 //=============================================================================  
+  const fieldsDirectSpv = [
+    { key: "nip", label: language.pageContent[language.pageLanguage].MS.Data.nip },
+    { key: "name", label: language.pageContent[language.pageLanguage].MS.Data.name },
+    { key: "position_name", label: language.pageContent[language.pageLanguage].MS.Data.position },
+  ];
+
   const fieldsCity = [
     { key: "city_id", label: "ID" },
     { key: "city_name", label: language.pageContent[language.pageLanguage].name },
@@ -228,6 +245,45 @@ const FormStruktur = () => {
     { key: "branch_name", label: language.pageContent[language.pageLanguage].name },
     { key: "branch_address", label: language.pageContent[language.pageLanguage].address },
   ];
+
+  const ModalDirectSpv = async (e,f,g) => {
+    // e = strukturType , f = pt_id, g = dpt_id
+    setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + 
+                  language.pageContent[language.pageLanguage].MS.directspv);
+    setSelectedModal('directspv');
+    await ctxspin.setSpinner(true);
+    let url = get_struktur(e - 1);
+    //url = url + '/' + h;
+    const params = {
+      pt_id: f,
+      dpt_id: g,
+    }
+    await axios({
+      method: "get",
+      url: url,
+      params: params,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].MS.directspv + " " + language.pageContent[language.pageLanguage].datanotfound)
+        }
+        else{
+          for (const obj of res.data) {
+            obj.date_in = ( obj.date_in === null ? null : obj.date_in.split(' ')[0] );
+            obj.date_out = ( obj.date_out === null ? null : obj.date_out.split(' ')[0] );
+          }
+          setDirectSpvList(res.data);
+          setModal(!modal);
+        }
+      })
+      .catch((err) => {
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+      });
+    ctxspin.setSpinner(false);
+    return false;
+  };
 
   const ModalCity = async (e) => {
     setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + language.pageContent[language.pageLanguage].MS.workcity);
@@ -302,9 +358,13 @@ const FormStruktur = () => {
         setCityIdText(e.city_id);
         setCityNameText(e.city_name);
         break;
-      default: // 'GT'
+      case "branch":
         setBranchIdText(e.branch_id);
         setBranchNameText(e.branch_name);
+        break;
+      default: 
+        setDirectSpvIdText(e.nip);
+        setDirectSpvNameText(e.name);
     }
   };
 
@@ -324,6 +384,8 @@ const FormStruktur = () => {
       setPositionNameText(ctx.state.struktur.position_name === null ? "" : ctx.state.struktur.position_name);
       setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
       setDateShadowInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
+      // setDirectSpvIdText(ctx.state.struktur.nipspv === null ? "" : ctx.state.struktur.nip);
+      // setDirectSpvNameText(ctx.state.struktur.namespv === null ? "" : ctx.state.struktur.name);
       setCityIdText(ctx.state.struktur.city_id === null ? "" : ctx.state.struktur.city_id);
       setCityNameText(ctx.state.struktur.city_name === null ? "" : ctx.state.struktur.city_name);
       setBranchIdText(ctx.state.struktur.branch_id === null ? "" : ctx.state.struktur.branch_id);
@@ -562,7 +624,7 @@ const FormStruktur = () => {
                       id="employeeshadow-kd"
                       size="sm"
                       placeholder=""
-                      disabled={!ctx.state.isEdit}
+                      disabled={IsDummyShadow}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
@@ -580,7 +642,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       //onClick={btnRefreshClick}
-                      disabled={!ctx.state.isEdit}
+                      disabled={IsDummyShadow}
                     >
                       ...
                     </CButton>
@@ -599,7 +661,7 @@ const FormStruktur = () => {
                       //value={dateInText}
                       placeholder=""
                       onChange={(e) => handleDateShadowChange(e.target.value)}
-                      disabled={!ctx.state.isEdit} 
+                      disabled={IsDummyShadow}
                     />
                   </CCol>
                 </CRow>
@@ -613,6 +675,7 @@ const FormStruktur = () => {
                       type="text"
                       id="directspv-kd"
                       size="sm"
+                      value={directSpvIdText}
                       placeholder=""
                       disabled={!ctx.state.isEdit}
                     />
@@ -622,6 +685,7 @@ const FormStruktur = () => {
                       type="text"
                       id="directspv-nm"
                       size="sm"
+                      value={directSpvNameText}
                       placeholder=""
                       disabled
                     />
@@ -631,7 +695,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      //onClick={btnRefreshClick}
+                      onClick={(e,f,g) => ModalDirectSpv(ctx.state.structureType.value,1,ctx.state.department.dpt_id)}
                       disabled={!ctx.state.isEdit}
                     >
                       ...
@@ -788,8 +852,8 @@ const FormStruktur = () => {
         show={modal}
         onClose={closeModal}
         title={titleModal}
-        fields={selectedModal === 'branch' ? fieldsBranch : fieldsCity }
-        items={selectedModal === 'branch' ? branchList : cityList }
+        fields={selectedModal === 'city' ? fieldsCity : (selectedModal === 'branch' ? fieldsBranch : fieldsDirectSpv)}
+        items={selectedModal === 'city' ? cityList : (selectedModal === 'branch' ? branchList : directSpvList)}
         getRowData={(e) => selectModal(e)}
       />
     </>

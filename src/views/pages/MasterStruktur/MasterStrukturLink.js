@@ -14,19 +14,19 @@ const get_branch = base_url + "/master/branch";
 let urlLevel = "";
 function get_struktur(level){
     switch(level){
-        case "NSM":
+        case 0: //NSM
             urlLevel = "/nsm/struktur";
             break;
-        case "Region":
+        case 1: //Region
             urlLevel = "/sm/struktur";
             break;
-        case "Area":
+        case 2: //Area
             urlLevel = "/asm/struktur";
             break;
-        case "SubArea":
+        case 3: //SubArea
             urlLevel = "/spv/struktur";
             break;
-        default: // 'GT'
+        default: //GT
             urlLevel = "/mr/struktur";
     }
     return base_url + urlLevel;

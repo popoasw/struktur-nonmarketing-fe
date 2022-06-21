@@ -23,11 +23,11 @@ const DataStruktur = () => {
   let ctx = React.useContext(Context);
   let ctxspin = React.useContext(ContextSpinner);
   const date = new Date();
-  const structureTypeList = [{label:'NSM',value:'0'},
-                             {label:'Region',value:'1'},
-                             {label:'Area',value:'2'},
-                             {label:'SubArea',value:'3'},
-                             {label:'GT',value:'4'},];
+  const structureTypeList = [{label:'NSM',value: 0},
+                             {label:'Region',value: 1},
+                             {label:'Area',value: 2},
+                             {label:'SubArea',value: 3},
+                             {label:'GT',value: 4},];
   const [departmentList, setDepartmentList] = useState([]);
 
   const handleStructureTypeChange = async (e) => {
@@ -62,7 +62,7 @@ const DataStruktur = () => {
       }
     }
     else {
-      getStrukturList(ctx.state.structureType.label,1,ctx.state.department.dpt_id);
+      getStrukturList(ctx.state.structureType.value,1,ctx.state.department.dpt_id);
     }
   };
 
@@ -199,7 +199,6 @@ const DataStruktur = () => {
                     <CSelect
                       id="divisi"
                       size="sm"
-                      //onClick={() => getDepartments()}
                       onChange={(e) => handleDeptChange(e.target.value)}
                       disabled={ctx.state.isEdit}
                     >
@@ -231,7 +230,7 @@ const DataStruktur = () => {
               </CCol>
             </CRow>
 
-            {/* <CRow className=" m-0" > */}
+            {/* <CRow className=" m-0" style={tableStyle} > */}
             <DataTable
               items={ctx.state.strukturList}
               fields={fields}
