@@ -15,7 +15,7 @@ import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
-import { get_struktur, get_position, get_positionAds, get_city, get_branch } from "./MasterStrukturLink";
+import { get_struktur, get_employee, get_position, get_city, get_branch } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -31,17 +31,20 @@ const FormStruktur = () => {
 
   const [groupCodeText, setGroupCodeText] = useState("");
   const [groupNameText, setGroupNameText] = useState("");
-  const [nipText, setNipText] = useState("");
-  const [nameText, setNameText] = useState("");
+  const [dummyYN,setDummyYN] = useState("N");
+  const [employeeList, setEmployeeList] = useState([]);
+  const [employeeIdText, setEmployeeIdText] = useState("");
+  const [employeeNameText, setEmployeeNameText] = useState("");
   const [positionList, setPositionList] = useState([]);
   const [positionIdText, setPositionIdText] = useState(0);
   const [positionNameText, setPositionNameText] = useState("");
-  const [positionAdsList, setPositionAdsList] = useState([]);
-  const [positionIdAdsText, setPositionIdAdsText] = useState(0);
-  const [positionNameAdsText, setPositionNameAdsText] = useState("");
-  const [dummyYN,setDummyYN] = useState("N");
-  const [dummyShadowYN,setDummyShadowYN] = useState("Y");
+  //const [positionAdsList, setPositionAdsList] = useState([]);
+  //const [positionIdAdsText, setPositionIdAdsText] = useState(0);
+  //const [positionNameAdsText, setPositionNameAdsText] = useState("");
   const [dateInText, setDateInText] = useState("");
+  const [dummyShadowYN,setDummyShadowYN] = useState("Y");
+  const [shadowIdText, setShadowIdText] = useState("");
+  const [shadowNameText, setShadowNameText] = useState("");
   const [dateShadowInText, setDateShadowInText] = useState("");
   const [directSpvList, setDirectSpvList] = useState([]);
   const [directSpvIdText, setDirectSpvIdText] = useState("");
@@ -57,6 +60,27 @@ const FormStruktur = () => {
     setDummyYN(e);
   };
 
+  const handleEmployeeChange = (e) => {
+    setIsBlur(true);
+    setEmployeeIdText(e);
+    setEmployeeNameText('');
+  }  
+  const handleEmployeeKeyUp = async (e) => {
+    if (e.keyCode === 13) {
+      //e.preventDefault();
+      await getEmployee(e.target.value);
+      setIsBlur(false);
+    }
+  }
+  const handlingEmployeeBlur = async (e) => {
+    if (cityIdText !== '' && IsBlur === true) {
+      setEmployeeIdText(e);
+      setEmployeeNameText('');
+      await getEmployee(e);
+      setIsBlur(false);
+    }
+  };
+
   const handlePosition = (e) => {
     if (e === "" || e === undefined) {
       return;
@@ -67,17 +91,18 @@ const FormStruktur = () => {
     }
     setPositionIdText(positionList.find(arrlist => arrlist.pos_name === e));
   };
-
-  const handlePositionAds = (e) => {
-    if (e === "" || e === undefined ) {
-      return;
-    }
-    setPositionNameAdsText(e);
-    if (positionAdsList.length === 0 || positionAdsList === undefined) {
-      return;
-    }
-    setPositionIdAdsText(positionAdsList.find(arrlist => arrlist.iklan_name === e));
-  };
+  
+  // handle positionAds dihilangkan dahulu, karena belum jelas fungsinya
+  // const handlePositionAds = (e) => {
+  //   if (e === "" || e === undefined ) {
+  //     return;
+  //   }
+  //   setPositionNameAdsText(e);
+  //   if (positionAdsList.length === 0 || positionAdsList === undefined) {
+  //     return;
+  //   }
+  //   setPositionIdAdsText(positionAdsList.find(arrlist => arrlist.iklan_name === e));
+  // };
   
   const handleDateChange = (e) => {
     setDateInText(e);
@@ -97,28 +122,35 @@ const FormStruktur = () => {
     setDateShadowInText(e);
   };
 
+  const handleDirectSpvChange = (e) => {
+    setDirectSpvIdText(e);
+    setDirectSpvNameText('');
+  }
+
   const handleCityChange = (e) => {
     setBranchIdText('');
     setBranchNameText('');
-    setIsBlur(true);
     setCityIdText('');
     setCityNameText(e);
-  }  
+  }
   const handleCityKeyUp = async (e) => {
     if (e.keyCode === 13) {
-      //e.preventDefault();
+      e.preventDefault();
       await ModalCity(e.target.value);
-      setIsBlur(false);
     }
   }
-  const handlingCityBlur = async (e) => {
-    if (cityIdText !== '' && IsBlur === true) {
-      setCityNameText(e);
-      await ModalCity(e)
-      setIsBlur(false);
-    }
-  };
 
+  const handleBranchChange = (e) => {
+    setBranchIdText('');
+    setBranchNameText(e);
+  }
+  const handleBranchKeyUp = async (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      await ModalBranch(cityIdText,cityNameText);
+    }
+  }
+  
   const btnAddClick = async () => {
     if (ctx.state.strukturList.length === 0 || ctx.state.strukturList === undefined) {
       alert(language.pageContent[language.pageLanguage].MS.errorAdd);
@@ -151,6 +183,35 @@ const FormStruktur = () => {
 //=============================================================================  
 //                                   code for GET
 //=============================================================================  
+  
+const getEmployee = async (e) => {
+  // e = nip , bila kosong = semua
+  await ctxspin.setSpinner(true);
+  const params = {
+    nip: e,
+  }
+  await axios({
+    method: "get",
+    url: get_employee,
+    params: params,
+    responseType: "json",
+  })
+    .then((res) => {
+      res = res.data;
+      if(res.error.status){
+        alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].datanotfound)
+      }
+      else{
+        setEmployeeList(res.data);
+      }
+    })
+    .catch((err) => {
+      window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+    });
+  ctxspin.setSpinner(false);
+  return false;
+};
+
   useEffect(() => {
     // ctxspin.setSpinner(true);
     getPosition(ctx.state.department.dpt_id,language);
@@ -184,47 +245,47 @@ const FormStruktur = () => {
     return false;
   };
 
-  useEffect(() => {
-    // ctxspin.setSpinner(true);
-    getPositionAds(ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id,language)
-    // ctxspin.setSpinner(false);
-  },[ctxspin,language,ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id]);
-
-  const getPositionAds = async (e,f,g,language) => {
-    // e = pt_id , f = jab_id, g = dpt_id
-    if(e === undefined || f === undefined || g === undefined || e === "" || f === "" || g === "") return;
-    setPositionAdsList([]);
-    // await ctxspin.setSpinner(true);
-    let url = get_positionAds;
-    //url = url + '/' + h;
-    const params = {
-      pt_id: e,
-      jab_id: f,
-      dpt_id: g,
-    }
-    await axios({
-      method: "get",
-      url: url,
-      params: params,
-      responseType: "json",
-    })
-      .then((res) => {
-        res = res.data;
-        if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
-          //alert('Data PositionAds not found !')
-        }
-        else{
-          setPositionAdsList(res.data);
-        }
-      })
-      .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-        //window.alert(err);
-      });
-    // ctxspin.setSpinner(false);
-    return false;
-  };
+  // getPositionAds hilangkan dahulu karena masih belum jelas fungsinya
+  // useEffect(() => {
+  //   // ctxspin.setSpinner(true);
+  //   getPositionAds(ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id,language)
+  //   // ctxspin.setSpinner(false);
+  // },[ctxspin,language,ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id]);
+  // const getPositionAds = async (e,f,g,language) => {
+  //   // e = pt_id , f = jab_id, g = dpt_id
+  //   if(e === undefined || f === undefined || g === undefined || e === "" || f === "" || g === "") return;
+  //   setPositionAdsList([]);
+  //   // await ctxspin.setSpinner(true);
+  //   let url = get_positionAds;
+  //   //url = url + '/' + h;
+  //   const params = {
+  //     pt_id: e,
+  //     jab_id: f,
+  //     dpt_id: g,
+  //   }
+  //   await axios({
+  //     method: "get",
+  //     url: url,
+  //     params: params,
+  //     responseType: "json",
+  //   })
+  //     .then((res) => {
+  //       res = res.data;
+  //       if(res.error.status){
+  //         alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+  //         //alert('Data PositionAds not found !')
+  //       }
+  //       else{
+  //         setPositionAdsList(res.data);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+  //       //window.alert(err);
+  //     });
+  //   // ctxspin.setSpinner(false);
+  //   return false;
+  // };
 
 //=============================================================================  
 //                                   code for modal
@@ -306,7 +367,14 @@ const FormStruktur = () => {
         }
         else{
           setCityList(res.data);
-          setModal(!modal);
+          if (res.data.length === 1) {
+            setCityIdText(res.data[0].city_id);
+            setCityNameText(res.data[0].city_name);
+            ModalBranch(res.data[0].city_id,res.data[0].city_name,"");
+          }
+          else {
+            setModal(!modal);
+          }
         }
       })
       .catch((err) => {
@@ -316,9 +384,9 @@ const FormStruktur = () => {
     return false;
   };
 
-  const ModalBranch = async (e) => {
-    // e = city_id
-    if (cityNameText === "" || cityNameText === undefined) {
+  const ModalBranch = async (e,f) => {
+    // e = city_id, f = city_name
+    if (e === "" || e === undefined) {
       alert(language.pageContent[language.pageLanguage].MS.workcitynotfound);
       return;
     }
@@ -326,7 +394,7 @@ const FormStruktur = () => {
                   language.pageContent[language.pageLanguage].MS.branch  + ' ' +
                   language.pageContent[language.pageLanguage].for + ' ' +  
                   language.pageContent[language.pageLanguage].MS.workcity + ' ' +  
-                  cityNameText);
+                  f);
     setSelectedModal('branch');
     await ctxspin.setSpinner(true);
     await axios({
@@ -341,7 +409,13 @@ const FormStruktur = () => {
         }
         else{
           setBranchList(res.data);
-          setModal(!modal);
+          if (res.data.length === 1) {
+            setBranchIdText(res.data[0].branch_id);
+            setBranchNameText(res.data[0].branch_name);
+          }
+          else {
+            setModal(!modal);
+          }
         }
       })
       .catch((err) => {
@@ -378,14 +452,18 @@ const FormStruktur = () => {
     if(ctx.state.isEdit === false){
       setGroupCodeText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
       setGroupNameText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
-      setNipText(ctx.state.struktur.nip === null ? "" : ctx.state.struktur.nip);
-      setNameText(ctx.state.struktur.name === null ? "" : ctx.state.struktur.name);
+      setDummyYN(ctx.state.struktur.dummy === null ? "" : ctx.state.struktur.dummy);
+      setEmployeeIdText(ctx.state.struktur.nip === null ? "" : ctx.state.struktur.nip);
+      setEmployeeNameText(ctx.state.struktur.name === null ? "" : ctx.state.struktur.name);
       setPositionIdText(ctx.state.struktur.position_id === null ? "" : ctx.state.struktur.position_id);
       setPositionNameText(ctx.state.struktur.position_name === null ? "" : ctx.state.struktur.position_name);
       setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
-      setDateShadowInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
-      // setDirectSpvIdText(ctx.state.struktur.nipspv === null ? "" : ctx.state.struktur.nip);
-      // setDirectSpvNameText(ctx.state.struktur.namespv === null ? "" : ctx.state.struktur.name);
+      setDummyShadowYN(ctx.state.struktur.shadow_dummy === null ? "" : ctx.state.struktur.shadow_dummy);
+      setShadowIdText(ctx.state.struktur.shadow_nip === null ? "" : ctx.state.struktur.shadow_nip);
+      setShadowNameText(ctx.state.struktur.shadow_name === null ? "" : ctx.state.struktur.shadow_name);
+      setDateShadowInText(ctx.state.struktur.shadow_in === null ? "" : ctx.state.struktur.shadow_in);
+      setDirectSpvIdText(ctx.state.struktur.head_nip === null ? "" : ctx.state.struktur.head_nip);
+      setDirectSpvNameText(ctx.state.struktur.head_name === null ? "" : ctx.state.struktur.head_name);
       setCityIdText(ctx.state.struktur.city_id === null ? "" : ctx.state.struktur.city_id);
       setCityNameText(ctx.state.struktur.city_name === null ? "" : ctx.state.struktur.city_name);
       setBranchIdText(ctx.state.struktur.branch_id === null ? "" : ctx.state.struktur.branch_id);
@@ -397,12 +475,18 @@ const FormStruktur = () => {
     if(ctx.state.isEdit === false){
       setGroupCodeText('');
       setGroupNameText('');
-      setNipText('');
-      setNameText('');
+      setDummyYN('');
+      setEmployeeIdText('');
+      setEmployeeNameText('');
       setPositionIdText('');
       setPositionNameText('');
       setDateInText('');
+      setDummyShadowYN('');
+      setShadowIdText('');
+      setShadowNameText('');
       setDateShadowInText('');
+      setDirectSpvIdText('');
+      setDirectSpvNameText('');
       setCityIdText('');
       setCityNameText('');
       setBranchIdText('');
@@ -508,10 +592,13 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={2}>
                     <CInput
                       type="text"
-                      id="employee-kd"
+                      id="employee"
                       size="sm"
                       placeholder=""
-                      value={nipText}
+                      value={employeeIdText}
+                      onKeyUp={(e) => handleEmployeeKeyUp(e)}
+                      onChange={(e) => handleEmployeeChange(e.target.value)}
+                      onBlur={(e) => handlingEmployeeBlur(e.target.value)}
                       //onChange={(e) => getPositionDept(ctx.state.deptCode)}
                       disabled={!ctx.state.isEdit}
                     />
@@ -522,7 +609,7 @@ const FormStruktur = () => {
                       id="employee-nm"
                       size="sm"
                       placeholder=""
-                      value={nameText}
+                      value={employeeNameText}
                       disabled
                     />
                   </CCol>
@@ -557,6 +644,8 @@ const FormStruktur = () => {
                     </CSelect>
                   </CCol>
                 </CRow>
+
+                {/* positionAds , sementara hilangkan dahulu, belum jelas fungsinya
                 <CRow className="mb-1" >
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="positionAds">{language.pageContent[language.pageLanguage].MS.positionAds}</CLabel>
@@ -576,6 +665,8 @@ const FormStruktur = () => {
                     </CSelect>
                   </CCol>
                 </CRow>
+                 */}
+
                 <CRow className="mb-1" >
                   <CCol md="3">
                     <CLabel htmlFor="date-entry">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
@@ -621,18 +712,19 @@ const FormStruktur = () => {
                   <CCol className="pr-0" md={2}>
                     <CInput
                       type="text"
-                      id="employeeshadow-kd"
+                      id="employeeshadow"
                       size="sm"
                       placeholder=""
+                      value={shadowIdText}
                       disabled={IsDummyShadow}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CInput
                       type="text"
-                      id="employeeshadow-nm"
                       size="sm"
                       placeholder=""
+                      value={shadowNameText}
                       disabled
                     />
                   </CCol>
@@ -658,7 +750,7 @@ const FormStruktur = () => {
                       id="date-entry-shd"
                       size="sm"
                       name="date-entry-shd"
-                      //value={dateInText}
+                      value={dateShadowInText}
                       placeholder=""
                       onChange={(e) => handleDateShadowChange(e.target.value)}
                       disabled={IsDummyShadow}
@@ -677,6 +769,7 @@ const FormStruktur = () => {
                       size="sm"
                       value={directSpvIdText}
                       placeholder=""
+                      onChange={(e) => handleDirectSpvChange(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     />
                   </CCol>
@@ -724,7 +817,6 @@ const FormStruktur = () => {
                       placeholder=""
                       onKeyUp={(e) => handleCityKeyUp(e)}
                       onChange={(e) => handleCityChange(e.target.value)}
-                      onBlur={(e) => handlingCityBlur(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     />
                   </CCol>
@@ -733,7 +825,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      onClick={(e) => ModalCity(cityNameText === undefined ? "" : cityNameText)}
+                      onClick={(e) => ModalCity("")}
                       disabled={!ctx.state.isEdit}
                     >
                       ...
@@ -760,7 +852,9 @@ const FormStruktur = () => {
                       size="sm"
                       value={branchNameText}
                       placeholder=""
-                      disabled
+                      onKeyUp={(e) => handleBranchKeyUp(e)}
+                      onChange={(e) => handleBranchChange(e.target.value)}
+                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={1}>
@@ -768,7 +862,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      onClick={(e) => ModalBranch(cityIdText)}
+                      onClick={(e) => ModalBranch(cityIdText,cityNameText)}
                       disabled={!ctx.state.isEdit}
                     >
                       ...
