@@ -861,7 +861,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.city}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.inputByText}
                       placement="top"
                     >
                     <CInput
@@ -903,7 +903,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.branch}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.input}
                       placement="top"
                     >
                       <CInput

@@ -77,8 +77,8 @@ const pageContent = {
                   "Pilih data terlebih dahulu !",
         },
         Tooltip: {
-          city: "tekan Enter untuk menampilkan daftar branch yang mendekati inputan anda ( kosong = semua branch )",
-          branch: "tekan Enter untuk menampilkan daftar semua branch yang tersedia sesuai kota kerja",
+          inputByText: "tekan Enter untuk menampilkan daftar data ( sesuai isi, bila kosong semua data tampil )",
+          input: "tekan Enter untuk menampilkan daftar data",
         },
         Data:{
           nip: "NIP",
@@ -171,8 +171,8 @@ const pageContent = {
                   "Select the data first !",
         },
         Tooltip: {
-          city: "press Enter to show branch list that contain what you type ( empty = all branch )",
-          branch: "press Enter to show all branch list depend on work city",
+          inputByText: "press Enter to show data list ( depend on text, empty text to show all data )",
+          input: "press Enter to show data list",
         },
         Data:{
           nip: "NIP",
