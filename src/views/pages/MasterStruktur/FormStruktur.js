@@ -541,22 +541,26 @@ const getEmployee = async (e) => {
                 </CRow>
                 <CRow className="mb-1" >
                   <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="frmstruktur">{language.pageContent[language.pageLanguage].MS.structure}</CLabel>
+                    <CLabel>{language.pageContent[language.pageLanguage].MS.structurecode}</CLabel>
                   </CCol>
                   <CCol className="pr-0" md={2}>
                     <CInput
                       type="text"
-                      id="frmstruktur-kd"
                       size="sm"
                       placeholder=""
                       value={groupCodeText}
                       disabled
                     />
                   </CCol>
-                  <CCol className="pl-1 pr-0" md={7}>
+                </CRow>
+                <CRow className="mb-1" >
+                  <CCol className="pr-0" md={3}>
+                    <CLabel htmlFor="strukturname">{language.pageContent[language.pageLanguage].MS.structurename}</CLabel>
+                  </CCol>
+                  <CCol md={7}>
                     <CInput
                       type="text"
-                      id="frmstruktur"
+                      id="strukturname"
                       size="sm"
                       placeholder=""
                       value={groupNameText}
@@ -599,7 +603,6 @@ const getEmployee = async (e) => {
                       onKeyUp={(e) => handleEmployeeKeyUp(e)}
                       onChange={(e) => handleEmployeeChange(e.target.value)}
                       onBlur={(e) => handlingEmployeeBlur(e.target.value)}
-                      //onChange={(e) => getPositionDept(ctx.state.deptCode)}
                       disabled={!ctx.state.isEdit}
                     />
                   </CCol>
@@ -629,7 +632,7 @@ const getEmployee = async (e) => {
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="position">{language.pageContent[language.pageLanguage].MS.position}</CLabel>
                   </CCol>
-                  <CCol className="d-flex" md={5}>
+                  <CCol className="d-flex" md={7}>
                     <CSelect
                       id="position"
                       size="sm"

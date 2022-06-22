@@ -53,7 +53,8 @@ const pageContent = {
       for: "untuk",
       MS:{
         structuretype: "Jenis Struktur",
-        structure: "Struktur",
+        structurecode: "Kode Struktur",
+        structurename: "Nama Struktur",
         divisi: "Divisi",
         period: "Periode",
         dummy: "Dummy",
@@ -140,7 +141,8 @@ const pageContent = {
       for: "for",
       MS:{
         structuretype: "Structure Type",
-        structure: "Structure",
+        structurecode: "Structure Code",
+        structurename: "Structure Name",
         divisi: "Division",
         period: "Period",
         dummy: "Dummy",
