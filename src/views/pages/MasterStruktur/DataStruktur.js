@@ -244,7 +244,7 @@ const DataStruktur = () => {
               }}
               size="sm"
               onRowClick={(e) => getStruktur(e)}
-              disabled={ctx.state.isEdit}
+              //disabled={ctx.state.isEdit} tidak bisa pakai cara ini 
             />
             {/* </CRow>  */}
 

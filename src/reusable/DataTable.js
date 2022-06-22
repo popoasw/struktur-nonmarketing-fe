@@ -13,7 +13,7 @@ const DataTable = (props) => {
       pagination
       hover
       clickableRows
-      size={props.size}      
+      size={props.size}
       onRowClick={(e) => props.onRowClick(e)}
     />
   );

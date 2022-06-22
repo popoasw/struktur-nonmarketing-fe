@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  CContainer,
-  CCard,
-  CCardBody,
-  CRow,
-  CCol,
-  CInput,
-  CLabel,
-  CButton,
-  CSelect,
+  CContainer,  CCard,   CCardBody,  CRow,     CCol, 
+  CInput,      CLabel,  CButton,    CSelect,  CTooltip,
 } from "@coreui/react";
 import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
@@ -26,12 +19,11 @@ const FormStruktur = () => {
                      {label:'No',value:'N'},];
   const [titleModal, setTitleModal] = useState("");
   const [selectedModal, setSelectedModal] = useState("");
-  const [IsBlur, setIsBlur] = useState(false);
-  const [IsDummyShadow, setIsDummyShadow] = useState(true);  
+  const [IsBlur, setIsBlur] = useState(false);  
 
-  const [groupCodeText, setGroupCodeText] = useState("");
-  const [groupNameText, setGroupNameText] = useState("");
+  const [structureCodeText, setStructureCodeText] = useState("");
   const [dummyYN,setDummyYN] = useState("N");
+  const [IsDummy, setIsDummy] = useState(true);
   const [employeeList, setEmployeeList] = useState([]);
   const [employeeIdText, setEmployeeIdText] = useState("");
   const [employeeNameText, setEmployeeNameText] = useState("");
@@ -43,6 +35,7 @@ const FormStruktur = () => {
   //const [positionNameAdsText, setPositionNameAdsText] = useState("");
   const [dateInText, setDateInText] = useState("");
   const [dummyShadowYN,setDummyShadowYN] = useState("Y");
+  const [IsDummyShadow, setIsDummyShadow] = useState(false);
   const [shadowIdText, setShadowIdText] = useState("");
   const [shadowNameText, setShadowNameText] = useState("");
   const [dateShadowInText, setDateShadowInText] = useState("");
@@ -55,9 +48,21 @@ const FormStruktur = () => {
   const [branchList, setBranchList] = useState([]);
   const [branchIdText, setBranchIdText] = useState("");
   const [branchNameText, setBranchNameText] = useState("");
-
+  
   const handleDummy = (e) => {
+    if (e === 'Y') {
+      setIsDummy(true);
+    } 
+    else {
+      setIsDummy(false);
+    }     
     setDummyYN(e);
+    setEmployeeIdText("");
+    setEmployeeNameText("");
+    if (e === 'Y') {
+      setEmployeeNameText(positionNameText === "" ? "" : "(VACANT) " + positionNameText);
+    }
+    setDateInText("");
   };
 
   const handleEmployeeChange = (e) => {
@@ -81,7 +86,7 @@ const FormStruktur = () => {
     }
   };
 
-  const handlePosition = (e) => {
+  const handlePosition = async (e) => {
     if (e === "" || e === undefined) {
       return;
     }
@@ -90,6 +95,9 @@ const FormStruktur = () => {
       return;
     }
     setPositionIdText(positionList.find(arrlist => arrlist.pos_name === e));
+    if (dummyYN === 'Y') {
+      setEmployeeNameText("(VACANT) " + e);
+    }
   };
   
   // handle positionAds dihilangkan dahulu, karena belum jelas fungsinya
@@ -103,7 +111,7 @@ const FormStruktur = () => {
   //   }
   //   setPositionIdAdsText(positionAdsList.find(arrlist => arrlist.iklan_name === e));
   // };
-  
+    
   const handleDateChange = (e) => {
     setDateInText(e);
   };
@@ -116,6 +124,9 @@ const FormStruktur = () => {
       setIsDummyShadow(true);
     } 
     setDummyShadowYN(e);
+    setShadowIdText("");
+    setShadowNameText("");
+    setDateShadowInText("");
   };
   
   const handleDateShadowChange = (e) => {
@@ -153,19 +164,23 @@ const FormStruktur = () => {
   
   const btnAddClick = async () => {
     if (ctx.state.strukturList.length === 0 || ctx.state.strukturList === undefined) {
-      alert(language.pageContent[language.pageLanguage].MS.errorAdd);
+      alert(language.pageContent[language.pageLanguage].MS.Error.Add);
       return;
     }
     clearFormInput();
     await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
+    handleDummy('Y');
+    handleDummyShadow('N');
   };
 
   const btnUpdateClick = async () => {
     if (Object.keys(ctx.state.struktur).length === 0 || Object.keys(ctx.state.struktur).length === undefined) {
-      alert(language.pageContent[language.pageLanguage].MS.errorUpdate);
+      alert(language.pageContent[language.pageLanguage].MS.Error.Update);
       return;
     }
     await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
+    handleDummy(dummyYN);
+    handleDummyShadow(dummyShadowYN);
   };  
 
   const btnDeleteClick = async () => {
@@ -178,6 +193,8 @@ const FormStruktur = () => {
 
   const btnCancelClick = () => {
     ctx.dispacth.setIsEdit(!ctx.state.isEdit);
+    handleDummy('Y');
+    handleDummyShadow('Y');
   };
   
 //=============================================================================  
@@ -217,33 +234,6 @@ const getEmployee = async (e) => {
     getPosition(ctx.state.department.dpt_id,language);
     // ctxspin.setSpinner(false);
   },[ctxspin,language,ctx.state.department.dpt_id]);
-
-  const getPosition = async (e,language) => {
-    // e = dpt_id
-    setPositionList([]);
-    // await ctxspin.setSpinner(true);
-    await axios({
-      method: "get",
-      url: get_position + '/' + e,
-      responseType: "json",
-    })
-      .then((res) => {
-        res = res.data;
-        if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
-          //alert('Data not found !')
-        }
-        else{
-          setPositionList(res.data);
-        }
-      })
-      .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-        //window.alert(err);
-      });
-    // ctxspin.setSpinner(false);
-    return false;
-  };
 
   // getPositionAds hilangkan dahulu karena masih belum jelas fungsinya
   // useEffect(() => {
@@ -286,6 +276,33 @@ const getEmployee = async (e) => {
   //   // ctxspin.setSpinner(false);
   //   return false;
   // };
+
+  const getPosition = async (e,language) => {
+    // e = dpt_id
+    setPositionList([]);
+    // await ctxspin.setSpinner(true);
+    await axios({
+      method: "get",
+      url: get_position + '/' + e,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+          //alert('Data not found !')
+        }
+        else{
+          setPositionList(res.data);
+        }
+      })
+      .catch((err) => {
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        //window.alert(err);
+      });
+    // ctxspin.setSpinner(false);
+    return false;
+  };
 
 //=============================================================================  
 //                                   code for modal
@@ -450,8 +467,7 @@ const getEmployee = async (e) => {
 
   const setFormInput = () => {
     if(ctx.state.isEdit === false){
-      setGroupCodeText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
-      setGroupNameText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
+      setStructureCodeText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
       setDummyYN(ctx.state.struktur.dummy === null ? "" : ctx.state.struktur.dummy);
       setEmployeeIdText(ctx.state.struktur.nip === null ? "" : ctx.state.struktur.nip);
       setEmployeeNameText(ctx.state.struktur.name === null ? "" : ctx.state.struktur.name);
@@ -473,8 +489,7 @@ const getEmployee = async (e) => {
 
   const clearFormInput = () => {
     if(ctx.state.isEdit === false){
-      setGroupCodeText('');
-      setGroupNameText('');
+      setStructureCodeText('');
       setDummyYN('');
       setEmployeeIdText('');
       setEmployeeNameText('');
@@ -547,24 +562,9 @@ const getEmployee = async (e) => {
                     <CInput
                       type="text"
                       size="sm"
-                      placeholder=""
-                      value={groupCodeText}
+                      placeholder="XXXX"
+                      value={structureCodeText}
                       disabled
-                    />
-                  </CCol>
-                </CRow>
-                <CRow className="mb-1" >
-                  <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="strukturname">{language.pageContent[language.pageLanguage].MS.structurename}</CLabel>
-                  </CCol>
-                  <CCol md={7}>
-                    <CInput
-                      type="text"
-                      id="strukturname"
-                      size="sm"
-                      placeholder=""
-                      value={groupNameText}
-                      disabled={!ctx.state.isEdit}
                     />
                   </CCol>
                 </CRow>
@@ -603,7 +603,7 @@ const getEmployee = async (e) => {
                       onKeyUp={(e) => handleEmployeeKeyUp(e)}
                       onChange={(e) => handleEmployeeChange(e.target.value)}
                       onBlur={(e) => handlingEmployeeBlur(e.target.value)}
-                      disabled={!ctx.state.isEdit}
+                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
@@ -622,7 +622,7 @@ const getEmployee = async (e) => {
                       block
                       size="sm"
                       //onClick={btnRefreshClick}
-                      disabled={!ctx.state.isEdit}
+                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy}
                     >
                       ...
                     </CButton>
@@ -632,7 +632,7 @@ const getEmployee = async (e) => {
                   <CCol className="pr-0" md={3}>
                     <CLabel htmlFor="position">{language.pageContent[language.pageLanguage].MS.position}</CLabel>
                   </CCol>
-                  <CCol className="d-flex" md={7}>
+                  <CCol className="pr-0 d-flex" md={8}>
                     <CSelect
                       id="position"
                       size="sm"
@@ -683,7 +683,7 @@ const getEmployee = async (e) => {
                       value={dateInText}
                       placeholder=""
                       onChange={(e) => handleDateChange(e.target.value)}
-                      disabled={!ctx.state.isEdit} 
+                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy} 
                     />
                   </CCol>
                 </CRow>
@@ -719,7 +719,7 @@ const getEmployee = async (e) => {
                       size="sm"
                       placeholder=""
                       value={shadowIdText}
-                      disabled={IsDummyShadow}
+                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
@@ -737,7 +737,7 @@ const getEmployee = async (e) => {
                       block
                       size="sm"
                       //onClick={btnRefreshClick}
-                      disabled={IsDummyShadow}
+                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
                     >
                       ...
                     </CButton>
@@ -756,7 +756,7 @@ const getEmployee = async (e) => {
                       value={dateShadowInText}
                       placeholder=""
                       onChange={(e) => handleDateShadowChange(e.target.value)}
-                      disabled={IsDummyShadow}
+                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
                     />
                   </CCol>
                 </CRow>
@@ -812,6 +812,10 @@ const getEmployee = async (e) => {
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
+                    <CTooltip
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.city}
+                      placement="top"
+                    >
                     <CInput
                       type="text"
                       id="workcity"
@@ -822,6 +826,7 @@ const getEmployee = async (e) => {
                       onChange={(e) => handleCityChange(e.target.value)}
                       disabled={!ctx.state.isEdit}
                     />
+                    </CTooltip>
                   </CCol>
                   <CCol className="pl-1 pr-0" md={1}>
                     <CButton
@@ -849,17 +854,22 @@ const getEmployee = async (e) => {
                     />
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
-                    <CInput
-                      type="text"
-                      id="branch"
-                      size="sm"
-                      value={branchNameText}
-                      placeholder=""
-                      onKeyUp={(e) => handleBranchKeyUp(e)}
-                      onChange={(e) => handleBranchChange(e.target.value)}
-                      disabled={!ctx.state.isEdit}
-                    />
-                  </CCol>
+                    <CTooltip
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.branch}
+                      placement="top"
+                    >
+                      <CInput
+                        type="text"
+                        id="branch"
+                        size="sm"
+                        value={branchNameText}
+                        placeholder=""
+                        onKeyUp={(e) => handleBranchKeyUp(e)}
+                        onChange={(e) => handleBranchChange(e.target.value)}
+                        disabled={!ctx.state.isEdit}
+                      />
+                      </CTooltip>
+                    </CCol>
                   <CCol className="pl-1 pr-0" md={1}>
                     <CButton
                       color="light"

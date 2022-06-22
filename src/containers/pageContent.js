@@ -68,12 +68,18 @@ const pageContent = {
         workcity: "Kota Kerja",
         workcitynotfound: "Kota Kerja tidak ditemukan",
         branch: "Cabang",
-        errorAdd: "Gagal melakukan proses Tambah, coba lakukan langkah berikut :\n" +
-                  "1. Pastikan ( Jenis Struktur - Periode - Divisi ), sudah terpilih \n" +
-                  "2. Tekan tombol Refresh kembali \n" +
-                  "3. Press the Add button again",
-        errorUpdate: "Gagal Ubah data, \n" +
-                     "Pilih data terlebih dahulu !",
+        Error: {
+          Add: "Gagal melakukan proses Tambah, coba lakukan langkah berikut :\n" +
+               "1. Pastikan ( Jenis Struktur - Periode - Divisi ), sudah terpilih \n" +
+               "2. Tekan tombol Refresh kembali \n" +
+               "3. Press the Add button again",
+          Update: "Gagal Ubah data, \n" +
+                  "Pilih data terlebih dahulu !",
+        },
+        Tooltip: {
+          city: "tekan Enter untuk menampilkan daftar branch yang mendekati inputan anda ( kosong = semua branch )",
+          branch: "tekan Enter untuk menampilkan daftar semua branch yang tersedia sesuai kota kerja",
+        },
         Data:{
           nip: "NIP",
           name: "Nama",
@@ -156,12 +162,18 @@ const pageContent = {
         workcity: "Work City",
         workcitynotfound: "Work City not found",
         branch: "Branch",
-        errorAdd: "Add proccess Fail, try to do this step :\n" +
-                  "1. Make sure ( Struktur Type - Periode - Divisi ), already selected \n" +
-                  "2. Press the Refresh button again \n" +
-                  "3. Tekan tombol tambah kembali",
-        errorUpdate: "Update data failed, \n" +
-                     "Select the data first !",
+        Error: {
+          Add: "Add proccess Fail, try to do this step :\n" +
+               "1. Make sure ( Struktur Type - Periode - Divisi ), already selected \n" +
+               "2. Press the Refresh button again \n" +
+               "3. Tekan tombol tambah kembali",
+          Update: "Update data failed, \n" +
+                  "Select the data first !",
+        },
+        Tooltip: {
+          city: "press Enter to show branch list that contain what you type ( empty = all branch )",
+          branch: "press Enter to show all branch list depend on work city",
+        },
         Data:{
           nip: "NIP",
           name: "Name",
