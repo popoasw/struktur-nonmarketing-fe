@@ -639,17 +639,22 @@ const FormStruktur = () => {
                     <CLabel htmlFor="employee">{language.pageContent[language.pageLanguage].MS.employee}</CLabel>
                   </CCol>
                   <CCol className="pr-0" md={2}>
-                    <CInput
-                      type="text"
-                      id="employee"
-                      size="sm"
-                      placeholder=""
-                      value={employeeIdText}
-                      onKeyUp={(f) => handleEmployeeKeyUp("main",f)}
-                      onChange={(f) => handleEmployeeChange("main",f.target.value)}
-                      onBlur={(f) => handlingEmployeeBlur("main",f.target.value)}
-                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy}
-                    />
+                    <CTooltip
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.input}
+                      placement="top"
+                    >
+                      <CInput
+                        type="text"
+                        id="employee"
+                        size="sm"
+                        placeholder=""
+                        value={employeeIdText}
+                        onKeyUp={(f) => handleEmployeeKeyUp("main",f)}
+                        onChange={(f) => handleEmployeeChange("main",f.target.value)}
+                        onBlur={(f) => handlingEmployeeBlur("main",f.target.value)}
+                        disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy}
+                      />
+                    </CTooltip>
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CInput
@@ -758,17 +763,22 @@ const FormStruktur = () => {
                     <CLabel htmlFor="employeeshadow">{language.pageContent[language.pageLanguage].MS.employeeshadow}</CLabel>
                   </CCol>
                   <CCol className="pr-0" md={2}>
-                    <CInput
-                      type="text"
-                      id="employeeshadow"
-                      size="sm"
-                      placeholder=""
-                      value={shadowIdText}
-                      onKeyUp={(f) => handleEmployeeKeyUp("shadow",f)}
-                      onChange={(f) => handleEmployeeChange("shadow",f.target.value)}
-                      onBlur={(f) => handlingEmployeeBlur("shadow",f.target.value)}
-                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
-                    />
+                    <CTooltip
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.input}
+                      placement="top"
+                    >
+                      <CInput
+                        type="text"
+                        id="employeeshadow"
+                        size="sm"
+                        placeholder=""
+                        value={shadowIdText}
+                        onKeyUp={(f) => handleEmployeeKeyUp("shadow",f)}
+                        onChange={(f) => handleEmployeeChange("shadow",f.target.value)}
+                        onBlur={(f) => handlingEmployeeBlur("shadow",f.target.value)}
+                        disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
+                      />
+                    </CTooltip>  
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CInput
