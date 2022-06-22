@@ -22,7 +22,7 @@ const FormStruktur = () => {
   const [IsBlur, setIsBlur] = useState(false);  
 
   const [structureCodeText, setStructureCodeText] = useState("");
-  const [dummyYN,setDummyYN] = useState("N");
+  const [dummyYN,setDummyYN] = useState("Y");
   const [IsDummy, setIsDummy] = useState(true);
   const [employeeList, setEmployeeList] = useState([]);
   const [employeeIdText, setEmployeeIdText] = useState("");
@@ -34,7 +34,7 @@ const FormStruktur = () => {
   //const [positionIdAdsText, setPositionIdAdsText] = useState(0);
   //const [positionNameAdsText, setPositionNameAdsText] = useState("");
   const [dateInText, setDateInText] = useState("");
-  const [dummyShadowYN,setDummyShadowYN] = useState("Y");
+  const [dummyShadowYN,setDummyShadowYN] = useState("N");
   const [IsDummyShadow, setIsDummyShadow] = useState(false);
   const [shadowIdText, setShadowIdText] = useState("");
   const [shadowNameText, setShadowNameText] = useState("");
@@ -65,23 +65,35 @@ const FormStruktur = () => {
     setDateInText("");
   };
 
-  const handleEmployeeChange = (e) => {
+  const handleEmployeeChange = (e,f) => {
     setIsBlur(true);
-    setEmployeeIdText(e);
-    setEmployeeNameText('');
+    if (e === "shadow") {
+      setShadowIdText(f);
+      setShadowNameText('');
+    }
+    else {
+      setEmployeeIdText(f);
+      setEmployeeNameText('');
+    }
   }  
-  const handleEmployeeKeyUp = async (e) => {
-    if (e.keyCode === 13) {
-      //e.preventDefault();
-      await getEmployee(e.target.value);
+  const handleEmployeeKeyUp = async (e,f) => {
+    if (f.keyCode === 13) {
+      f.preventDefault();
+      await ModalEmployee(e,f.target.value);
       setIsBlur(false);
     }
   }
-  const handlingEmployeeBlur = async (e) => {
+  const handlingEmployeeBlur = async (e,f) => {
     if (cityIdText !== '' && IsBlur === true) {
-      setEmployeeIdText(e);
-      setEmployeeNameText('');
-      await getEmployee(e);
+      if (e === "shadow") {
+        setShadowIdText(f);
+        setShadowNameText('');
+      }
+      else  {
+        setEmployeeIdText(f);
+        setEmployeeNameText('');
+      }
+      await ModalEmployee(e,f);
       setIsBlur(false);
     }
   };
@@ -201,34 +213,6 @@ const FormStruktur = () => {
 //                                   code for GET
 //=============================================================================  
   
-const getEmployee = async (e) => {
-  // e = nip , bila kosong = semua
-  await ctxspin.setSpinner(true);
-  const params = {
-    nip: e,
-  }
-  await axios({
-    method: "get",
-    url: get_employee,
-    params: params,
-    responseType: "json",
-  })
-    .then((res) => {
-      res = res.data;
-      if(res.error.status){
-        alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].datanotfound)
-      }
-      else{
-        setEmployeeList(res.data);
-      }
-    })
-    .catch((err) => {
-      window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-    });
-  ctxspin.setSpinner(false);
-  return false;
-};
-
   useEffect(() => {
     // ctxspin.setSpinner(true);
     getPosition(ctx.state.department.dpt_id,language);
@@ -307,6 +291,14 @@ const getEmployee = async (e) => {
 //=============================================================================  
 //                                   code for modal
 //=============================================================================  
+  const fieldsEmployee = [
+  { key: "nip", label: language.pageContent[language.pageLanguage].MS.Data.nip },
+  { key: "name", label: language.pageContent[language.pageLanguage].MS.Data.name },
+  { key: "status", label: "Status" },
+  { key: "tgl_masuk", label: language.pageContent[language.pageLanguage].MS.datein },
+  { key: "jab_name", label: language.pageContent[language.pageLanguage].MS.position },
+  ];
+
   const fieldsDirectSpv = [
     { key: "nip", label: language.pageContent[language.pageLanguage].MS.Data.nip },
     { key: "name", label: language.pageContent[language.pageLanguage].MS.Data.name },
@@ -323,6 +315,50 @@ const getEmployee = async (e) => {
     { key: "branch_name", label: language.pageContent[language.pageLanguage].name },
     { key: "branch_address", label: language.pageContent[language.pageLanguage].address },
   ];
+
+  const ModalEmployee = async (e,f) => {
+    // e = shadow atau bukan, f = nip (bila kosong = semua)
+    setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + 
+                  language.pageContent[language.pageLanguage].MS.employee);
+    setSelectedModal('employee' + e);
+    await ctxspin.setSpinner(true);
+    const params = {
+      nip: f,
+    }
+    await axios({
+      method: "get",
+      url: get_employee,
+      params: params,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].datanotfound)
+        }
+        else{          
+          if (res.data.length === 1) {
+            if (e === "shadow") {
+              setShadowIdText(res.data[0].nip);
+              setShadowNameText(res.data[0].name);
+            }
+            else {
+              setEmployeeIdText(res.data[0].nip);
+              setEmployeeNameText(res.data[0].name);
+            }
+          }
+          else {
+            setEmployeeList(res.data);
+            setModal(!modal);
+          }
+        }
+      })
+      .catch((err) => {
+        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+      });
+    ctxspin.setSpinner(false);
+    return false;
+  };
 
   const ModalDirectSpv = async (e,f,g) => {
     // e = strukturType , f = pt_id, g = dpt_id
@@ -383,13 +419,13 @@ const getEmployee = async (e) => {
           alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].datanotfound)
         }
         else{
-          setCityList(res.data);
           if (res.data.length === 1) {
             setCityIdText(res.data[0].city_id);
             setCityNameText(res.data[0].city_name);
             ModalBranch(res.data[0].city_id,res.data[0].city_name,"");
           }
           else {
+            setCityList(res.data);
             setModal(!modal);
           }
         }
@@ -443,6 +479,7 @@ const getEmployee = async (e) => {
   };
 
   const selectModal = (e) => {
+    console.log(selectedModal);
     setModal(!modal);
     switch(selectedModal){
       case "city":
@@ -453,9 +490,17 @@ const getEmployee = async (e) => {
         setBranchIdText(e.branch_id);
         setBranchNameText(e.branch_name);
         break;
-      default: 
+      case "directspv":
         setDirectSpvIdText(e.nip);
         setDirectSpvNameText(e.name);
+        break;
+      case "employeemain":
+        setEmployeeIdText(e.nip);
+        setEmployeeNameText(e.name);
+        break;
+      default:
+        setShadowIdText(e.nip);
+        setShadowNameText(e.name);
     }
   };
 
@@ -600,9 +645,9 @@ const getEmployee = async (e) => {
                       size="sm"
                       placeholder=""
                       value={employeeIdText}
-                      onKeyUp={(e) => handleEmployeeKeyUp(e)}
-                      onChange={(e) => handleEmployeeChange(e.target.value)}
-                      onBlur={(e) => handlingEmployeeBlur(e.target.value)}
+                      onKeyUp={(f) => handleEmployeeKeyUp("main",f)}
+                      onChange={(f) => handleEmployeeChange("main",f.target.value)}
+                      onBlur={(f) => handlingEmployeeBlur("main",f.target.value)}
                       disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy}
                     />
                   </CCol>
@@ -621,7 +666,7 @@ const getEmployee = async (e) => {
                       color="light"
                       block
                       size="sm"
-                      //onClick={btnRefreshClick}
+                      onClick={(e) => ModalEmployee("main","")}
                       disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy}
                     >
                       ...
@@ -719,6 +764,9 @@ const getEmployee = async (e) => {
                       size="sm"
                       placeholder=""
                       value={shadowIdText}
+                      onKeyUp={(f) => handleEmployeeKeyUp("shadow",f)}
+                      onChange={(f) => handleEmployeeChange("shadow",f.target.value)}
+                      onBlur={(f) => handlingEmployeeBlur("shadow",f.target.value)}
                       disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
                     />
                   </CCol>
@@ -736,7 +784,7 @@ const getEmployee = async (e) => {
                       color="light"
                       block
                       size="sm"
-                      //onClick={btnRefreshClick}
+                      onClick={(e) => ModalEmployee("shadow","")}
                       disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
                     >
                       ...
@@ -959,8 +1007,8 @@ const getEmployee = async (e) => {
         show={modal}
         onClose={closeModal}
         title={titleModal}
-        fields={selectedModal === 'city' ? fieldsCity : (selectedModal === 'branch' ? fieldsBranch : fieldsDirectSpv)}
-        items={selectedModal === 'city' ? cityList : (selectedModal === 'branch' ? branchList : directSpvList)}
+        fields={selectedModal === 'city' ? fieldsCity : (selectedModal === 'branch' ? fieldsBranch : (selectedModal === 'directspv' ? fieldsDirectSpv : fieldsEmployee))}
+        items={selectedModal === 'city' ? cityList : (selectedModal === 'branch' ? branchList : (selectedModal === 'directspv' ? directSpvList : employeeList))}
         getRowData={(e) => selectModal(e)}
       />
     </>
