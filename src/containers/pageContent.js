@@ -77,8 +77,8 @@ const pageContent = {
                   "Pilih data terlebih dahulu !",
         },
         Tooltip: {
-          inputByText: "tekan Enter untuk menampilkan daftar data ( sesuai isi, bila kosong semua data tampil )",
-          input: "tekan Enter untuk menampilkan daftar data",
+          modalByText: "tekan Enter untuk menampilkan daftar data ( sesuai isi, bila kosong semua data tampil )",
+          modal: "tekan Enter untuk menampilkan daftar data",
         },
         Data:{
           nip: "NIP",
@@ -171,8 +171,8 @@ const pageContent = {
                   "Select the data first !",
         },
         Tooltip: {
-          inputByText: "press Enter to show data list ( depend on text, empty text to show all data )",
-          input: "press Enter to show data list",
+          modalByText: "press Enter to show data list ( depend on text, empty text to show all data )",
+          modal: "press Enter to show data list",
         },
         Data:{
           nip: "NIP",

@@ -58,10 +58,7 @@ const FormStruktur = () => {
     }     
     setDummyYN(e);
     setEmployeeIdText("");
-    setEmployeeNameText("");
-    if (e === 'Y') {
-      setEmployeeNameText(positionNameText === "" ? "" : "(VACANT) " + positionNameText);
-    }
+    setEmployeeNameText(positionNameText === "" ? "" : "(VACANT) " + positionNameText);
     setDateInText("");
   };
 
@@ -73,7 +70,12 @@ const FormStruktur = () => {
     }
     else {
       setEmployeeIdText(f);
-      setEmployeeNameText('');
+      if (f.substring(0,1) === 'V' || f === '') {
+        setEmployeeNameText(positionNameText === "" ? "" : "(VACANT) " + positionNameText);
+      }
+      else {
+        setEmployeeNameText('');
+      }
     }
   }  
   const handleEmployeeKeyUp = async (e,f) => {
@@ -107,7 +109,7 @@ const FormStruktur = () => {
       return;
     }
     setPositionIdText(positionList.find(arrlist => arrlist.pos_name === e));
-    if (dummyYN === 'Y') {
+    if (employeeIdText.substring(0,1) === 'V' || employeeIdText === '') {
       setEmployeeNameText("(VACANT) " + e);
     }
   };
@@ -640,7 +642,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pr-0" md={2}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.input}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modalByText}
                       placement="top"
                     >
                       <CInput
@@ -764,7 +766,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pr-0" md={2}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.input}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modalByText}
                       placement="top"
                     >
                       <CInput
@@ -871,7 +873,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.inputByText}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modalByText}
                       placement="top"
                     >
                     <CInput
@@ -913,7 +915,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.input}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modal}
                       placement="top"
                     >
                       <CInput
