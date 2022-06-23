@@ -51,6 +51,11 @@ const pageContent = {
       updateBy: "User Ubah",
       updateDate: "Tgl. Ubah",
       for: "untuk",
+      connectionErr: "Koneksi Internet/Jaringan bermasalah, urutan solusi: \n" +
+                     "1. cek koneksi internet di komputer anda \n" +
+                     "2. coba kembali beberapa saat lagi \n" +
+                     "3. coba refresh halaman \n" +
+                     "4. hubungi DBA untuk pengecekan ! \n",
       MS:{
         structuretype: "Jenis Struktur",
         structurecode: "Kode Struktur",
@@ -59,6 +64,7 @@ const pageContent = {
         period: "Periode",
         dummy: "Dummy",
         dummyshadow: "Butuh Shadow",
+        vaccant: "Vaccant",
         employee: "Karyawan",
         employeeshadow: "Karyawan Shadow",
         position: "Jabatan",
@@ -145,6 +151,11 @@ const pageContent = {
       updateBy: "User Update",
       updateDate: "Update Date",
       for: "for",
+      connectionErr: "Internet/Network connection Error, solution step: \n" +
+                     "1. cek your internet connection \n" +
+                     "2. try again in a few more momments \n" +
+                     "3. try to refresh the page \n" +
+                     "4. contact DBA for troubleshouting \n",
       MS:{
         structuretype: "Structure Type",
         structurecode: "Structure Code",
@@ -153,6 +164,7 @@ const pageContent = {
         period: "Period",
         dummy: "Dummy",
         dummyshadow: "Need Shadow",
+        vaccant: "Vaccant",
         employee: "Employee",
         employeeshadow: "Shadow Employee",
         position: "Position",

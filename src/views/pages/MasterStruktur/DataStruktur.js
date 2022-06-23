@@ -15,7 +15,7 @@ import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
 import LanguageContext from "containers/languageContext";
 import DataTable from "reusable/DataTable";
-import { get_departments, get_struktur } from "./MasterStrukturLink";
+import { get_departments, get_struktur, get_position } from "./MasterStrukturLink";
 import { GlbFormatDate } from "reusable/Helper";
 
 const DataStruktur = () => {
@@ -31,26 +31,27 @@ const DataStruktur = () => {
   const [departmentList, setDepartmentList] = useState([]);
 
   const handleStructureTypeChange = async (e) => {
-    ctx.dispacth.setStrukturList([]);
-    ctx.dispacth.setStruktur({});
+    ctx.dispatch.setStrukturList([]);
+    ctx.dispatch.setStruktur({});
     if (e === "" || e === undefined ) {
       return;
     }
-    ctx.dispacth.setStructureType(structureTypeList[e]);
+    ctx.dispatch.setStructureType(structureTypeList[e]);
   };
 
   const handleDeptChange = async (e) => {
-    ctx.dispacth.setStrukturList([]);
-    ctx.dispacth.setStruktur({});
+    ctx.dispatch.setStrukturList([]);
+    ctx.dispatch.setStruktur({});
     if (e === "" || e === undefined ) {
       return;
     }
-    ctx.dispacth.setDepartment(departmentList[e]);
+    ctx.dispatch.setDepartment(departmentList[e]);
   };
 
-  const btnRefreshClick = () => {
-    ctx.dispacth.setStrukturList([]);
-    ctx.dispacth.setStruktur({});
+  const btnRefreshClick = async () => {
+    await ctx.dispatch.setStrukturList([]);
+    await ctx.dispatch.setStruktur({});
+    await ctx.dispatch.setPositionList([]);
     if (ctx.state.structureType.label === "" || ctx.state.department.dpt_id === "" || ctx.state.structureType.label === undefined || ctx.state.department.dpt_id === undefined) {
       if (ctx.state.structureType.label === "" || ctx.state.structureType.label === undefined ) {
         alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].datanotfound);
@@ -62,17 +63,19 @@ const DataStruktur = () => {
       }
     }
     else {
-      getStrukturList(ctx.state.structureType.value,1,ctx.state.department.dpt_id);
+      await ctxspin.setSpinner(true);
+      await getStrukturList(ctx.state.structureType.value,1,ctx.state.department.dpt_id);
+      await getPositionList(ctx.state.department.dpt_id);
+      await ctxspin.setSpinner(false);
     }
   };
 
   useEffect(() => {
-    getDepartments();
-  },[]);
+    getDepartments(language);
+  },[language]);
   
-  const getDepartments = async () => {
+  const getDepartments = async (language) => {
     // if (departmentList.length !== 0) return 
-    await setDepartmentList([]);
     // await ctxspin.setSpinner(true);
     await axios({
       method: "get",
@@ -82,16 +85,14 @@ const DataStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          //alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
-          alert('Data not found !')
+          alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound)
         }
         else{
           setDepartmentList(res.data);
         }
       })
       .catch((err) => {
-        //window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-        window.alert(err);
+        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
       });
     // ctxspin.setSpinner(false);
     return false;
@@ -99,8 +100,7 @@ const DataStruktur = () => {
 
   const getStrukturList = async (e,f,g) => {
     // e = strukturType , f = pt_id, g = dpt_id
-    await ctx.dispacth.setStrukturList([]);
-    await ctxspin.setSpinner(true);
+    //await ctxspin.setSpinner(true);
     let url = get_struktur(e);
     //url = url + '/' + h;
     const params = {
@@ -123,18 +123,40 @@ const DataStruktur = () => {
             obj.date_in = ( obj.date_in === null ? null : obj.date_in.split(' ')[0] );
             obj.date_out = ( obj.date_out === null ? null : obj.date_out.split(' ')[0] );
           }
-          ctx.dispacth.setStrukturList(res.data);
+          ctx.dispatch.setStrukturList(res.data);
         }
       })
       .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
       });
-    ctxspin.setSpinner(false);
-    return false;
+    //ctxspin.setSpinner(false);
   };
   
   const getStruktur = (e) => {
-    ctx.dispacth.setStruktur(e);
+    ctx.dispatch.setStruktur(e);
+  };
+
+  const getPositionList = async (e) => {
+    // e = dpt_id
+    //await ctxspin.setSpinner(true);
+    await axios({
+      method: "get",
+      url: get_position + '/' + e,
+      responseType: "json",
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
+        }
+        else{
+          ctx.dispatch.setPositionList(res.data);
+        }
+      })
+      .catch((err) => {
+        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+      });
+    //ctxspin.setSpinner(false);
   };
 
   const fields = [
@@ -163,7 +185,7 @@ const DataStruktur = () => {
                       id="struct-type"
                       size="sm"
                       onChange={(e) => handleStructureTypeChange(e.target.value)}
-                      disabled={ctx.state.isEdit}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                     >
                       <option value={""}></option>
                       {structureTypeList.map((option, idx) => (
@@ -186,8 +208,7 @@ const DataStruktur = () => {
                       size="sm"
                       placeholder="" 
                       defaultValue = {date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2)}
-                      //onChange={(e) => handleMonthChange(e.target.value)}
-                        disabled={ctx.state.isEdit}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                       />
                   </CCol>
                 </CRow>
@@ -200,7 +221,7 @@ const DataStruktur = () => {
                       id="divisi"
                       size="sm"
                       onChange={(e) => handleDeptChange(e.target.value)}
-                      disabled={ctx.state.isEdit}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                     >
                       <option value={""}></option>
                       {departmentList.map((option, idx) => (
@@ -221,7 +242,7 @@ const DataStruktur = () => {
                       block
                       size="sm"
                       onClick={btnRefreshClick}
-                      disabled={ctx.state.isEdit}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                     >
                       {language.pageContent[language.pageLanguage].refresh}
                     </CButton>
@@ -244,7 +265,6 @@ const DataStruktur = () => {
               }}
               size="sm"
               onRowClick={(e) => getStruktur(e)}
-              //disabled={ctx.state.isEdit} tidak bisa pakai cara ini 
             />
             {/* </CRow>  */}
 
@@ -255,8 +275,7 @@ const DataStruktur = () => {
                   className="mb-0"
                   block
                   size="sm"
-                  //onClick={btnCancelClick}
-                  disabled={ctx.state.isEdit}
+                  disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                 >
                   {language.pageContent[language.pageLanguage].history}
                 </CButton>
@@ -267,8 +286,7 @@ const DataStruktur = () => {
                   className="mb-0"
                   block
                   size="sm"
-                  //onClick={btnCancelClick}
-                  disabled={ctx.state.isEdit}
+                  disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                 >
                   {language.pageContent[language.pageLanguage].print}
                 </CButton>

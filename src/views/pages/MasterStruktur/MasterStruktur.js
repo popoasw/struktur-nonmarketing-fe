@@ -15,7 +15,9 @@ const MasterStruktur = () => {
   const [department, setDepartment] = useState({});
   const [strukturList, setStrukturList] = useState([]);
   const [struktur, setStruktur] = useState({});
-  const [isEdit, setIsEdit] = useState(false);
+  const [positionList, setPositionList] = useState([]);
+  const [isAdd, setIsAdd] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const state = {
     sidebarShow,
@@ -23,15 +25,19 @@ const MasterStruktur = () => {
     department,
     strukturList,
     struktur,
-    isEdit,
+    positionList,
+    isAdd,
+    isUpdate,
   };  
 
-  const dispacth = {
+  const dispatch = {
     setStructureType,
     setDepartment,
     setStrukturList,
     setStruktur,
-    setIsEdit,
+    setPositionList,
+    setIsAdd,
+    setIsUpdate,
   };
 
   return (
@@ -39,7 +45,7 @@ const MasterStruktur = () => {
       <Provider
         value={{
           state: state,
-          dispacth: dispacth,
+          dispatch: dispatch,
         }}
       >
           <HeaderStruktur />

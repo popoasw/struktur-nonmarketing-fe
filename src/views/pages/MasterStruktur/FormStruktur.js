@@ -1,38 +1,44 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  CContainer,  CCard,   CCardBody,  CRow,     CCol, 
-  CInput,      CLabel,  CButton,    CSelect,  CTooltip,
+import { 
+  CContainer,
+  CCard,
+  CCardBody,
+   CRow,
+   CCol,
+   CInput,
+   CLabel,
+   CButton,
+   CSelect,
+   CTooltip,
 } from "@coreui/react";
 import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
-import { get_struktur, get_employee, get_position, get_city, get_branch } from "./MasterStrukturLink";
+import { get_struktur, get_employee, get_city, get_branch } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
   let language = React.useContext(LanguageContext);
   let ctx = React.useContext(Context);
   let ctxspin = React.useContext(ContextSpinner);
   const [modal, setModal] = useState(false);
-  const logicList = [{label:'Yes',value:'Y'},
-                     {label:'No',value:'N'},];
+  const logicList = [{label:'Yes',value:'Y',logic:true},
+                     {label:'No',value:'N',logic:false}];
   const [titleModal, setTitleModal] = useState("");
   const [selectedModal, setSelectedModal] = useState("");
-  const [IsBlur, setIsBlur] = useState(false);  
+  const [IsBlur, setIsBlur] = useState(false);
 
   const [structureCodeText, setStructureCodeText] = useState("");
   const [dummyYN,setDummyYN] = useState("Y");
   const [IsDummy, setIsDummy] = useState(true);
+  const [vaccantYN,setVaccantYN] = useState(true);
+  const [IsVaccant,setIsVaccant] = useState(true);
   const [employeeList, setEmployeeList] = useState([]);
   const [employeeIdText, setEmployeeIdText] = useState("");
   const [employeeNameText, setEmployeeNameText] = useState("");
-  const [positionList, setPositionList] = useState([]);
   const [positionIdText, setPositionIdText] = useState(0);
   const [positionNameText, setPositionNameText] = useState("");
-  //const [positionAdsList, setPositionAdsList] = useState([]);
-  //const [positionIdAdsText, setPositionIdAdsText] = useState(0);
-  //const [positionNameAdsText, setPositionNameAdsText] = useState("");
   const [dateInText, setDateInText] = useState("");
   const [dummyShadowYN,setDummyShadowYN] = useState("N");
   const [IsDummyShadow, setIsDummyShadow] = useState(false);
@@ -49,16 +55,31 @@ const FormStruktur = () => {
   const [branchIdText, setBranchIdText] = useState("");
   const [branchNameText, setBranchNameText] = useState("");
   
-  const handleDummy = (e) => {
+  const handleDummy = async (e) => {
     if (e === 'Y') {
       setIsDummy(true);
+      setVaccantYN(e);
+      handleVaccant(e);
     } 
     else {
       setIsDummy(false);
     }     
     setDummyYN(e);
+    // setEmployeeIdText("");
+    // setEmployeeNameText("");
+    // setDateInText("");
+  };
+
+  const handleVaccant = (e) => {
+    if (e === 'Y') {
+      setIsVaccant(true);
+    } 
+    else {
+      setIsVaccant(false);
+    }     
+    setVaccantYN(e);
     setEmployeeIdText("");
-    setEmployeeNameText(positionNameText === "" ? "" : "(VACANT) " + positionNameText);
+    setEmployeeNameText("");
     setDateInText("");
   };
 
@@ -70,12 +91,7 @@ const FormStruktur = () => {
     }
     else {
       setEmployeeIdText(f);
-      if (f.substring(0,1) === 'V' || f === '') {
-        setEmployeeNameText(positionNameText === "" ? "" : "(VACANT) " + positionNameText);
-      }
-      else {
-        setEmployeeNameText('');
-      }
+      setEmployeeNameText('');
     }
   }  
   const handleEmployeeKeyUp = async (e,f) => {
@@ -85,17 +101,19 @@ const FormStruktur = () => {
       setIsBlur(false);
     }
   }
-  const handlingEmployeeBlur = async (e,f) => {
-    if (cityIdText !== '' && IsBlur === true) {
-      if (e === "shadow") {
+  const handleEmployeeBlur = async (e,f) => {
+    if (IsBlur === true) {
+      if (e === "shadow" && shadowIdText !== "") {
         setShadowIdText(f);
         setShadowNameText('');
       }
-      else  {
+      if (e === "main" && employeeIdText !== "") {
         setEmployeeIdText(f);
         setEmployeeNameText('');
       }
-      await ModalEmployee(e,f);
+      if (shadowIdText !== "" || employeeIdText !== "") {
+        await ModalEmployee(e,f);
+      }
       setIsBlur(false);
     }
   };
@@ -105,26 +123,11 @@ const FormStruktur = () => {
       return;
     }
     setPositionNameText(e);
-    if (positionList.length === 0 || positionList === undefined) {
+    if (ctx.state.positionList.length === 0 || ctx.state.positionList === undefined) {
       return;
     }
-    setPositionIdText(positionList.find(arrlist => arrlist.pos_name === e));
-    if (employeeIdText.substring(0,1) === 'V' || employeeIdText === '') {
-      setEmployeeNameText("(VACANT) " + e);
-    }
+    setPositionIdText(ctx.state.positionList.find(arrlist => arrlist.pos_name === e));
   };
-  
-  // handle positionAds dihilangkan dahulu, karena belum jelas fungsinya
-  // const handlePositionAds = (e) => {
-  //   if (e === "" || e === undefined ) {
-  //     return;
-  //   }
-  //   setPositionNameAdsText(e);
-  //   if (positionAdsList.length === 0 || positionAdsList === undefined) {
-  //     return;
-  //   }
-  //   setPositionIdAdsText(positionAdsList.find(arrlist => arrlist.iklan_name === e));
-  // };
     
   const handleDateChange = (e) => {
     setDateInText(e);
@@ -148,9 +151,25 @@ const FormStruktur = () => {
   };
 
   const handleDirectSpvChange = (e) => {
+    setIsBlur(true);
     setDirectSpvIdText(e);
     setDirectSpvNameText('');
   }
+  const handleDirectSpvKeyUp = async (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      await ModalDirectSpv();
+      setIsBlur(false);
+    }
+  }
+  const handleDirectSpvBlur = async (e) => {
+    if (directSpvIdText !== "" && IsBlur === true) {
+      setDirectSpvIdText(e);
+      setDirectSpvNameText('');
+      await ModalDirectSpv(e);
+      setIsBlur(false);
+    }
+  };
 
   const handleCityChange = (e) => {
     setBranchIdText('');
@@ -181,9 +200,10 @@ const FormStruktur = () => {
       alert(language.pageContent[language.pageLanguage].MS.Error.Add);
       return;
     }
+    await ctx.dispatch.setIsAdd(true);
     clearFormInput();
-    await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
     handleDummy('Y');
+    handleVaccant('Y');
     handleDummyShadow('N');
   };
 
@@ -192,8 +212,9 @@ const FormStruktur = () => {
       alert(language.pageContent[language.pageLanguage].MS.Error.Update);
       return;
     }
-    await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
+    await ctx.dispatch.setIsUpdate(true);
     handleDummy(dummyYN);
+    handleVaccant(vaccantYN);
     handleDummyShadow(dummyShadowYN);
   };  
 
@@ -202,92 +223,14 @@ const FormStruktur = () => {
       alert(language.pageContent[language.pageLanguage].MS.errorUpdate);
       return;
     }
-    await ctx.dispacth.setIsEdit(!ctx.state.isEdit);
+    await ctx.dispatch.setIsEdit(ctx.state.isAdd !== ctx.state.isUpdate ? true : false);
   }; 
 
   const btnCancelClick = () => {
-    ctx.dispacth.setIsEdit(!ctx.state.isEdit);
+    ctx.dispatch.setIsAdd(false);
+    ctx.dispatch.setIsUpdate(false);
     handleDummy('Y');
     handleDummyShadow('Y');
-  };
-  
-//=============================================================================  
-//                                   code for GET
-//=============================================================================  
-  
-  useEffect(() => {
-    // ctxspin.setSpinner(true);
-    getPosition(ctx.state.department.dpt_id,language);
-    // ctxspin.setSpinner(false);
-  },[ctxspin,language,ctx.state.department.dpt_id]);
-
-  // getPositionAds hilangkan dahulu karena masih belum jelas fungsinya
-  // useEffect(() => {
-  //   // ctxspin.setSpinner(true);
-  //   getPositionAds(ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id,language)
-  //   // ctxspin.setSpinner(false);
-  // },[ctxspin,language,ctx.state.struktur.company_id,positionIdText,ctx.state.department.dpt_id]);
-  // const getPositionAds = async (e,f,g,language) => {
-  //   // e = pt_id , f = jab_id, g = dpt_id
-  //   if(e === undefined || f === undefined || g === undefined || e === "" || f === "" || g === "") return;
-  //   setPositionAdsList([]);
-  //   // await ctxspin.setSpinner(true);
-  //   let url = get_positionAds;
-  //   //url = url + '/' + h;
-  //   const params = {
-  //     pt_id: e,
-  //     jab_id: f,
-  //     dpt_id: g,
-  //   }
-  //   await axios({
-  //     method: "get",
-  //     url: url,
-  //     params: params,
-  //     responseType: "json",
-  //   })
-  //     .then((res) => {
-  //       res = res.data;
-  //       if(res.error.status){
-  //         alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
-  //         //alert('Data PositionAds not found !')
-  //       }
-  //       else{
-  //         setPositionAdsList(res.data);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-  //       //window.alert(err);
-  //     });
-  //   // ctxspin.setSpinner(false);
-  //   return false;
-  // };
-
-  const getPosition = async (e,language) => {
-    // e = dpt_id
-    setPositionList([]);
-    // await ctxspin.setSpinner(true);
-    await axios({
-      method: "get",
-      url: get_position + '/' + e,
-      responseType: "json",
-    })
-      .then((res) => {
-        res = res.data;
-        if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].datanotfound)
-          //alert('Data not found !')
-        }
-        else{
-          setPositionList(res.data);
-        }
-      })
-      .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
-        //window.alert(err);
-      });
-    // ctxspin.setSpinner(false);
-    return false;
   };
 
 //=============================================================================  
@@ -356,23 +299,23 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
       });
     ctxspin.setSpinner(false);
     return false;
   };
 
-  const ModalDirectSpv = async (e,f,g) => {
+  const ModalDirectSpv = async () => {
     // e = strukturType , f = pt_id, g = dpt_id
     setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + 
                   language.pageContent[language.pageLanguage].MS.directspv);
     setSelectedModal('directspv');
     await ctxspin.setSpinner(true);
-    let url = get_struktur(e - 1);
+    let url = get_struktur(ctx.state.structureType.value - 1);
     //url = url + '/' + h;
     const params = {
-      pt_id: f,
-      dpt_id: g,
+      pt_id: "1",
+      dpt_id: ctx.state.department.dpt_id,
     }
     await axios({
       method: "get",
@@ -395,7 +338,7 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
       });
     ctxspin.setSpinner(false);
     return false;
@@ -433,7 +376,7 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
       });
     ctxspin.setSpinner(false);
     return false;
@@ -474,14 +417,13 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert("Data " + language.pageContent[language.pageLanguage].datanotfound + "(" + err + ")");
+        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
       });
     ctxspin.setSpinner(false);
     return false;
   };
 
   const selectModal = (e) => {
-    console.log(selectedModal);
     setModal(!modal);
     switch(selectedModal){
       case "city":
@@ -513,9 +455,10 @@ const FormStruktur = () => {
 //=============================================================================  
 
   const setFormInput = () => {
-    if(ctx.state.isEdit === false){
+    if(ctx.state.isAdd === ctx.state.isUpdate){
       setStructureCodeText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
       setDummyYN(ctx.state.struktur.dummy === null ? "" : ctx.state.struktur.dummy);
+      setVaccantYN(ctx.state.struktur.nip === null ? "" : (ctx.state.struktur.nip.substring(0,1).toLowerCase() === 'v' ? 'Y' : 'N'));
       setEmployeeIdText(ctx.state.struktur.nip === null ? "" : ctx.state.struktur.nip);
       setEmployeeNameText(ctx.state.struktur.name === null ? "" : ctx.state.struktur.name);
       setPositionIdText(ctx.state.struktur.position_id === null ? "" : ctx.state.struktur.position_id);
@@ -532,12 +475,18 @@ const FormStruktur = () => {
       setBranchIdText(ctx.state.struktur.branch_id === null ? "" : ctx.state.struktur.branch_id);
       setBranchNameText(ctx.state.struktur.branch_name === null ? "" : ctx.state.struktur.branch_name);
     }
+    if ((ctx.state.isUpdate === true && ctx.state.struktur.nip.substring(0,1).toUpperCase() === 'V' && vaccantYN === 'Y') || (ctx.state.isUpdate === true && ctx.state.struktur.nip.substring(0,1).toUpperCase() !== 'V' && vaccantYN === 'N') ){
+      setEmployeeIdText(ctx.state.struktur.nip === null ? "" : ctx.state.struktur.nip);
+      setEmployeeNameText(ctx.state.struktur.name === null ? "" : ctx.state.struktur.name);
+      setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
+    }
   };
 
   const clearFormInput = () => {
-    if(ctx.state.isEdit === false){
+    if(ctx.state.isAdd === ctx.state.isUpdate){
       setStructureCodeText('');
       setDummyYN('');
+      setVaccantYN('');
       setEmployeeIdText('');
       setEmployeeNameText('');
       setPositionIdText('');
@@ -626,7 +575,27 @@ const FormStruktur = () => {
                       size="sm"
                       value={dummyYN}
                       onChange={(e) => handleDummy(e.target.value)}
-                      disabled={!ctx.state.isEdit}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
+                    >
+                      {logicList.map((option, idx) => (
+                        <option key={idx} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </CSelect>
+                  </CCol>
+                </CRow>
+                <CRow className="mb-1" >
+                  <CCol className="pr-0" md={3}>
+                    <CLabel htmlFor="vaccant">{language.pageContent[language.pageLanguage].MS.vaccant}</CLabel>
+                  </CCol>
+                  <CCol className="d-flex" md={ctx.state.sidebarShow === 'responsive' ? 3 : 2}>
+                    <CSelect
+                      id="vaccant"
+                      size="sm"
+                      value={vaccantYN}
+                      onChange={(e) => handleVaccant(e.target.value)}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : IsDummy}
                     >
                       {logicList.map((option, idx) => (
                         <option key={idx} value={option.value}>
@@ -653,8 +622,8 @@ const FormStruktur = () => {
                         value={employeeIdText}
                         onKeyUp={(f) => handleEmployeeKeyUp("main",f)}
                         onChange={(f) => handleEmployeeChange("main",f.target.value)}
-                        onBlur={(f) => handlingEmployeeBlur("main",f.target.value)}
-                        disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy}
+                        onBlur={(f) => handleEmployeeBlur("main",f.target.value)}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : IsVaccant}
                       />
                     </CTooltip>
                   </CCol>
@@ -674,7 +643,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       onClick={(e) => ModalEmployee("main","")}
-                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : IsVaccant}
                     >
                       ...
                     </CButton>
@@ -690,38 +659,15 @@ const FormStruktur = () => {
                       size="sm"
                       value={positionNameText}
                       onChange={(e) => handlePosition(e.target.value)}
-                      disabled={!ctx.state.isEdit}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     >
                       <option value={""}></option>
-                      {positionList.map((option, idx) => (
+                      {ctx.state.positionList.map((option, idx) => (
                         <option key={idx} value={option.pos_name}>{option.pos_name}</option>
                       ))}
                     </CSelect>
                   </CCol>
                 </CRow>
-
-                {/* positionAds , sementara hilangkan dahulu, belum jelas fungsinya
-                <CRow className="mb-1" >
-                  <CCol className="pr-0" md={3}>
-                    <CLabel htmlFor="positionAds">{language.pageContent[language.pageLanguage].MS.positionAds}</CLabel>
-                  </CCol>
-                  <CCol className="d-flex" md={5}>
-                    <CSelect
-                      id="positionAds"
-                      size="sm"
-                      value={positionNameAdsText}
-                      onChange={(e) => handlePositionAds(e.target.value)}
-                      disabled={!ctx.state.isEdit}
-                    >
-                      <option value={""}></option>
-                      {positionAdsList.map((option, idx) => (
-                        <option key={idx} value={option.iklan_name}>{option.iklan_name}</option>
-                      ))}
-                    </CSelect>
-                  </CCol>
-                </CRow>
-                 */}
-
                 <CRow className="mb-1" >
                   <CCol md="3">
                     <CLabel htmlFor="date-entry">{language.pageContent[language.pageLanguage].MS.dateentry}</CLabel>
@@ -735,7 +681,7 @@ const FormStruktur = () => {
                       value={dateInText}
                       placeholder=""
                       onChange={(e) => handleDateChange(e.target.value)}
-                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummy} 
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : IsDummy} 
                     />
                   </CCol>
                 </CRow>
@@ -750,7 +696,7 @@ const FormStruktur = () => {
                       size="sm"
                       value={dummyShadowYN}
                       onChange={(e) => handleDummyShadow(e.target.value)}
-                      disabled={!ctx.state.isEdit}
+                      disabled={!ctx.state.isUpdate}
                     >
                       {logicList.map((option, idx) => (
                         <option key={idx} value={option.value}>
@@ -777,8 +723,8 @@ const FormStruktur = () => {
                         value={shadowIdText}
                         onKeyUp={(f) => handleEmployeeKeyUp("shadow",f)}
                         onChange={(f) => handleEmployeeChange("shadow",f.target.value)}
-                        onBlur={(f) => handlingEmployeeBlur("shadow",f.target.value)}
-                        disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
+                        onBlur={(f) => handleEmployeeBlur("shadow",f.target.value)}
+                        disabled={ctx.state.isUpdate === false ? true : IsDummyShadow}
                       />
                     </CTooltip>  
                   </CCol>
@@ -797,7 +743,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       onClick={(e) => ModalEmployee("shadow","")}
-                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
+                      disabled={ctx.state.isUpdate === false ? true : IsDummyShadow}
                     >
                       ...
                     </CButton>
@@ -816,7 +762,7 @@ const FormStruktur = () => {
                       value={dateShadowInText}
                       placeholder=""
                       onChange={(e) => handleDateShadowChange(e.target.value)}
-                      disabled={ctx.state.isEdit === false ? !ctx.state.isEdit : IsDummyShadow}
+                      disabled={ctx.state.isUpdate === false ? true : IsDummyShadow}
                     />
                   </CCol>
                 </CRow>
@@ -826,20 +772,26 @@ const FormStruktur = () => {
                     <CLabel htmlFor="directspv">{language.pageContent[language.pageLanguage].MS.directspv}</CLabel>
                   </CCol>
                   <CCol className="pr-0" md={2}>
-                    <CInput
-                      type="text"
-                      id="directspv-kd"
-                      size="sm"
-                      value={directSpvIdText}
-                      placeholder=""
-                      onChange={(e) => handleDirectSpvChange(e.target.value)}
-                      disabled={!ctx.state.isEdit}
-                    />
+                    <CTooltip
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modalByText}
+                      placement="top"
+                    >
+                      <CInput
+                        type="text"
+                        id="directspv"
+                        size="sm"
+                        value={directSpvIdText}
+                        placeholder=""
+                        onKeyUp={(e) => handleDirectSpvKeyUp(e)}
+                        onChange={(e,f,g) => handleDirectSpvChange(e.target.value)}
+                        onBlur={(e,f,g) => handleDirectSpvBlur(e.target.value)}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
+                      />
+                    </CTooltip>
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CInput
                       type="text"
-                      id="directspv-nm"
                       size="sm"
                       value={directSpvNameText}
                       placeholder=""
@@ -851,8 +803,8 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      onClick={(e,f,g) => ModalDirectSpv(ctx.state.structureType.value,1,ctx.state.department.dpt_id)}
-                      disabled={!ctx.state.isEdit}
+                      onClick={() => ModalDirectSpv()}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     >
                       ...
                     </CButton>
@@ -884,7 +836,7 @@ const FormStruktur = () => {
                       placeholder=""
                       onKeyUp={(e) => handleCityKeyUp(e)}
                       onChange={(e) => handleCityChange(e.target.value)}
-                      disabled={!ctx.state.isEdit}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     />
                     </CTooltip>
                   </CCol>
@@ -894,7 +846,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       onClick={(e) => ModalCity("")}
-                      disabled={!ctx.state.isEdit}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     >
                       ...
                     </CButton>
@@ -926,7 +878,7 @@ const FormStruktur = () => {
                         placeholder=""
                         onKeyUp={(e) => handleBranchKeyUp(e)}
                         onChange={(e) => handleBranchChange(e.target.value)}
-                        disabled={!ctx.state.isEdit}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                       />
                       </CTooltip>
                     </CCol>
@@ -936,7 +888,7 @@ const FormStruktur = () => {
                       block
                       size="sm"
                       onClick={(e) => ModalBranch(cityIdText,cityNameText)}
-                      disabled={!ctx.state.isEdit}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     >
                       ...
                     </CButton>
@@ -955,7 +907,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         onClick={btnAddClick}
-                        disabled={ctx.state.isEdit}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                       >
                         {language.pageContent[language.pageLanguage].add}
                       </CButton>
@@ -967,7 +919,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         onClick={btnUpdateClick}
-                        disabled={ctx.state.isEdit}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                       >
                         {language.pageContent[language.pageLanguage].edit}
                       </CButton>
@@ -979,7 +931,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         //onClick={btnRefreshClick}
-                        disabled={!ctx.state.isEdit}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                       >
                         {language.pageContent[language.pageLanguage].save}
                       </CButton>
@@ -991,7 +943,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         onClick={btnCancelClick}
-                        disabled={!ctx.state.isEdit}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                       >
                         {language.pageContent[language.pageLanguage].cancel}
                       </CButton>
@@ -1003,7 +955,7 @@ const FormStruktur = () => {
                         block
                         size="sm"
                         onClick={btnDeleteClick}
-                        disabled={ctx.state.isEdit}
+                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
                       >
                         {language.pageContent[language.pageLanguage].delete}
                       </CButton>
