@@ -57,6 +57,7 @@ const pageContent = {
                      "3. coba refresh halaman \n" +
                      "4. hubungi DBA untuk pengecekan ! \n",
       MS:{
+        structure: "Struktur",
         structuretype: "Jenis Struktur",
         structurecode: "Kode Struktur",
         structurename: "Nama Struktur",
@@ -157,6 +158,7 @@ const pageContent = {
                      "3. try to refresh the page \n" +
                      "4. contact DBA for troubleshouting \n",
       MS:{
+        structure: "Structure",
         structuretype: "Structure Type",
         structurecode: "Structure Code",
         structurename: "Structure Name",

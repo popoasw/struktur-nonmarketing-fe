@@ -314,7 +314,7 @@ const FormStruktur = () => {
     let url = get_struktur(ctx.state.structureType.value - 1);
     //url = url + '/' + h;
     const params = {
-      pt_id: "1",
+      pt_id: ctx.state.company,
       dpt_id: ctx.state.department.dpt_id,
     }
     await axios({

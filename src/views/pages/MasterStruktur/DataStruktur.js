@@ -22,7 +22,6 @@ const DataStruktur = () => {
   let language = React.useContext(LanguageContext);
   let ctx = React.useContext(Context);
   let ctxspin = React.useContext(ContextSpinner);
-  const date = new Date();
   const structureTypeList = [{label:'NSM',value: 0},
                              {label:'Region',value: 1},
                              {label:'Area',value: 2},
@@ -38,6 +37,10 @@ const DataStruktur = () => {
     }
     ctx.dispatch.setStructureType(structureTypeList[e]);
   };
+
+  const handleChangePeriode = (e) => {
+    ctx.dispatch.setPeriodeList(e);
+  }
 
   const handleDeptChange = async (e) => {
     ctx.dispatch.setStrukturList([]);
@@ -64,7 +67,7 @@ const DataStruktur = () => {
     }
     else {
       await ctxspin.setSpinner(true);
-      await getStrukturList(ctx.state.structureType.value,1,ctx.state.department.dpt_id);
+      await getStrukturList();
       await getPositionList(ctx.state.department.dpt_id);
       await ctxspin.setSpinner(false);
     }
@@ -98,14 +101,14 @@ const DataStruktur = () => {
     return false;
   };
 
-  const getStrukturList = async (e,f,g) => {
-    // e = strukturType , f = pt_id, g = dpt_id
+  const getStrukturList = async () => {
     //await ctxspin.setSpinner(true);
-    let url = get_struktur(e);
+    let url = get_struktur(ctx.state.structureType.value);
     //url = url + '/' + h;
     const params = {
-      pt_id: f,
-      dpt_id: g,
+      periode: ctx.state.periode.replace("-",""),
+      pt_id: ctx.state.company,
+      dpt_id: ctx.state.department.dpt_id,
     }
     await axios({
       method: "get",
@@ -116,7 +119,10 @@ const DataStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          alert(language.pageContent[language.pageLanguage].MS.structure + " " + language.pageContent[language.pageLanguage].datanotfound)
+          alert(language.pageContent[language.pageLanguage].MS.structure + " " + 
+                ctx.state.periode.replace("-","") + " " + 
+                language.pageContent[language.pageLanguage].datanotfound +
+                res.error.msg)
         }
         else{
           for (const obj of res.data) {
@@ -207,9 +213,10 @@ const DataStruktur = () => {
                       name="period" 
                       size="sm"
                       placeholder="" 
-                      defaultValue = {date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2)}
-                        disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
-                      />
+                      defaultValue={ctx.state.periode}
+                      onChange={(e) => handleChangePeriode(e.target.value)}
+                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
+                    />
                   </CCol>
                 </CRow>
                 <CRow>

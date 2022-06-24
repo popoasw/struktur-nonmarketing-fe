@@ -11,6 +11,9 @@ const Provider = Context.Provider;
 const MasterStruktur = () => {
   const sidebarShow = useSelector((state) => state.sidebarShow);
 
+  const date = new Date();
+  const [periode, setPeriodeList] = useState(date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2));
+  const [company, setCompany] = useState("1");
   const [structureType, setStructureType] = useState({});
   const [department, setDepartment] = useState({});
   const [strukturList, setStrukturList] = useState([]);
@@ -20,6 +23,8 @@ const MasterStruktur = () => {
   const [isUpdate, setIsUpdate] = useState(false);
 
   const state = {
+    periode,
+    company,
     sidebarShow,
     structureType,
     department,
@@ -31,6 +36,8 @@ const MasterStruktur = () => {
   };  
 
   const dispatch = {
+    setPeriodeList,
+    setCompany,
     setStructureType,
     setDepartment,
     setStrukturList,
