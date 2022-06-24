@@ -28,6 +28,7 @@ const FormStruktur = () => {
   const [titleModal, setTitleModal] = useState("");
   const [selectedModal, setSelectedModal] = useState("");
   const [IsBlur, setIsBlur] = useState(false);
+  const [isShowRecent, setIsShowRecent] = useState(false);
 
   const [structureCodeText, setStructureCodeText] = useState("");
   const [dummyYN,setDummyYN] = useState("Y");
@@ -54,7 +55,7 @@ const FormStruktur = () => {
   const [branchList, setBranchList] = useState([]);
   const [branchIdText, setBranchIdText] = useState("");
   const [branchNameText, setBranchNameText] = useState("");
-  
+
   const handleDummy = async (e) => {
     if (e === 'Y') {
       setIsDummy(true);
@@ -81,6 +82,7 @@ const FormStruktur = () => {
     setEmployeeIdText("");
     setEmployeeNameText("");
     setDateInText("");
+    setIsShowRecent(true);
   };
 
   const handleEmployeeChange = (e,f) => {
@@ -172,6 +174,7 @@ const FormStruktur = () => {
   };
 
   const handleCityChange = (e) => {
+    setIsBlur(true);
     setBranchIdText('');
     setBranchNameText('');
     setCityIdText('');
@@ -181,8 +184,17 @@ const FormStruktur = () => {
     if (e.keyCode === 13) {
       e.preventDefault();
       await ModalCity(e.target.value);
+      setIsBlur(false);
     }
   }
+  const handleCityBlur = async (e) => {
+    if (cityIdText !== "" && IsBlur === true) {
+      setCityIdText(e);
+      setCityNameText('');
+      await ModalCity(e);
+      setIsBlur(false);
+    }
+  };
 
   const handleBranchChange = (e) => {
     setBranchIdText('');
@@ -195,12 +207,16 @@ const FormStruktur = () => {
     }
   }
   
+//=============================================================================  
+//                                  code for buttons
+//=============================================================================  
   const btnAddClick = async () => {
     if (ctx.state.strukturList.length === 0 || ctx.state.strukturList === undefined) {
       alert(language.pageContent[language.pageLanguage].MS.Error.Add);
       return;
     }
     await ctx.dispatch.setIsAdd(true);
+    await ctx.dispatch.setIsUpdate(false);
     clearFormInput();
     handleDummy('Y');
     handleVaccant('Y');
@@ -213,10 +229,151 @@ const FormStruktur = () => {
       return;
     }
     await ctx.dispatch.setIsUpdate(true);
+    await ctx.dispatch.setIsAdd(false);
     handleDummy(dummyYN);
     handleVaccant(vaccantYN);
     handleDummyShadow(dummyShadowYN);
-  };  
+  };
+
+  const btnSaveClick = async () => {
+    // validasi ketersediaan data
+      if (ctx.state.company === "" || ctx.state.company === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.company + " " + language.pageContent[language.pageLanguage].datanotfound); return;
+      }
+      if (ctx.state.structureType === "" || ctx.state.structureType === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      if (ctx.state.department === "" || ctx.state.department === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      // if (structureCodeText === "" || structureCodeText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.structurecode + " " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
+      if (dummyYN === "" || dummyYN === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.dummy + " " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      // bisa kosong bila add baru vacant
+      // if (employeeIdText === "" || employeeIdText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.employee + " ID " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
+      // if (employeeNameText === "" || employeeNameText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
+      if (positionIdText === "" || positionIdText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.position + " ID " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      if (positionNameText === "" || positionNameText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      if (dateInText === "" || dateInText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      if (dummyShadowYN === "" || dummyShadowYN === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.dummyshadow + " " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      // if (shadowIdText === "" || shadowIdText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.employeeshadow + "ID " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
+      // if (shadowNameText === "" || shadowNameText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
+      // if (dateShadowInText === "" || dateShadowInText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
+      //kalau nsm ga ada directnya
+      // if (directSpvIdText === "" || directSpvIdText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.directspv + " ID " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
+      // if (directSpvNameText === "" || directSpvNameText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.directspv + " " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
+      if (cityIdText === "" || cityIdText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.workcity + " ID " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      if (cityNameText === "" || cityNameText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      if (branchIdText === "" || branchIdText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.branch + " ID " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+      if (branchNameText === "" || branchNameText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].noempty); return;
+      }
+    // validasi komnsistensi data  
+      if (employeeIdText === shadowIdText) {
+        alert(language.pageContent[language.pageLanguage].MS.employee + " = " + 
+              language.pageContent[language.pageLanguage].MS.employeeshadow + " \n" + 
+              language.pageContent[language.pageLanguage].nosame); return;
+      }
+    // simpan data
+      await saveStructure();
+  }
+
+  const saveStructure = async () => {
+    await ctxspin.setSpinner(true);
+    const objStruktur = {
+      "company_id": ctx.state.company,
+      "company_name": null,
+      "department_id": ctx.state.department.dpt_id,
+      "department_name": ctx.state.department.dpt_name,
+      "code_group": structureCodeText,
+      "nip": employeeIdText,
+      "name": employeeNameText,
+      "position_id": positionIdText,
+      "position_name": positionNameText,
+      "date_in": dateInText,
+      "date_out": null,
+      "dummy": dummyYN,
+      "branch_id": branchIdText,
+      "branch_name": branchNameText,
+      "city_id": cityIdText,
+      "city_name": cityNameText,
+      "shadow_nip": shadowIdText,
+      "shadow_name": shadowNameText,
+      "shadow_in": dateShadowInText,
+      "shadow_out": null,
+      "shadow_dummy": dummyShadowYN,
+      "code_head": null,
+      "head_nip": directSpvIdText,
+      "head_name": directSpvNameText
+    };
+
+    let url = get_struktur(ctx.state.structureType.value);
+    //url = url + '/' + h;
+    const params = {
+      periode: ctx.state.periode.replace("-",""),
+      pt_id: ctx.state.company,
+      dpt_id: ctx.state.department.dpt_id,
+    }
+    await axios({
+      method: "post",
+      url: url,
+      params: params,
+      data: JSON.stringify(objStruktur),
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n" +
+                res.error.msg)
+        }
+        else{
+          alert(ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addsuccess : language.pageContent[language.pageLanguage].updatesuccess);
+          btnCancelClick();
+        }
+      })
+      .catch((err) => {
+        window.alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "(" + err + ")");
+      });
+    ctxspin.setSpinner(false);
+  };
+
+  const btnCancelClick = () => {
+    ctx.dispatch.setIsAdd(false);
+    ctx.dispatch.setIsUpdate(false);
+    handleDummy('Y');
+    handleDummyShadow('Y');
+  };
 
   const btnDeleteClick = async () => {
     if (Object.keys(ctx.state.struktur).length === 0 || Object.keys(ctx.state.struktur).length === undefined) {
@@ -224,13 +381,6 @@ const FormStruktur = () => {
       return;
     }
     await ctx.dispatch.setIsEdit(ctx.state.isAdd !== ctx.state.isUpdate ? true : false);
-  }; 
-
-  const btnCancelClick = () => {
-    ctx.dispatch.setIsAdd(false);
-    ctx.dispatch.setIsUpdate(false);
-    handleDummy('Y');
-    handleDummyShadow('Y');
   };
 
 //=============================================================================  
@@ -306,7 +456,6 @@ const FormStruktur = () => {
   };
 
   const ModalDirectSpv = async () => {
-    // e = strukturType , f = pt_id, g = dpt_id
     setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + 
                   language.pageContent[language.pageLanguage].MS.directspv);
     setSelectedModal('directspv');
@@ -314,6 +463,7 @@ const FormStruktur = () => {
     let url = get_struktur(ctx.state.structureType.value - 1);
     //url = url + '/' + h;
     const params = {
+      periode: ctx.state.periode.replace("-",""),
       pt_id: ctx.state.company,
       dpt_id: ctx.state.department.dpt_id,
     }
@@ -475,10 +625,11 @@ const FormStruktur = () => {
       setBranchIdText(ctx.state.struktur.branch_id === null ? "" : ctx.state.struktur.branch_id);
       setBranchNameText(ctx.state.struktur.branch_name === null ? "" : ctx.state.struktur.branch_name);
     }
-    if ((ctx.state.isUpdate === true && ctx.state.struktur.nip.substring(0,1).toUpperCase() === 'V' && vaccantYN === 'Y') || (ctx.state.isUpdate === true && ctx.state.struktur.nip.substring(0,1).toUpperCase() !== 'V' && vaccantYN === 'N') ){
+    if (ctx.state.isUpdate === true && isShowRecent === true && ((ctx.state.struktur.nip.substring(0,1).toUpperCase() === 'V' && vaccantYN === 'Y') || (ctx.state.struktur.nip.substring(0,1).toUpperCase() !== 'V' && vaccantYN === 'N'))){ 
       setEmployeeIdText(ctx.state.struktur.nip === null ? "" : ctx.state.struktur.nip);
       setEmployeeNameText(ctx.state.struktur.name === null ? "" : ctx.state.struktur.name);
       setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
+      setIsShowRecent(false);
     }
   };
 
@@ -836,6 +987,7 @@ const FormStruktur = () => {
                       placeholder=""
                       onKeyUp={(e) => handleCityKeyUp(e)}
                       onChange={(e) => handleCityChange(e.target.value)}
+                      onBlur={(e) => handleCityBlur(e.target.value)}
                       disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     />
                     </CTooltip>
@@ -930,7 +1082,7 @@ const FormStruktur = () => {
                         className="mt-3 mb-1"
                         block
                         size="sm"
-                        //onClick={btnRefreshClick}
+                        onClick={btnSaveClick}
                         disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                       >
                         {language.pageContent[language.pageLanguage].save}
