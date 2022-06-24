@@ -4,13 +4,13 @@ import {
   CContainer,
   CCard,
   CCardBody,
-   CRow,
-   CCol,
-   CInput,
-   CLabel,
-   CButton,
-   CSelect,
-   CTooltip,
+  CRow,
+  CCol,
+  CInput,
+  CLabel,
+  CButton,
+  CSelect,
+  CTooltip,
 } from "@coreui/react";
 import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
@@ -241,7 +241,8 @@ const FormStruktur = () => {
   const btnSaveClick = async () => {
     // validasi ketersediaan data
       if (ctx.state.company === "" || ctx.state.company === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.company + " " + language.pageContent[language.pageLanguage].datanotfound); return;
+        alert(language.pageContent[language.pageLanguage].MS.company + " " + language.pageContent[language.pageLanguage].datanotfound); 
+        return;
       }
       if (ctx.state.structureType === "" || ctx.state.structureType === undefined) {
         alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].noempty); return;
@@ -255,58 +256,79 @@ const FormStruktur = () => {
       if (dummyYN === "" || dummyYN === undefined) {
         alert(language.pageContent[language.pageLanguage].MS.dummy + " " + language.pageContent[language.pageLanguage].noempty); return;
       }
-      // bisa kosong bila add baru vacant
-      // if (employeeIdText === "" || employeeIdText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.employee + " ID " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
-      // if (employeeNameText === "" || employeeNameText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
+      if (vaccantYN === 'N') {
+        if (employeeIdText === "" || employeeIdText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.employee + " ID " + language.pageContent[language.pageLanguage].noempty);
+          document.getElementById("employee").focus(); return;
+        }
+        if (employeeNameText === "" || employeeNameText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].datanotfound);
+          document.getElementById("employee").focus(); return;
+        }
+      }
       if (positionIdText === "" || positionIdText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.position + " ID " + language.pageContent[language.pageLanguage].noempty); return;
+        alert(language.pageContent[language.pageLanguage].MS.position + " ID " + language.pageContent[language.pageLanguage].noempty); 
+        document.getElementById("position").focus(); return;
       }
       if (positionNameText === "" || positionNameText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].noempty); return;
+        alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("position").focus(); return;
       }
-      // if (dateInText === "" || dateInText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
+      if (vaccantYN === 'N') {
+        if (dateInText === "" || dateInText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].noempty);
+          document.getElementById("date-entry").focus(); return;
+        }
+      }
       if (dummyShadowYN === "" || dummyShadowYN === undefined) {
         alert(language.pageContent[language.pageLanguage].MS.dummyshadow + " " + language.pageContent[language.pageLanguage].noempty); return;
       }
-      // if (shadowIdText === "" || shadowIdText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.employeeshadow + "ID " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
-      // if (shadowNameText === "" || shadowNameText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
-      // if (dateShadowInText === "" || dateShadowInText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
-      //kalau nsm ga ada directnya
-      // if (directSpvIdText === "" || directSpvIdText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.directspv + " ID " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
-      // if (directSpvNameText === "" || directSpvNameText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.directspv + " " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
+      if (dummyShadowYN === "Y") {
+        if (shadowIdText === "" || shadowIdText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.employeeshadow + "ID " + language.pageContent[language.pageLanguage].noempty);
+          document.getElementById("employeeshadow").focus(); return;
+        }
+        if (shadowNameText === "" || shadowNameText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].datanotfound);
+          document.getElementById("employeeshadow").focus(); return;
+        }
+        if (dateShadowInText === "" || dateShadowInText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].noempty);
+          document.getElementById("date-entry-shd").focus(); return;
+        }
+      }
+      if (ctx.state.struktur.value !== 0) {
+        if (directSpvIdText === "" || directSpvIdText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.directspv + " ID " + language.pageContent[language.pageLanguage].noempty);
+          document.getElementById("directspv").focus(); return;
+        }
+        if (directSpvNameText === "" || directSpvNameText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.directspv + " " + language.pageContent[language.pageLanguage].datanotfound);
+          document.getElementById("directspv").focus(); return;
+        }
+      }
       if (cityIdText === "" || cityIdText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.workcity + " ID " + language.pageContent[language.pageLanguage].noempty); return;
+        alert(language.pageContent[language.pageLanguage].MS.workcity + " ID " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("workcity").focus(); return;
       }
       if (cityNameText === "" || cityNameText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].noempty); return;
+        alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("workcity").focus(); return;
       }
       if (branchIdText === "" || branchIdText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.branch + " ID " + language.pageContent[language.pageLanguage].noempty); return;
+        alert(language.pageContent[language.pageLanguage].MS.branch + " ID " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("branch").focus(); return;
       }
       if (branchNameText === "" || branchNameText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].noempty); return;
+        alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("branch").focus(); return;
       }
     // validasi konsistensi data
       if (employeeIdText === shadowIdText && vaccantYN !== 'Y') {
         alert(language.pageContent[language.pageLanguage].MS.employee + " = " + 
               language.pageContent[language.pageLanguage].MS.employeeshadow + " \n" + 
-              language.pageContent[language.pageLanguage].nosame); return;
+              language.pageContent[language.pageLanguage].nosame); 
+        document.getElementById("employee").focus(); return;
       }
     // simpan data
       await saveStructure();
@@ -315,19 +337,19 @@ const FormStruktur = () => {
   const saveStructure = async () => {
     await ctxspin.setSpinner(true);
     const objStruktur = {
-      "periode": ctx.state.periode.replace("-",""),
+      "periode": ctx.state.periode.replace("-","").toString(),
       "company_id": (ctx.state.company).toString(),
       "department_id": (ctx.state.department.dpt_id).toString(),
-      "code_group": structureCodeText,
-      "nip": employeeIdText,
-      "name": employeeNameText,
+      "code_group": structureCodeText.toString(),
+      "nip": employeeIdText.toString(),
+      "name": employeeNameText.toString(),
       "position_id": (positionIdText).toString(),
-      "position_name": positionNameText,
+      "position_name": positionNameText.toString(),
       "date_in": (dateInText === "" ? null : dateInText),
-      "dummy": dummyYN,
+      "dummy": dummyYN.toString(),
       "branch_id": (branchIdText).toString(),
       "city_id": (cityIdText).toString(),
-      "code_head": directSpvCodeText,
+      "code_head": directSpvCodeText.toString(),
     };
     console.log(JSON.stringify(objStruktur));
     let url = get_struktur(ctx.state.structureType.value);
@@ -758,6 +780,7 @@ const FormStruktur = () => {
                         id="employee"
                         size="sm"
                         placeholder=""
+                        maxlength="7"
                         value={employeeIdText}
                         onKeyUp={(f) => handleEmployeeKeyUp("main",f)}
                         onChange={(f) => handleEmployeeChange("main",f.target.value)}

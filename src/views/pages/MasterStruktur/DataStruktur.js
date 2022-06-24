@@ -33,6 +33,7 @@ const DataStruktur = () => {
     ctx.dispatch.setStrukturList([]);
     ctx.dispatch.setStruktur({});
     if (e === "" || e === undefined ) {
+      ctx.dispatch.setStructureType("");
       return;
     }
     ctx.dispatch.setStructureType(structureTypeList[e]);
@@ -44,8 +45,9 @@ const DataStruktur = () => {
 
   const handleDeptChange = async (e) => {
     ctx.dispatch.setStrukturList([]);
-    ctx.dispatch.setStruktur({});
+    ctx.dispatch.setStrukturList([]);
     if (e === "" || e === undefined ) {
+      ctx.dispatch.setDepartment('');
       return;
     }
     ctx.dispatch.setDepartment(departmentList[e]);
@@ -58,10 +60,12 @@ const DataStruktur = () => {
     if (ctx.state.structureType.label === "" || ctx.state.department.dpt_id === "" || ctx.state.structureType.label === undefined || ctx.state.department.dpt_id === undefined) {
       if (ctx.state.structureType.label === "" || ctx.state.structureType.label === undefined ) {
         alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].datanotfound);
+        document.getElementById("struct-type").focus();
         return;
       }
       if (ctx.state.department.dpt_name === "" || ctx.state.department.dpt_name === undefined) {
         alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].datanotfound);
+        document.getElementById("divisi").focus();
         return;
       }
     }
