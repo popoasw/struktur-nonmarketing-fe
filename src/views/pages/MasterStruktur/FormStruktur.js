@@ -47,6 +47,7 @@ const FormStruktur = () => {
   const [shadowNameText, setShadowNameText] = useState("");
   const [dateShadowInText, setDateShadowInText] = useState("");
   const [directSpvList, setDirectSpvList] = useState([]);
+  const [directSpvCodeText, setDirectSpvCodeText] = useState("");
   const [directSpvIdText, setDirectSpvIdText] = useState("");
   const [directSpvNameText, setDirectSpvNameText] = useState("");
   const [cityList, setCityList] = useState([]);
@@ -105,15 +106,15 @@ const FormStruktur = () => {
   }
   const handleEmployeeBlur = async (e,f) => {
     if (IsBlur === true) {
-      if (e === "shadow" && shadowIdText !== "") {
+      if (e === "shadow" && f !== "") {
         setShadowIdText(f);
         setShadowNameText('');
       }
-      if (e === "main" && employeeIdText !== "") {
+      if (e === "main" && f !== "") {
         setEmployeeIdText(f);
         setEmployeeNameText('');
       }
-      if (shadowIdText !== "" || employeeIdText !== "") {
+      if (f !== "" || f !== undefined) {
         await ModalEmployee(e,f);
       }
       setIsBlur(false);
@@ -128,7 +129,7 @@ const FormStruktur = () => {
     if (ctx.state.positionList.length === 0 || ctx.state.positionList === undefined) {
       return;
     }
-    setPositionIdText(ctx.state.positionList.find(arrlist => arrlist.pos_name === e));
+    setPositionIdText((ctx.state.positionList.find(arrlist => arrlist.pos_name === e).pos_id));
   };
     
   const handleDateChange = (e) => {
@@ -154,6 +155,7 @@ const FormStruktur = () => {
 
   const handleDirectSpvChange = (e) => {
     setIsBlur(true);
+    setDirectSpvCodeText('');
     setDirectSpvIdText(e);
     setDirectSpvNameText('');
   }
@@ -165,7 +167,8 @@ const FormStruktur = () => {
     }
   }
   const handleDirectSpvBlur = async (e) => {
-    if (directSpvIdText !== "" && IsBlur === true) {
+    if (e !== "" && IsBlur === true) {
+      setDirectSpvCodeText('');
       setDirectSpvIdText(e);
       setDirectSpvNameText('');
       await ModalDirectSpv(e);
@@ -188,9 +191,9 @@ const FormStruktur = () => {
     }
   }
   const handleCityBlur = async (e) => {
-    if (cityIdText !== "" && IsBlur === true) {
-      setCityIdText(e);
-      setCityNameText('');
+    if (e !== "" && IsBlur === true) {
+      setCityIdText('');
+      setCityNameText(e);
       await ModalCity(e);
       setIsBlur(false);
     }
@@ -265,9 +268,9 @@ const FormStruktur = () => {
       if (positionNameText === "" || positionNameText === undefined) {
         alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].noempty); return;
       }
-      if (dateInText === "" || dateInText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].noempty); return;
-      }
+      // if (dateInText === "" || dateInText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].noempty); return;
+      // }
       if (dummyShadowYN === "" || dummyShadowYN === undefined) {
         alert(language.pageContent[language.pageLanguage].MS.dummyshadow + " " + language.pageContent[language.pageLanguage].noempty); return;
       }
@@ -299,8 +302,8 @@ const FormStruktur = () => {
       if (branchNameText === "" || branchNameText === undefined) {
         alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].noempty); return;
       }
-    // validasi komnsistensi data  
-      if (employeeIdText === shadowIdText) {
+    // validasi konsistensi data
+      if (employeeIdText === shadowIdText && vaccantYN !== 'Y') {
         alert(language.pageContent[language.pageLanguage].MS.employee + " = " + 
               language.pageContent[language.pageLanguage].MS.employeeshadow + " \n" + 
               language.pageContent[language.pageLanguage].nosame); return;
@@ -312,43 +315,26 @@ const FormStruktur = () => {
   const saveStructure = async () => {
     await ctxspin.setSpinner(true);
     const objStruktur = {
-      "company_id": ctx.state.company,
-      "company_name": null,
-      "department_id": ctx.state.department.dpt_id,
-      "department_name": ctx.state.department.dpt_name,
+      "periode": ctx.state.periode.replace("-",""),
+      "company_id": (ctx.state.company).toString(),
+      "department_id": (ctx.state.department.dpt_id).toString(),
       "code_group": structureCodeText,
       "nip": employeeIdText,
       "name": employeeNameText,
-      "position_id": positionIdText,
+      "position_id": (positionIdText).toString(),
       "position_name": positionNameText,
-      "date_in": dateInText,
-      "date_out": null,
+      "date_in": (dateInText === "" ? null : dateInText),
       "dummy": dummyYN,
-      "branch_id": branchIdText,
-      "branch_name": branchNameText,
-      "city_id": cityIdText,
-      "city_name": cityNameText,
-      "shadow_nip": shadowIdText,
-      "shadow_name": shadowNameText,
-      "shadow_in": dateShadowInText,
-      "shadow_out": null,
-      "shadow_dummy": dummyShadowYN,
-      "code_head": null,
-      "head_nip": directSpvIdText,
-      "head_name": directSpvNameText
+      "branch_id": (branchIdText).toString(),
+      "city_id": (cityIdText).toString(),
+      "code_head": directSpvCodeText,
     };
-
+    console.log(JSON.stringify(objStruktur));
     let url = get_struktur(ctx.state.structureType.value);
     //url = url + '/' + h;
-    const params = {
-      periode: ctx.state.periode.replace("-",""),
-      pt_id: ctx.state.company,
-      dpt_id: ctx.state.department.dpt_id,
-    }
     await axios({
       method: "post",
       url: url,
-      params: params,
       data: JSON.stringify(objStruktur),
     })
       .then((res) => {
@@ -585,6 +571,7 @@ const FormStruktur = () => {
         setBranchNameText(e.branch_name);
         break;
       case "directspv":
+        setDirectSpvCodeText(e.code_group);
         setDirectSpvIdText(e.nip);
         setDirectSpvNameText(e.name);
         break;
@@ -618,6 +605,7 @@ const FormStruktur = () => {
       setShadowIdText(ctx.state.struktur.shadow_nip === null ? "" : ctx.state.struktur.shadow_nip);
       setShadowNameText(ctx.state.struktur.shadow_name === null ? "" : ctx.state.struktur.shadow_name);
       setDateShadowInText(ctx.state.struktur.shadow_in === null ? "" : ctx.state.struktur.shadow_in);
+      setDirectSpvCodeText(ctx.state.struktur.code_head === null ? "" : ctx.state.struktur.code_head);
       setDirectSpvIdText(ctx.state.struktur.head_nip === null ? "" : ctx.state.struktur.head_nip);
       setDirectSpvNameText(ctx.state.struktur.head_name === null ? "" : ctx.state.struktur.head_name);
       setCityIdText(ctx.state.struktur.city_id === null ? "" : ctx.state.struktur.city_id);

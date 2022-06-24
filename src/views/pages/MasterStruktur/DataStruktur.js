@@ -16,7 +16,7 @@ import { ContextSpinner } from "containers/TheLayout";
 import LanguageContext from "containers/languageContext";
 import DataTable from "reusable/DataTable";
 import { get_departments, get_struktur, get_position } from "./MasterStrukturLink";
-import { GlbFormatDate } from "reusable/Helper";
+//import { GlbFormatDate } from "reusable/Helper";
 
 const DataStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -126,8 +126,10 @@ const DataStruktur = () => {
         }
         else{
           for (const obj of res.data) {
-            obj.date_in = ( obj.date_in === null ? null : obj.date_in.split(' ')[0] );
-            obj.date_out = ( obj.date_out === null ? null : obj.date_out.split(' ')[0] );
+            obj.date_in = ( (obj.date_in === null || obj.date_in === "0000-00-00") ? null : obj.date_in.split(' ')[0] );
+            obj.date_out = ( (obj.date_out === null || obj.date_out === "0000-00-00") ? null : obj.date_out.split(' ')[0] );
+            obj.date_in = ( (obj.shadow_in === null || obj.shadow_in === "0000-00-00") ? null : obj.shadow_in.split(' ')[0] );
+            obj.date_out = ( (obj.shadow_out === null || obj.shadow_out === "0000-00-00") ? null : obj.shadow_out.split(' ')[0] );
           }
           ctx.dispatch.setStrukturList(res.data);
         }
@@ -262,14 +264,16 @@ const DataStruktur = () => {
             <DataTable
               items={ctx.state.strukturList}
               fields={fields}
-              scopedSlots={{
-                'date_in': (item)=>(
-                  <td align="left">{item.date_in === "" || item.date_in === null ? "-" : GlbFormatDate(item.date_in)}</td>
-                ),
-                'date_out': (item)=>(
-                  <td align="left">{item.date_out === "" || item.date_out === null ? "-" : GlbFormatDate(item.date_out)}</td>
-                ),
-              }}
+              // kalau "0000-00-00" maka akan error, 
+              // tidak digunakan GlbFormatDate dulu sementara karena bisa jadi ada masalah lain
+              // scopedSlots={{
+              //   'date_in': (item)=>(
+              //     <td align="left">{item.date_in === "" || item.date_in === null ? "-" : GlbFormatDate(item.date_in)}</td>
+              //   ),
+              //   'date_out': (item)=>(
+              //     <td align="left">{item.date_out === "" || item.date_out === null ? "-" : GlbFormatDate(item.date_out)}</td>
+              //   ),
+              // }}
               size="sm"
               onRowClick={(e) => getStruktur(e)}
             />
