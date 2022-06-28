@@ -87,8 +87,8 @@ const pageContent = {
         Error: {
           Add: "Gagal melakukan proses Tambah, coba lakukan langkah berikut :\n" +
                "1. Pastikan ( Jenis Struktur - Periode - Divisi ), sudah terpilih \n" +
-               "2. Tekan tombol Pilih kembali \n" +
-               "3. Tekan tombol Tambah kembali",
+               "2. Tekan kembali tombol Pilih \n" +
+               "3. Tekan kembali tombol Tambah",
           Update: "Gagal Ubah data, \n" +
                   "Pilih data terlebih dahulu !",
           dateinputmin: "Tanggal masukan harus lebih besar dari tanggal sebelumnya",
