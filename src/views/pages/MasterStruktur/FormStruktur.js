@@ -317,7 +317,7 @@ const FormStruktur = () => {
           document.getElementById("date-entry-shd").focus(); return;
         }
       }
-      if (ctx.state.struktur.value !== 0) {
+      if (ctx.state.structureType.value !== 0) {
         if (directSpvIdText === "" || directSpvIdText === undefined) {
           alert(language.pageContent[language.pageLanguage].MS.directspv + " ID " + language.pageContent[language.pageLanguage].noempty);
           document.getElementById("directspv").focus(); return;

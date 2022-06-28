@@ -87,7 +87,7 @@ const pageContent = {
           Add: "Gagal melakukan proses Tambah, coba lakukan langkah berikut :\n" +
                "1. Pastikan ( Jenis Struktur - Periode - Divisi ), sudah terpilih \n" +
                "2. Tekan tombol Refresh kembali \n" +
-               "3. Press the Add button again",
+               "3. Tekan tombol Tambah kembali",
           Update: "Gagal Ubah data, \n" +
                   "Pilih data terlebih dahulu !",
           dateinputmin: "Tanggal masukan harus lebih besar dari tanggal sebelumnya",
@@ -197,7 +197,7 @@ const pageContent = {
           Add: "Add proccess Fail, try to do this step :\n" +
                "1. Make sure ( Struktur Type - Periode - Divisi ), already selected \n" +
                "2. Press the Refresh button again \n" +
-               "3. Tekan tombol tambah kembali",
+               "3. Press the Add button again",
           Update: "Update data failed, \n" +
                   "Select the data first !",
           dateinputmin: "Date must be greater than the previous date",
