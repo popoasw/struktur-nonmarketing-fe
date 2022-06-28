@@ -90,6 +90,7 @@ const pageContent = {
                "3. Press the Add button again",
           Update: "Gagal Ubah data, \n" +
                   "Pilih data terlebih dahulu !",
+          dateinputmin: "Tanggal masukan harus lebih besar dari tanggal sebelumnya",
         },
         Tooltip: {
           modalByText: "tekan Enter untuk menampilkan daftar data ( sesuai isi, bila kosong semua data tampil )",
@@ -199,6 +200,7 @@ const pageContent = {
                "3. Tekan tombol tambah kembali",
           Update: "Update data failed, \n" +
                   "Select the data first !",
+          dateinputmin: "Date must be greater than the previous date",
         },
         Tooltip: {
           modalByText: "press Enter to show data list ( depend on text, empty text to show all data )",
