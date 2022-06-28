@@ -52,7 +52,11 @@ const DataStruktur = () => {
     ctx.dispatch.setDepartment(departmentList[e]);
   };
 
-  const btnRefreshClick = async () => {
+  const btnCancelClick = async () => {
+    await ClearSelected();
+  };
+  
+  const btnSelectClick = async () => {
     await ClearSelected();
     if (ctx.state.structureType.label === "" || ctx.state.department.dpt_id === "" || ctx.state.structureType.label === undefined || ctx.state.department.dpt_id === undefined) {
       if (ctx.state.structureType.label === "" || ctx.state.structureType.label === undefined ) {
@@ -205,7 +209,7 @@ const DataStruktur = () => {
                       id="struct-type"
                       size="sm"
                       onChange={(e) => handleStructureTypeChange(e.target.value)}
-                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
+                      disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : ctx.state.isAvail}
                     >
                       <option value={""}></option>
                       {structureTypeList.map((option, idx) => (
@@ -229,7 +233,7 @@ const DataStruktur = () => {
                       placeholder="" 
                       defaultValue={ctx.state.periode}
                       onChange={(e) => handleChangePeriode(e.target.value)}
-                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
+                      disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : ctx.state.isAvail}
                     />
                   </CCol>
                 </CRow>
@@ -242,7 +246,7 @@ const DataStruktur = () => {
                       id="divisi"
                       size="sm"
                       onChange={(e) => handleDeptChange(e.target.value)}
-                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
+                      disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : ctx.state.isAvail}
                     >
                       <option value={""}></option>
                       {departmentList.map((option, idx) => (
@@ -262,10 +266,24 @@ const DataStruktur = () => {
                       className=""
                       block
                       size="sm"
-                      onClick={btnRefreshClick}
-                      disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
+                      onClick={btnCancelClick}
+                      disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : !ctx.state.isAvail}
                     >
-                      {language.pageContent[language.pageLanguage].refresh}
+                      {language.pageContent[language.pageLanguage].cancel}
+                    </CButton>
+                  </CCol>
+                </CRow>
+                <CRow className="d-flex flex-row-reverse">
+                  <CCol className="mb-1" md={10}>
+                    <CButton
+                      color="dark"
+                      className=""
+                      block
+                      size="sm"
+                      onClick={btnSelectClick}
+                      disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : ctx.state.isAvail}
+                    >
+                      {language.pageContent[language.pageLanguage].select}
                     </CButton>
                   </CCol>
                 </CRow>
@@ -298,7 +316,7 @@ const DataStruktur = () => {
                   className="mb-0"
                   block
                   size="sm"
-                  disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
+                  disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : !ctx.state.isAvail}
                 >
                   {language.pageContent[language.pageLanguage].history}
                 </CButton>
@@ -309,7 +327,7 @@ const DataStruktur = () => {
                   className="mb-0"
                   block
                   size="sm"
-                  disabled={ctx.state.isAdd === ctx.state.isUpdate ? false : true}
+                  disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : !ctx.state.isAvail}
                 >
                   {language.pageContent[language.pageLanguage].print}
                 </CButton>

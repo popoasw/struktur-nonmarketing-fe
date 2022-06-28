@@ -45,6 +45,7 @@ const pageContent = {
       deletesuccess: "berhasil di hapus !",
       deletefailed: "gagal di hapus !",
       refresh: "refresh",
+      select: "Pilih",
       add: "Tambah",
       edit: "Ubah",
       delete: "Hapus",
@@ -86,7 +87,7 @@ const pageContent = {
         Error: {
           Add: "Gagal melakukan proses Tambah, coba lakukan langkah berikut :\n" +
                "1. Pastikan ( Jenis Struktur - Periode - Divisi ), sudah terpilih \n" +
-               "2. Tekan tombol Refresh kembali \n" +
+               "2. Tekan tombol Pilih kembali \n" +
                "3. Tekan tombol Tambah kembali",
           Update: "Gagal Ubah data, \n" +
                   "Pilih data terlebih dahulu !",
@@ -155,6 +156,7 @@ const pageContent = {
       deletesuccess: "delete success !",
       deletenotsuccess: "delete failed !",
       refresh: "refresh",
+      select: "Select",
       add: "Add",
       edit: "Update",
       delete: "Delete",
@@ -196,7 +198,7 @@ const pageContent = {
         Error: {
           Add: "Add proccess Fail, try to do this step :\n" +
                "1. Make sure ( Struktur Type - Periode - Divisi ), already selected \n" +
-               "2. Press the Refresh button again \n" +
+               "2. Press the Select button again \n" +
                "3. Press the Add button again",
           Update: "Update data failed, \n" +
                   "Select the data first !",
