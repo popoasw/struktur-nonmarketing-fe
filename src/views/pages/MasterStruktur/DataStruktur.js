@@ -192,7 +192,7 @@ const DataStruktur = () => {
     await ctx.dispatch.setStruktur({});
     await ctx.dispatch.setPositionList([]);
   }
-
+  
   return (
     <>
       <CContainer fluid>

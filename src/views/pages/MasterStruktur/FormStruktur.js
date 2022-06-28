@@ -371,7 +371,7 @@ const FormStruktur = () => {
       "city_id": (cityIdText).toString(),
       "code_head": directSpvCodeText.toString(),
     };
-    console.log(JSON.stringify(objStruktur));
+    //console.log(JSON.stringify(objStruktur));
     let url = get_struktur(ctx.state.structureType.value);
     //url = url + '/' + h;
     await axios({
