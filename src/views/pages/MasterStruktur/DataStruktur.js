@@ -99,7 +99,8 @@ const DataStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        //window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        window.alert(err);
       });
     // ctxspin.setSpinner(false);
     return false;
@@ -139,7 +140,8 @@ const DataStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        //window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        window.alert(err);
       });
     //ctxspin.setSpinner(false);
   };
@@ -166,7 +168,8 @@ const DataStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        //window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        window.alert(err);
       });
     //ctxspin.setSpinner(false);
   };

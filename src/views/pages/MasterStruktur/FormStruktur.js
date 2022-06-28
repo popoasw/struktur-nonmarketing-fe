@@ -481,7 +481,8 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        //window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        window.alert(err);
       });
     ctxspin.setSpinner(false);
     return false;
@@ -520,7 +521,8 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        //window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        window.alert(err);
       });
     ctxspin.setSpinner(false);
     return false;
@@ -558,7 +560,8 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        //window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        window.alert(err);
       });
     ctxspin.setSpinner(false);
     return false;
@@ -599,7 +602,8 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        //window.alert(language.pageContent[language.pageLanguage].connectionErr + "(" + err + ")");
+        window.alert(err);
       });
     ctxspin.setSpinner(false);
     return false;
@@ -652,7 +656,7 @@ const FormStruktur = () => {
       setPositionNameText(ctx.state.struktur.position_name === null ? "" : ctx.state.struktur.position_name);
       setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
       setDateInitialText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
-      setDummyShadowYN(ctx.state.struktur.shadow_dummy === null ? "" : ctx.state.struktur.shadow_dummy);
+      setDummyShadowYN(ctx.state.struktur.shadow_dummy === null ? "" : (ctx.state.struktur.shadow_dummy === 'Y' ? 'N' : 'Y'));
       setShadowIdText(ctx.state.struktur.shadow_nip === null ? "" : ctx.state.struktur.shadow_nip);
       setShadowNameText(ctx.state.struktur.shadow_name === null ? "" : ctx.state.struktur.shadow_name);
       setDateShadowInText(ctx.state.struktur.shadow_in === null ? "" : ctx.state.struktur.shadow_in);
