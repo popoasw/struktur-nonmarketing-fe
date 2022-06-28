@@ -391,7 +391,7 @@ const FormStruktur = () => {
         }
       })
       .catch((err) => {
-        window.alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "(" + err + ")");
+        window.alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n(" + err + ")");
       });
     ctxspin.setSpinner(false);
   };
