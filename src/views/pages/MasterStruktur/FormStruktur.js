@@ -234,7 +234,7 @@ const FormStruktur = () => {
 //                                  code for buttons
 //=============================================================================  
   const btnAddClick = async () => {
-    if (ctx.state.strukturList.length === 0 || ctx.state.strukturList === undefined) {
+    if (ctx.state.isAvail === false || ctx.state.isAvail === undefined) {
       alert(language.pageContent[language.pageLanguage].MS.Error.Add);
       return;
     }

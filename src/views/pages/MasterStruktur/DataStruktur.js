@@ -30,8 +30,7 @@ const DataStruktur = () => {
   const [departmentList, setDepartmentList] = useState([]);
 
   const handleStructureTypeChange = async (e) => {
-    ctx.dispatch.setStrukturList([]);
-    ctx.dispatch.setStruktur({});
+    ClearSelected();
     if (e === "" || e === undefined ) {
       ctx.dispatch.setStructureType("");
       return;
@@ -40,12 +39,12 @@ const DataStruktur = () => {
   };
 
   const handleChangePeriode = (e) => {
+    ClearSelected();
     ctx.dispatch.setPeriodeList(e);
   }
 
   const handleDeptChange = async (e) => {
-    ctx.dispatch.setStrukturList([]);
-    ctx.dispatch.setStrukturList([]);
+    ClearSelected();
     if (e === "" || e === undefined ) {
       ctx.dispatch.setDepartment('');
       return;
@@ -54,9 +53,7 @@ const DataStruktur = () => {
   };
 
   const btnRefreshClick = async () => {
-    await ctx.dispatch.setStrukturList([]);
-    await ctx.dispatch.setStruktur({});
-    await ctx.dispatch.setPositionList([]);
+    await ClearSelected();
     if (ctx.state.structureType.label === "" || ctx.state.department.dpt_id === "" || ctx.state.structureType.label === undefined || ctx.state.department.dpt_id === undefined) {
       if (ctx.state.structureType.label === "" || ctx.state.structureType.label === undefined ) {
         alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].datanotfound);
@@ -137,6 +134,7 @@ const DataStruktur = () => {
             obj.shadow_out = ( (obj.shadow_out === null || obj.shadow_out === "0000-00-00") ? null : obj.shadow_out.split(' ')[0] );
           }
           ctx.dispatch.setStrukturList(res.data);
+          ctx.dispatch.setIsAvail(true);
         }
       })
       .catch((err) => {
@@ -183,6 +181,13 @@ const DataStruktur = () => {
     { key: "branch_name", label: language.pageContent[language.pageLanguage].MS.Data.branch },
     { key: "city_name", label: language.pageContent[language.pageLanguage].MS.Data.city /*, _style: { width: '50px' } */ },
   ];
+
+  const ClearSelected = async () => {
+    await ctx.dispatch.setIsAvail(false);
+    await ctx.dispatch.setStrukturList([]);
+    await ctx.dispatch.setStruktur({});
+    await ctx.dispatch.setPositionList([]);
+  }
 
   return (
     <>
