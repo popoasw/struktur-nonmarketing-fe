@@ -659,7 +659,7 @@ const FormStruktur = () => {
   const initialValue = () => {
     const date1 = new Date();
     const date2 = new Date();
-    date1.setDate(date1.getDate() + 1);
+    date1.setDate(date1.getDate());
     date2.setDate(date2.getDate() + 365);
     setDateMin(date1.getFullYear().toString() + "-" + 
               ("0" + (date1.getMonth() + 1)).slice(-2) + "-" + 
