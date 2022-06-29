@@ -383,8 +383,14 @@ const FormStruktur = () => {
                 res.error.msg)
         }
         else{
-          alert(ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addsuccess : language.pageContent[language.pageLanguage].updatesuccess);
-          btnCancelClick();
+          if (res.data.message === "Data added successfully") {
+            alert(ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addsuccess : language.pageContent[language.pageLanguage].updatesuccess);
+            ctx.dispatch.setStruktur(res.data.data);
+            btnCancelClick();
+          }
+          else {
+            alert(res.data.message);
+          }          
         }
       })
       .catch((err) => {
