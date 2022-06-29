@@ -3,7 +3,7 @@ import LanguageContext from "containers/languageContext";
 
 // tampilan angka supaya tampil dengan separator ribuan
 // untuk tampilan yang di ketik belum berhasil
-export const GlbNumberFormat = (amount) => {
+export const HpNumberFormat = (amount) => {
     if (amount === '' || amount === undefined || amount === 0  || amount === '0' || amount === null) {
       return amount;
     } 
@@ -14,8 +14,8 @@ export const GlbNumberFormat = (amount) => {
 
 // merubah format tanggal inputan menjadi dd MMM yyyy
 // cara pangil : tgl === "" ? tgl : GlbFormatDate(item.date_in)
-//               tidak boleh kondisi "" ketika dipanggil GlbFormatDate
-export const GlbFormatDate = (e) => {
+//               tidak boleh kondisi "" / null / "0000-00-00 00:00:00 " ketika dipanggil GlbFormatDate
+export const HpDateFormat = (e) => {
     const date = new Date(e);
     let language = React.useContext(LanguageContext);
     

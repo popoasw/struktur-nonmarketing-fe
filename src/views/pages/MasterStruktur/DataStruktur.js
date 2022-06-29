@@ -16,7 +16,7 @@ import { ContextSpinner } from "containers/TheLayout";
 import LanguageContext from "containers/languageContext";
 import DataTable from "reusable/DataTable";
 import { get_departments, get_struktur, get_position } from "./MasterStrukturLink";
-//import { GlbFormatDate } from "reusable/Helper";
+//import { HpDateFormat } from "reusable/Helper";
 
 const DataStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -295,13 +295,13 @@ const DataStruktur = () => {
               items={ctx.state.strukturList}
               fields={fields}
               // kalau "0000-00-00" maka akan error, 
-              // tidak digunakan GlbFormatDate dulu sementara karena bisa jadi ada masalah lain
+              // tidak digunakan HpDateFormat dulu sementara karena bisa jadi ada masalah lain
               // scopedSlots={{
               //   'date_in': (item)=>(
-              //     <td align="left">{item.date_in === "" || item.date_in === null ? "-" : GlbFormatDate(item.date_in)}</td>
+              //     <td align="left">{item.date_in === "" || item.date_in === null ? "-" : HpDateFormat(item.date_in)}</td>
               //   ),
               //   'date_out': (item)=>(
-              //     <td align="left">{item.date_out === "" || item.date_out === null ? "-" : GlbFormatDate(item.date_out)}</td>
+              //     <td align="left">{item.date_out === "" || item.date_out === null ? "-" : HpDateFormat(item.date_out)}</td>
               //   ),
               // }}
               size="sm"

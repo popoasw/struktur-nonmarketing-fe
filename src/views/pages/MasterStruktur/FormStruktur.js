@@ -16,6 +16,7 @@ import ListModal from "reusable/ListModal";
 import LanguageContext from "containers/languageContext";
 import { Context } from "./MasterStruktur";
 import { ContextSpinner } from "containers/TheLayout";
+//import { HpDateFormat } from "reusable/Helper";
 import { get_struktur, get_employee, get_city, get_branch } from "./MasterStrukturLink";
 
 const FormStruktur = () => {
@@ -30,6 +31,10 @@ const FormStruktur = () => {
   const [IsBlur, setIsBlur] = useState(false);
   const [isShowRecent, setIsShowRecent] = useState(false);
 
+  const [dateMin, setDateMin] = useState("");
+  const [dateMinShd, setDateMinShd] = useState("");
+  const [dateMax, setDateMax] = useState("");
+
   const [structureCodeText, setStructureCodeText] = useState("");
   const [dummyYN,setDummyYN] = useState("Y");
   const [IsDummy, setIsDummy] = useState(true);
@@ -40,13 +45,11 @@ const FormStruktur = () => {
   const [employeeNameText, setEmployeeNameText] = useState("");
   const [positionIdText, setPositionIdText] = useState(0);
   const [positionNameText, setPositionNameText] = useState("");
-  const [dateInitialText, setDateInitialText] = useState("");
   const [dateInText, setDateInText] = useState("");
   const [dummyShadowYN,setDummyShadowYN] = useState("N");
   const [IsDummyShadow, setIsDummyShadow] = useState(false);
   const [shadowIdText, setShadowIdText] = useState("");
   const [shadowNameText, setShadowNameText] = useState("");
-  const [dateShdInitialText, setDateShdInitialText] = useState("");
   const [dateShadowInText, setDateShadowInText] = useState("");
   const [directSpvList, setDirectSpvList] = useState([]);
   const [directSpvCodeText, setDirectSpvCodeText] = useState("");
@@ -139,14 +142,7 @@ const FormStruktur = () => {
   };
     
   const handleDateChange = (e) => {
-    if (Date.parse(e) <= Date.parse(dateInitialText) ) {
-      alert(language.pageContent[language.pageLanguage].MS.Error.dateinputmin  + "\n" + 
-            "( Date > " + dateInitialText + " )");
-      setDateInText(dateInitialText);
-    }
-    else {
-      setDateInText(e);
-    }
+    setDateInText(e);
   };
 
   const handleDummyShadow = (e) => {
@@ -163,14 +159,7 @@ const FormStruktur = () => {
   };
   
   const handleDateShadowChange = (e) => {
-    if (Date.parse(e) <= Date.parse(dateShdInitialText) ) {
-      alert(language.pageContent[language.pageLanguage].MS.Error.dateinputmin  + "\n" + 
-            "( Date > " + dateShdInitialText + " )");
-      setDateShadowInText(dateShdInitialText);
-    }
-    else {
-      setDateShadowInText(e);
-    }
+    setDateShadowInText(e);
   };
 
   const handleDirectSpvChange = (e) => {
@@ -296,7 +285,11 @@ const FormStruktur = () => {
       }
       if (vaccantYN === 'N') {
         if (dateInText === "" || dateInText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].noempty);
+          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputempty);
+          document.getElementById("date-entry").focus(); return;
+        }
+        if (dateInText < dateMin && ctx.state.isUpdate === false) {
+          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputmin + " " + dateMin);
           document.getElementById("date-entry").focus(); return;
         }
       }
@@ -313,7 +306,11 @@ const FormStruktur = () => {
           document.getElementById("employeeshadow").focus(); return;
         }
         if (dateShadowInText === "" || dateShadowInText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.dateentry + " " + language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].noempty);
+          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputempty);
+          document.getElementById("date-entry-shd").focus(); return;
+        }
+        if (dateShadowInText < dateMin) {
+          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputmin + " " + dateMin);
           document.getElementById("date-entry-shd").focus(); return;
         }
       }
@@ -465,13 +462,17 @@ const FormStruktur = () => {
               setShadowIdText(res.data[0].nip);
               setShadowNameText(res.data[0].name);
               setDateShadowInText(res.data[0].tgl_masuk);
-              setDateShdInitialText(res.data[0].tgl_masuk);
+              if (dateMinShd <= res.data[0].tgl_masuk) {
+                setDateMinShd(res.data[0].tgl_masuk);
+              }
             }
             else {
               setEmployeeIdText(res.data[0].nip);
               setEmployeeNameText(res.data[0].name);
               setDateInText(res.data[0].tgl_masuk);
-              setDateInitialText(res.data[0].tgl_masuk);
+              if (dateMin <= res.data[0].tgl_masuk) {
+                setDateMin(res.data[0].tgl_masuk);
+              }
             }
           }
           else {
@@ -629,13 +630,11 @@ const FormStruktur = () => {
         setEmployeeIdText(e.nip);
         setEmployeeNameText(e.name);
         setDateInText((e.tgl_masuk === null || e.tgl_masuk === "0000-00-00") ? null : e.tgl_masuk.split(' ')[0]);
-        setDateInitialText((e.tgl_masuk === null || e.tgl_masuk === "0000-00-00") ? null : e.tgl_masuk.split(' ')[0]);
         break;
       default:
         setShadowIdText(e.nip);
         setShadowNameText(e.name);
         setDateShadowInText((e.tgl_masuk === null || e.tgl_masuk === "0000-00-00") ? null : e.tgl_masuk.split(' ')[0]);
-        setDateShdInitialText((e.tgl_masuk === null || e.tgl_masuk === "0000-00-00") ? null : e.tgl_masuk.split(' ')[0]);
     }
   };
 
@@ -645,8 +644,25 @@ const FormStruktur = () => {
   };
 //=============================================================================  
 
+  const initialValue = () => {
+    const date1 = new Date();
+    const date2 = new Date();
+    date1.setDate(date1.getDate() + 1);
+    date2.setDate(date2.getDate() + 365);
+    setDateMin(date1.getFullYear().toString() + "-" + 
+              ("0" + (date1.getMonth() + 1)).slice(-2) + "-" + 
+              ("0" + (date1.getDate())).slice(-2));
+    setDateMinShd(date1.getFullYear().toString() + "-" + 
+                  ("0" + (date1.getMonth() + 1)).slice(-2) + "-" + 
+                  ("0" + (date1.getDate())).slice(-2));
+    setDateMax(date2.getFullYear().toString() + "-" + 
+              ("0" + (date2.getMonth() + 1)).slice(-2) + "-" + 
+              ("0" + (date2.getDate())).slice(-2));
+  }
+
   const setFormInput = () => {
-    if(ctx.state.isAdd === ctx.state.isUpdate){
+    if(ctx.state.isAdd === ctx.state.isUpdate){      
+      initialValue();
       setStructureCodeText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
       setDummyYN(ctx.state.struktur.dummy === null ? "" : ctx.state.struktur.dummy);
       setVaccantYN(ctx.state.struktur.nip === null ? "" : (ctx.state.struktur.nip.substring(0,1).toLowerCase() === 'v' ? 'Y' : 'N'));
@@ -655,12 +671,10 @@ const FormStruktur = () => {
       setPositionIdText(ctx.state.struktur.position_id === null ? "" : ctx.state.struktur.position_id);
       setPositionNameText(ctx.state.struktur.position_name === null ? "" : ctx.state.struktur.position_name);
       setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
-      setDateInitialText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
       setDummyShadowYN(ctx.state.struktur.shadow_dummy === null ? "" : (ctx.state.struktur.shadow_dummy === 'Y' ? 'N' : 'Y'));
       setShadowIdText(ctx.state.struktur.shadow_nip === null ? "" : ctx.state.struktur.shadow_nip);
       setShadowNameText(ctx.state.struktur.shadow_name === null ? "" : ctx.state.struktur.shadow_name);
       setDateShadowInText(ctx.state.struktur.shadow_in === null ? "" : ctx.state.struktur.shadow_in);
-      setDateShdInitialText(ctx.state.struktur.shadow_in === null ? "" : ctx.state.struktur.shadow_in);
       setDirectSpvCodeText(ctx.state.struktur.code_head === null ? "" : ctx.state.struktur.code_head);
       setDirectSpvIdText(ctx.state.struktur.head_nip === null ? "" : ctx.state.struktur.head_nip);
       setDirectSpvNameText(ctx.state.struktur.head_name === null ? "" : ctx.state.struktur.head_name);
@@ -706,6 +720,7 @@ const FormStruktur = () => {
       setFormInput();
     }
   });
+
 
 //=============================================================================  
 //                                   code for render
@@ -814,7 +829,7 @@ const FormStruktur = () => {
                         id="employee"
                         size="sm"
                         placeholder=""
-                        maxlength="7"
+                        maxLength="7"
                         value={employeeIdText}
                         onKeyUp={(f) => handleEmployeeKeyUp("main",f)}
                         onChange={(f) => handleEmployeeChange("main",f.target.value)}
@@ -876,6 +891,8 @@ const FormStruktur = () => {
                       name="date-entry"
                       value={dateInText}
                       placeholder=""
+                      min={dateMin}
+                      max={dateMax}
                       onChange={(e) => handleDateChange(e.target.value)}
                       disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : IsDummy} 
                     />
@@ -957,6 +974,8 @@ const FormStruktur = () => {
                       name="date-entry-shd"
                       value={dateShadowInText}
                       placeholder=""
+                      min={dateMinShd}
+                      max={dateMax}
                       onChange={(e) => handleDateShadowChange(e.target.value)}
                       disabled={ctx.state.isUpdate === false ? true : IsDummyShadow}
                     />
