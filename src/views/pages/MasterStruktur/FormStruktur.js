@@ -353,6 +353,7 @@ const FormStruktur = () => {
 
   const saveStructure = async () => {
     await ctxspin.setSpinner(true);
+    let strukturListOld = ctx.state.strukturList;
     const objStruktur = {
       "periode": ctx.state.periode.replace("-","").toString(),
       "company_id": (ctx.state.company).toString(),
@@ -384,8 +385,13 @@ const FormStruktur = () => {
         }
         else{
           if (res.data.message === "Data added successfully") {
+            res.data.data.date_in = ( (res.data.data.date_in === null || res.data.data.date_in === "0000-00-00 00:00:00") ? null : res.data.data.date_in.split(' ')[0] );
+            res.data.data.date_out = ( (res.data.data.date_out === null || res.data.data.date_out === "0000-00-00 00:00:00") ? null : res.data.data.date_out.split(' ')[0] );
+            res.data.data.shadow_in = ( (res.data.data.shadow_in === null || res.data.data.shadow_in === "0000-00-00 00:00:00") ? null : res.data.data.shadow_in.split(' ')[0] );
+            res.data.data.shadow_out = ( (res.data.data.shadow_out === null || res.data.data.shadow_out === "0000-00-00 00:00:00") ? null : res.data.data.shadow_out.split(' ')[0] );
             alert(ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addsuccess : language.pageContent[language.pageLanguage].updatesuccess);
             ctx.dispatch.setStruktur(res.data.data);
+            ctx.dispatch.setStrukturList(strukturListOld.concat(res.data.data));
             btnCancelClick();
           }
           else {
