@@ -93,6 +93,7 @@ const pageContent = {
                   "Pilih data terlebih dahulu !",
           dateinputempty: "Tanggal masuk tidak boleh kosong !",
           dateinputmin: "Tanggal masuk harus lebih besar dari ",
+          nostucture: "Mohon pilih struktur terlebih dahulu !",
         },
         Tooltip: {
           modalByText: "tekan Enter untuk menampilkan daftar data ( sesuai isi, bila kosong semua data tampil )",
@@ -106,6 +107,12 @@ const pageContent = {
           dateout: "Tgl.Kluar",
           branch: "Cabang",
           city: "Kota",
+        },
+        Print:{
+          printuser:"User print",
+          printdate:"Tanggal print",
+          structureTitle: "Daftar Struktur",
+          historyTitle: "Daftar History Struktur",
         }
       }
     },
@@ -205,6 +212,7 @@ const pageContent = {
                   "Select the data first !",
           dateinputempty: "Entry Date cannot be empty !",
           dateinputmin: "Entry Date must be greater than ",
+          nostucture: "Please choose structure first !",
         },
         Tooltip: {
           modalByText: "press Enter to show data list ( depend on text, empty text to show all data )",
@@ -218,6 +226,12 @@ const pageContent = {
           dateout: "Date Out",
           branch: "Branch",
           city: "City",
+        },
+        Print:{
+          printuser:"User print",
+          printdate:"Print date",
+          structureTitle: "Stucture List",
+          historyTitle: "History Structure List",
         }
       },
     },

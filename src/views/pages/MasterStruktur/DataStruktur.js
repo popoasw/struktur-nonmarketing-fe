@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
   CContainer,
@@ -17,6 +17,8 @@ import LanguageContext from "containers/languageContext";
 import DataTable from "reusable/DataTable";
 import { get_departments, get_struktur, get_position } from "./MasterStrukturLink";
 //import { HpDateFormat } from "reusable/Helper";
+import { useReactToPrint } from 'react-to-print';
+import { PrintStructure, PrintHistory } from "./ComponentToPrint";
 
 const DataStruktur = () => {
   let language = React.useContext(LanguageContext);
@@ -28,6 +30,8 @@ const DataStruktur = () => {
                              {label:'SubArea',value: 3},
                              {label:'GT',value: 4},];
   const [departmentList, setDepartmentList] = useState([]);
+  const refPrintStructure = useRef();
+  const refPrintHistory = useRef();
 
   const handleStructureTypeChange = async (e) => {
     ClearSelected();
@@ -51,6 +55,29 @@ const DataStruktur = () => {
     }
     ctx.dispatch.setDepartment(departmentList[e]);
   };
+  
+  const handlePrintOnClick = async (e) => {
+    if (e === "Structure") {
+      if (ctx.state.strukturList.length === 0 || ctx.state.strukturList === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.Error.nostucture);
+        return;
+      };
+      handlePrintStructure();
+    }
+    else {
+      if (Object.keys(ctx.state.struktur).length === 0 || Object.keys(ctx.state.struktur).length === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.Error.nostucture);
+        return;
+      }
+      handlePrintHistory();
+    }
+  }
+  const handlePrintHistory = useReactToPrint(
+      {content: () => refPrintHistory.current,},
+  );
+  const handlePrintStructure = useReactToPrint(
+      {content: () => refPrintStructure.current,},
+  ); 
 
   const btnCancelClick = async () => {
     await ClearSelected();
@@ -182,8 +209,8 @@ const DataStruktur = () => {
     { key: "position_name", label: language.pageContent[language.pageLanguage].MS.Data.position },
     { key: "date_in", label: language.pageContent[language.pageLanguage].MS.Data.datein },
     { key: "date_out", label: language.pageContent[language.pageLanguage].MS.Data.dateout },
-    { key: "branch_name", label: language.pageContent[language.pageLanguage].MS.Data.branch },
     { key: "city_name", label: language.pageContent[language.pageLanguage].MS.Data.city /*, _style: { width: '50px' } */ },
+    { key: "branch_name", label: language.pageContent[language.pageLanguage].MS.Data.branch },
   ];
 
   const ClearSelected = async () => {
@@ -311,22 +338,30 @@ const DataStruktur = () => {
 
             <CRow className="mr-0 mb-0 d-flex flex-row-reverse">
               <CCol className="p-1" md={2}>
+                <div style={{ display: "none" }}>
+                  <PrintHistory ref={refPrintHistory} />
+                </div>
                 <CButton
                   color="dark"
                   className="mb-0"
                   block
                   size="sm"
+                  onClick={ (e) => handlePrintOnClick("History") }
                   disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : !ctx.state.isAvail}
                 >
                   {language.pageContent[language.pageLanguage].history}
                 </CButton>
               </CCol>
               <CCol className="p-1" md={2}>
+                <div style={{ display: "none" }}>
+                  <PrintStructure ref={refPrintStructure}/>
+                </div>
                 <CButton
                   color="dark"
                   className="mb-0"
                   block
                   size="sm"
+                  onClick={ () => handlePrintOnClick("Structure") }
                   disabled={ctx.state.isAdd !== ctx.state.isUpdate ? true : !ctx.state.isAvail}
                 >
                   {language.pageContent[language.pageLanguage].print}
