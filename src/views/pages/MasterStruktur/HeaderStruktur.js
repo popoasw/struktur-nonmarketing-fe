@@ -15,7 +15,7 @@ const HeaderStruktur = () => {
     <>
       <CContainer fluid>
         <CCard>
-          <CCardBody>
+          <CCardBody className="py-2">
             <CRow>
               <CCol>
                 <CRow className="ml-0 d-flex border-bottom border-1">

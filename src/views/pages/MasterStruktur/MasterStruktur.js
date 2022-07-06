@@ -61,9 +61,9 @@ const MasterStruktur = () => {
           dispatch: dispatch,
         }}
       >
-          <HeaderStruktur />
-          <DataStruktur />
-          <FormStruktur />
+        <HeaderStruktur />
+        <DataStruktur />
+        <FormStruktur />
       </Provider>
     </>
   );
