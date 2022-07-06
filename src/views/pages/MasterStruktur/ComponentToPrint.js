@@ -39,13 +39,13 @@ export const PrintStructure = React.forwardRef((props, ref) => {
             <td colSpan={7}>==================================================================================================================</td>
           </tr>
           <tr>
-            <th align="left" valign="top" width="50px">{language.pageContent[language.pageLanguage].MS.Data.nip }</th>
-            <th align="left" valign="top" width="200px">{language.pageContent[language.pageLanguage].MS.Data.name }</th>
-            <th align="left" valign="top" width="100px">{language.pageContent[language.pageLanguage].MS.Data.position }</th>
-            <th align="left" valign="top" width="65px">{language.pageContent[language.pageLanguage].MS.Data.datein }</th>
-            <th align="left" valign="top" width="65px">{language.pageContent[language.pageLanguage].MS.Data.dateout }</th>
-            <th align="left" valign="top" width="100px">{language.pageContent[language.pageLanguage].MS.Data.city /*, _style: { width: '50px' } */ }</th>
-            <th align="left" valign="top" width="100px">{language.pageContent[language.pageLanguage].MS.Data.branch }</th>
+            <th align="left" valign="top" width="65px">{language.pageContent[language.pageLanguage].MS.Data.nip }</th>
+            <th align="left" valign="top">{language.pageContent[language.pageLanguage].MS.Data.name }</th>
+            <th align="left" valign="top">{language.pageContent[language.pageLanguage].MS.Data.position }</th>
+            <th align="left" valign="top" width="90px">{language.pageContent[language.pageLanguage].MS.Data.datein }</th>
+            <th align="left" valign="top" width="90px">{language.pageContent[language.pageLanguage].MS.Data.dateout }</th>
+            <th align="left" valign="top">{language.pageContent[language.pageLanguage].MS.Data.city }</th>
+            <th align="left" valign="top">{language.pageContent[language.pageLanguage].MS.Data.branch }</th>
           </tr>
           <tr>
             <td colSpan={7}>==================================================================================================================</td>
