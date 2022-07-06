@@ -20,6 +20,7 @@ const MasterStruktur = () => {
   const [struktur, setStruktur] = useState({});
   const [positionList, setPositionList] = useState([]);
   const [isAvail, setIsAvail] = useState(false);
+  const [needRefresh, setNeedRefresh] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
 
@@ -35,6 +36,7 @@ const MasterStruktur = () => {
     isAvail,
     isAdd,
     isUpdate,
+    needRefresh,
   };  
 
   const dispatch = {
@@ -48,6 +50,7 @@ const MasterStruktur = () => {
     setIsAvail,
     setIsAdd,
     setIsUpdate,
+    setNeedRefresh,
   };
 
   return (

@@ -79,6 +79,18 @@ const DataStruktur = () => {
       {content: () => refPrintStructure.current,},
   ); 
 
+  const handleRefresh = async () => {
+    await ctx.dispatch.setNeedRefresh(false);
+    await ctxspin.setSpinner(true);
+    await getStrukturList();
+    await getPositionList(ctx.state.department.dpt_id);
+    await ctxspin.setSpinner(false);
+  }
+
+  useEffect(() => {
+    if (ctx.state.needRefresh === true) handleRefresh();
+  });
+
   const btnCancelClick = async () => {
     await ClearSelected();
   };
@@ -98,10 +110,7 @@ const DataStruktur = () => {
       }
     }
     else {
-      await ctxspin.setSpinner(true);
-      await getStrukturList();
-      await getPositionList(ctx.state.department.dpt_id);
-      await ctxspin.setSpinner(false);
+      await handleRefresh();
     }
   };
 
@@ -219,7 +228,7 @@ const DataStruktur = () => {
     await ctx.dispatch.setStruktur({});
     await ctx.dispatch.setPositionList([]);
   }
-  
+    
   return (
     <>
       <CContainer fluid>

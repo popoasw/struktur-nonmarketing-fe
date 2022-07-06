@@ -349,6 +349,7 @@ const FormStruktur = () => {
       }
     // simpan data
       await saveStructure();
+      await ctx.dispatch.setNeedRefresh(true);
   }
 
   const saveStructure = async () => {
