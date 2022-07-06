@@ -14,7 +14,7 @@ const MasterStruktur = () => {
   const date = new Date();
   const [periode, setPeriodeList] = useState(date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2));
   const [company, setCompany] = useState(1);
-  const [structureType, setStructureType] = useState({});
+  const [structureType, setStructureType] = useState({label:'',value: -1});
   const [department, setDepartment] = useState({});
   const [strukturList, setStrukturList] = useState([]);
   const [struktur, setStruktur] = useState({});

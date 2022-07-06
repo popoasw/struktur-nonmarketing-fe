@@ -36,7 +36,7 @@ const DataStruktur = () => {
   const handleStructureTypeChange = async (e) => {
     ClearSelected();
     if (e === "" || e === undefined ) {
-      ctx.dispatch.setStructureType("");
+      ctx.dispatch.setStructureType({label:'',value: -1});
       return;
     }
     ctx.dispatch.setStructureType(structureTypeList[e]);
