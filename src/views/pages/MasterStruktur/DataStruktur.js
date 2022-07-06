@@ -50,7 +50,7 @@ const DataStruktur = () => {
   const handleDeptChange = async (e) => {
     ClearSelected();
     if (e === "" || e === undefined ) {
-      ctx.dispatch.setDepartment('');
+      ctx.dispatch.setDepartment({"div_id": -1,"div_name": "","dpt_id": -1,"dpt_name": ""});
       return;
     }
     ctx.dispatch.setDepartment(departmentList[e]);
