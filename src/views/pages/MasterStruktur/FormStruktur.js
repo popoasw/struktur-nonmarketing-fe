@@ -740,7 +740,7 @@ const FormStruktur = () => {
 //=============================================================================  
   return (
     <>
-      <CContainer fluid>
+      <CContainer fluid className="px-0">
         <CCard>
           <CCardBody>
             <CRow>
@@ -1001,7 +1001,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pr-0" md={2}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modalByText}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modal}
                       placement="top"
                     >
                       <CInput

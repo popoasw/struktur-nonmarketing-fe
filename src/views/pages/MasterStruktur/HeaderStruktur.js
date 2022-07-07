@@ -13,7 +13,7 @@ const HeaderStruktur = () => {
 
   return (
     <>
-      <CContainer fluid>
+      <CContainer fluid className="px-0">
         <CCard>
           <CCardBody className="py-2">
             <CRow>

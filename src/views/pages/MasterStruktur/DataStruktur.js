@@ -231,7 +231,7 @@ const DataStruktur = () => {
     
   return (
     <>
-      <CContainer fluid>
+      <CContainer fluid className="px-0">
         <CCard>
           <CCardBody>
             <CRow className="mb-3 border-bottom border-1">

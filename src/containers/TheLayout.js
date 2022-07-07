@@ -29,6 +29,7 @@ const TheLayout = () => {
   const [currLanguage, setCurrLanguage] = useState("ID");
   const [currFlag, setCurrFlag] = useState("cif-Id");
   const [spinner, setSpinner] = useState(false);
+  LoadingOverlay.propTypes = undefined;
 
   useEffect(() => {
     if (window.sessionStorage.getItem("language")) {

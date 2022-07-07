@@ -25,13 +25,13 @@ const _nav = [
     _tag: "CSidebarNavItem",
     name: "Master Karyawan",
     to: "/dashboard",
-    icon: (
-      <FontAwesomeIcon
-        icon=""
-        size={"lg"}
-        className="c-sidebar-nav-icon"
-      />
-    ),
+    // icon: (
+    //   <FontAwesomeIcon
+    //     icon=""
+    //     size={"lg"}
+    //     className="c-sidebar-nav-icon"
+    //   />
+    // ),
   },
 
   {
@@ -51,13 +51,13 @@ const _nav = [
     _tag: "CSidebarNavItem",
     name: "Laporan Vacant",
     to: "/dashboard",
-    icon: (
-      <FontAwesomeIcon
-        icon=""
-        size={"lg"}
-        className="c-sidebar-nav-icon"
-      />
-    ),
+    // icon: (
+    //   <FontAwesomeIcon
+    //     icon=""
+    //     size={"lg"}
+    //     className="c-sidebar-nav-icon"
+    //   />
+    // ),
   },
 ];
 
