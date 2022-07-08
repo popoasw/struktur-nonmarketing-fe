@@ -168,10 +168,10 @@ const DataStruktur = () => {
         }
         else{
           for (const obj of res.data) {
-            obj.date_in = ( (obj.date_in === null || obj.date_in === "0000-00-00 00:00:00") ? null : obj.date_in.split(' ')[0] );
-            obj.date_out = ( (obj.date_out === null || obj.date_out === "0000-00-00 00:00:00") ? null : obj.date_out.split(' ')[0] );
-            obj.shadow_in = ( (obj.shadow_in === null || obj.shadow_in === "0000-00-00 00:00:00") ? null : obj.shadow_in.split(' ')[0] );
-            obj.shadow_out = ( (obj.shadow_out === null || obj.shadow_out === "0000-00-00 00:00:00") ? null : obj.shadow_out.split(' ')[0] );
+            obj.date_in = ( (obj.date_in === "" || obj.date_in === null || obj.date_in === "0000-00-00 00:00:00") ? null : obj.date_in.split(' ')[0] );
+            obj.date_out = ( (obj.date_out === "" || obj.date_out === null || obj.date_out === "0000-00-00 00:00:00") ? null : obj.date_out.split(' ')[0] );
+            obj.shadow_in = ( (obj.shadow_in === "" || obj.shadow_in === null || obj.shadow_in === "0000-00-00 00:00:00") ? null : obj.shadow_in.split(' ')[0] );
+            obj.shadow_out = ( (obj.shadow_out === "" || obj.shadow_out === null || obj.shadow_out === "0000-00-00 00:00:00") ? null : obj.shadow_out.split(' ')[0] );
           }
           ctx.dispatch.setStrukturList(res.data);
           ctx.dispatch.setIsAvail(true);
