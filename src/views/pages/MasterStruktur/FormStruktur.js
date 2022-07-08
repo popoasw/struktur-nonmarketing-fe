@@ -223,7 +223,109 @@ const FormStruktur = () => {
 //=============================================================================  
 //                                  code for buttons
 //=============================================================================  
-  const btnAddClick = async () => {    
+  const dataValidation = () => {
+    // validasi ketersediaan data
+      if (ctx.state.company === "" || ctx.state.company === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.company + " " + language.pageContent[language.pageLanguage].datanotfound); 
+        return false;
+      }
+      if (ctx.state.structureType === "" || ctx.state.structureType === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].noempty); return false;
+      }
+      if (ctx.state.department === "" || ctx.state.department === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].noempty); return false;
+      }
+      // if (structureCodeText === "" || structureCodeText === undefined) {
+      //   alert(language.pageContent[language.pageLanguage].MS.structurecode + " " + language.pageContent[language.pageLanguage].noempty); return false;
+      // }
+      if (dummyYN === "" || dummyYN === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.dummy + " " + language.pageContent[language.pageLanguage].noempty); return false;
+      }
+      if (vaccantYN === 'N') {
+        if (employeeIdText === "" || employeeIdText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.employee + " ID " + language.pageContent[language.pageLanguage].noempty);
+          document.getElementById("employee").focus(); return false;
+        }
+        if (employeeNameText === "" || employeeNameText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].datanotfound);
+          document.getElementById("employee").focus(); return false;
+        }
+      }
+      if (positionIdText === "" || positionIdText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.position + " ID " + language.pageContent[language.pageLanguage].noempty); 
+        document.getElementById("position").focus(); return false;
+      }
+      if (positionNameText === "" || positionNameText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("position").focus(); return false;
+      }
+      if (vaccantYN === 'N') {
+        if (dateInText === "" || dateInText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputempty);
+          document.getElementById("date-entry").focus(); return false;
+        }
+        if (dateInText < dateMin && ctx.state.isUpdate === false) {
+          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputmin + " " + dateMin);
+          document.getElementById("date-entry").focus(); return false;
+        }
+      }
+      if (dummyShadowYN === "" || dummyShadowYN === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.dummyshadow + " " + language.pageContent[language.pageLanguage].noempty); return false;
+      }
+      if (dummyShadowYN === "Y") {
+        if (shadowIdText === "" || shadowIdText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.employeeshadow + "ID " + language.pageContent[language.pageLanguage].noempty);
+          document.getElementById("employeeshadow").focus(); return false;
+        }
+        if (shadowNameText === "" || shadowNameText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].datanotfound);
+          document.getElementById("employeeshadow").focus(); return false;
+        }
+        if (dateShadowInText === "" || dateShadowInText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputempty);
+          document.getElementById("date-entry-shd").focus(); return false;
+        }
+        if (dateShadowInText < dateMin) {
+          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputmin + " " + dateMin);
+          document.getElementById("date-entry-shd").focus(); return false;
+        }
+      }
+      if (ctx.state.structureType.value !== 0) {
+        if (directSpvIdText === "" || directSpvIdText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.directspv + " ID " + language.pageContent[language.pageLanguage].noempty);
+          document.getElementById("directspv").focus(); return false;
+        }
+        if (directSpvNameText === "" || directSpvNameText === undefined) {
+          alert(language.pageContent[language.pageLanguage].MS.directspv + " " + language.pageContent[language.pageLanguage].datanotfound);
+          document.getElementById("directspv").focus(); return false;
+        }
+      }
+      if (cityIdText === "" || cityIdText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.workcity + " ID " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("workcity").focus(); return false;
+      }
+      if (cityNameText === "" || cityNameText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("workcity").focus(); return false;
+      }
+      if (branchIdText === "" || branchIdText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.branch + " ID " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("branch").focus(); return false;
+      }
+      if (branchNameText === "" || branchNameText === undefined) {
+        alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].noempty);
+        document.getElementById("branch").focus(); return false;
+      }
+    // validasi konsistensi data
+      if (employeeIdText === shadowIdText && vaccantYN !== 'Y') {
+        alert(language.pageContent[language.pageLanguage].MS.employee + " = " + 
+              language.pageContent[language.pageLanguage].MS.employeeshadow + " \n" + 
+              language.pageContent[language.pageLanguage].nosame); 
+        document.getElementById("employee").focus(); return false;
+      }
+  }
+
+  const btnAddClick = async () => {
     if (ctx.state.isAvail === false || ctx.state.isAvail === undefined) {
       alert(language.pageContent[language.pageLanguage].MS.Error.Add);
       return;
@@ -253,116 +355,23 @@ const FormStruktur = () => {
   };
 
   const btnSaveClick = async () => {
-    // validasi ketersediaan data
-      if (ctx.state.company === "" || ctx.state.company === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.company + " " + language.pageContent[language.pageLanguage].datanotfound); 
-        return;
-      }
-      if (ctx.state.structureType === "" || ctx.state.structureType === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.structuretype + " " + language.pageContent[language.pageLanguage].noempty); return;
-      }
-      if (ctx.state.department === "" || ctx.state.department === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.divisi + " " + language.pageContent[language.pageLanguage].noempty); return;
-      }
-      // if (structureCodeText === "" || structureCodeText === undefined) {
-      //   alert(language.pageContent[language.pageLanguage].MS.structurecode + " " + language.pageContent[language.pageLanguage].noempty); return;
-      // }
-      if (dummyYN === "" || dummyYN === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.dummy + " " + language.pageContent[language.pageLanguage].noempty); return;
-      }
-      if (vaccantYN === 'N') {
-        if (employeeIdText === "" || employeeIdText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.employee + " ID " + language.pageContent[language.pageLanguage].noempty);
-          document.getElementById("employee").focus(); return;
-        }
-        if (employeeNameText === "" || employeeNameText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].datanotfound);
-          document.getElementById("employee").focus(); return;
-        }
-      }
-      if (positionIdText === "" || positionIdText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.position + " ID " + language.pageContent[language.pageLanguage].noempty); 
-        document.getElementById("position").focus(); return;
-      }
-      if (positionNameText === "" || positionNameText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.position + " " + language.pageContent[language.pageLanguage].noempty);
-        document.getElementById("position").focus(); return;
-      }
-      if (vaccantYN === 'N') {
-        if (dateInText === "" || dateInText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputempty);
-          document.getElementById("date-entry").focus(); return;
-        }
-        if (dateInText < dateMin && ctx.state.isUpdate === false) {
-          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputmin + " " + dateMin);
-          document.getElementById("date-entry").focus(); return;
-        }
-      }
-      if (dummyShadowYN === "" || dummyShadowYN === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.dummyshadow + " " + language.pageContent[language.pageLanguage].noempty); return;
-      }
-      if (dummyShadowYN === "Y") {
-        if (shadowIdText === "" || shadowIdText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.employeeshadow + "ID " + language.pageContent[language.pageLanguage].noempty);
-          document.getElementById("employeeshadow").focus(); return;
-        }
-        if (shadowNameText === "" || shadowNameText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.employeeshadow + " " + language.pageContent[language.pageLanguage].datanotfound);
-          document.getElementById("employeeshadow").focus(); return;
-        }
-        if (dateShadowInText === "" || dateShadowInText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputempty);
-          document.getElementById("date-entry-shd").focus(); return;
-        }
-        if (dateShadowInText < dateMin) {
-          alert(language.pageContent[language.pageLanguage].MS.Error.dateinputmin + " " + dateMin);
-          document.getElementById("date-entry-shd").focus(); return;
-        }
-      }
-      if (ctx.state.structureType.value !== 0) {
-        if (directSpvIdText === "" || directSpvIdText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.directspv + " ID " + language.pageContent[language.pageLanguage].noempty);
-          document.getElementById("directspv").focus(); return;
-        }
-        if (directSpvNameText === "" || directSpvNameText === undefined) {
-          alert(language.pageContent[language.pageLanguage].MS.directspv + " " + language.pageContent[language.pageLanguage].datanotfound);
-          document.getElementById("directspv").focus(); return;
-        }
-      }
-      if (cityIdText === "" || cityIdText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.workcity + " ID " + language.pageContent[language.pageLanguage].noempty);
-        document.getElementById("workcity").focus(); return;
-      }
-      if (cityNameText === "" || cityNameText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].noempty);
-        document.getElementById("workcity").focus(); return;
-      }
-      if (branchIdText === "" || branchIdText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.branch + " ID " + language.pageContent[language.pageLanguage].noempty);
-        document.getElementById("branch").focus(); return;
-      }
-      if (branchNameText === "" || branchNameText === undefined) {
-        alert(language.pageContent[language.pageLanguage].MS.branch + " " + language.pageContent[language.pageLanguage].noempty);
-        document.getElementById("branch").focus(); return;
-      }
-    // validasi konsistensi data
-      if (employeeIdText === shadowIdText && vaccantYN !== 'Y') {
-        alert(language.pageContent[language.pageLanguage].MS.employee + " = " + 
-              language.pageContent[language.pageLanguage].MS.employeeshadow + " \n" + 
-              language.pageContent[language.pageLanguage].nosame); 
-        document.getElementById("employee").focus(); return;
-      }
+    // validasi data
+      if (dataValidation() === false) return;
     // simpan data
-      await saveStructure();
+      if (ctx.state.isAdd === true)
+        await addStructure();
+      else
+        await updateStructure();
       await ctx.dispatch.setNeedRefresh(true);
   }
 
-  const saveStructure = async () => {
+  const addStructure = async () => {
     await ctxspin.setSpinner(true);
     // let strukturListOld = ctx.state.strukturList;
     const objStruktur = {
       "periode": ctx.state.periode.replace("-","").toString(),
       "company_id": (ctx.state.company).toString(),
+      "company_name": (ctx.state.companyName).toString(),
       "department_id": (ctx.state.department.dpt_id).toString(),
       "code_group": structureCodeText.toString(),
       "nip": employeeIdText.toString(),
@@ -370,9 +379,15 @@ const FormStruktur = () => {
       "position_id": (positionIdText).toString(),
       "position_name": positionNameText.toString(),
       "date_in": (dateInText === "" ? null : dateInText),
+      // "date_out": null,
       "dummy": dummyYN.toString(),
       "branch_id": (branchIdText).toString(),
       "city_id": (cityIdText).toString(),
+      "shadow_nip": (shadowIdText).toString(),
+      "shadow_name": (shadowNameText).toString(),
+      "shadow_in": (dateShadowInText === "" ? null : dateShadowInText),
+      // "shadow_out": null,
+      "shadow_dummy": (dummyShadowYN.toString() === "Y" ? "N" : "Y"),
       "code_head": directSpvCodeText.toString(),
     };
     //console.log(JSON.stringify(objStruktur));
@@ -380,6 +395,67 @@ const FormStruktur = () => {
     //url = url + '/' + h;
     await axios({
       method: "post",
+      url: url,
+      data: JSON.stringify(objStruktur),
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n" + res.error.msg)
+        }
+        else{
+          //if (res.data.message === "Data added successfully") {
+          if (res.data.data.code_group !== undefined) {
+            res.data.data.date_in = ( (res.data.data.date_in === "" || res.data.data.date_in === null || res.data.data.date_in === "0000-00-00 00:00:00") ? null : res.data.data.date_in.split(' ')[0] );
+            res.data.data.date_out = ( (res.data.data.date_out === "" || res.data.data.date_out === null || res.data.data.date_out === "0000-00-00 00:00:00") ? null : res.data.data.date_out.split(' ')[0] );
+            res.data.data.shadow_in = ( (res.data.data.shadow_in === "" || res.data.data.shadow_in === null || res.data.data.shadow_in === "0000-00-00 00:00:00") ? null : res.data.data.shadow_in.split(' ')[0] );
+            res.data.data.shadow_out = ( (res.data.data.shadow_out === "" || res.data.data.shadow_out === null || res.data.data.shadow_out === "0000-00-00 00:00:00") ? null : res.data.data.shadow_out.split(' ')[0] );
+            alert(ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addsuccess : language.pageContent[language.pageLanguage].updatesuccess);
+            ctx.dispatch.setStruktur(res.data.data);
+            //ctx.dispatch.setStrukturList(strukturListOld.concat(res.data.data));
+            btnCancelClick();
+          }
+          else {
+            alert(res.data.message);
+          }          
+        }
+      })
+      .catch((err) => {
+        window.alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n(" + err + ")");
+      });
+    await ctxspin.setSpinner(false);
+  };
+
+  const updateStructure = async () => {
+    await ctxspin.setSpinner(true);
+    // let strukturListOld = ctx.state.strukturList;
+    const objStruktur = {
+      "periode": ctx.state.periode.replace("-","").toString(),
+      "company_id": (ctx.state.company).toString(),
+      "company_name": (ctx.state.companyName).toString(),
+      "department_id": (ctx.state.department.dpt_id).toString(),
+      "code_group": structureCodeText.toString(),
+      "nip": employeeIdText.toString(),
+      "name": employeeNameText.toString(),
+      "position_id": (positionIdText).toString(),
+      "position_name": positionNameText.toString(),
+      "date_in": (dateInText === "" ? null : dateInText),
+      // "date_out": null,
+      "dummy": dummyYN.toString(),
+      "branch_id": (branchIdText).toString(),
+      "city_id": (cityIdText).toString(),
+      "shadow_nip": (shadowIdText).toString(),
+      "shadow_name": (shadowNameText).toString(),
+      "shadow_in": (dateShadowInText === "" ? null : dateShadowInText),
+      // "shadow_out": null,
+      "shadow_dummy": (dummyShadowYN.toString() === "Y" ? "N" : "Y"),
+      "code_head": directSpvCodeText.toString(),
+    };
+    //console.log(JSON.stringify(objStruktur));
+    let url = get_struktur(ctx.state.structureType.value);
+    //url = url + '/' + h;
+    await axios({
+      method: "put",
       url: url,
       data: JSON.stringify(objStruktur),
     })
@@ -423,46 +499,55 @@ const FormStruktur = () => {
       alert(language.pageContent[language.pageLanguage].MS.errorUpdate);
       return;
     }
-    await ctxspin.setSpinner(true);
-    // let strukturListOld = ctx.state.strukturList;
-    const objStruktur = {
-      "periode": ctx.state.periode.replace("-","").toString(),
-      "company_id": (ctx.state.company).toString(),
-      "department_id": (ctx.state.department.dpt_id).toString(),
-      "code_group": structureCodeText.toString(),
-      "nip": employeeIdText.toString(),
-      "name": employeeNameText.toString(),
-      "position_id": (positionIdText).toString(),
-      "position_name": positionNameText.toString(),
-      "date_in": (dateInText === "" ? null : dateInText),
-      "dummy": dummyYN.toString(),
-      "branch_id": (branchIdText).toString(),
-      "city_id": (cityIdText).toString(),
-      "code_head": directSpvCodeText.toString(),
-    };
-    //console.log(JSON.stringify(objStruktur));
-    let url = get_struktur(ctx.state.structureType.value);
-    //url = url + '/' + h;
-    await axios({
-      method: "delete",
-      url: url,
-      data: JSON.stringify(objStruktur),
-    })
-      .then((res) => {
-        res = res.data;
-        if(res.error.status){
-          alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n" + res.error.msg)
-        }
-        else{
-          alert(language.pageContent[language.pageLanguage].deletesuccess);
-          ctx.dispatch.setStruktur(res.data.data);
-        }
+    if (window.confirm(language.pageContent[language.pageLanguage].deleteconfirm)) {
+      await ctxspin.setSpinner(true);
+      // let strukturListOld = ctx.state.strukturList;
+      const objStruktur = {
+        "periode": ctx.state.periode.replace("-","").toString(),
+        "company_id": (ctx.state.company).toString(),
+        "company_name": (ctx.state.companyName).toString(),
+        "department_id": (ctx.state.department.dpt_id).toString(),
+        "code_group": structureCodeText.toString(),
+        "nip": employeeIdText.toString(),
+        "name": employeeNameText.toString(),
+        "position_id": (positionIdText).toString(),
+        "position_name": positionNameText.toString(),
+        "date_in": (dateInText === "" ? null : dateInText),
+        // "date_out": null,
+        "dummy": dummyYN.toString(),
+        "branch_id": (branchIdText).toString(),
+        "city_id": (cityIdText).toString(),
+        "shadow_nip": (shadowIdText).toString(),
+        "shadow_name": (shadowNameText).toString(),
+        "shadow_in": (dateShadowInText === "" ? null : dateShadowInText),
+        // "shadow_out": null,
+        "shadow_dummy":  (dummyShadowYN.toString() === "Y" ? "N" : "Y"),
+        "code_head": directSpvCodeText.toString(),
+      };
+      //console.log(JSON.stringify(objStruktur));
+      let url = get_struktur(ctx.state.structureType.value);
+      //url = url + '/' + h;
+      await axios({
+        method: "delete",
+        url: url,
+        data: JSON.stringify(objStruktur),
       })
-      .catch((err) => {
-        window.alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n(" + err + ")");
-      });
-    await ctxspin.setSpinner(false);
-    await ctx.dispatch.setNeedRefresh(true);
+        .then((res) => {
+          res = res.data;
+          if(res.error.status){
+            alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n" + res.error.msg)
+          }
+          else{
+            ctx.dispatch.setStruktur(res.data.data);
+            alert(language.pageContent[language.pageLanguage].deletesuccess);
+          }
+        })
+        .catch((err) => {
+          window.alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n(" + err + ")");
+        });
+      await ctxspin.setSpinner(false);
+      await ctx.dispatch.setNeedRefresh(true);
+    };
   };
 
 //=============================================================================  

@@ -14,6 +14,7 @@ const MasterStruktur = () => {
   const date = new Date();
   const [periode, setPeriodeList] = useState(date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2));
   const [company, setCompany] = useState(1);
+  const [companyName, setCompanyName] = useState("Pharos Indonesia");
   const [structureType, setStructureType] = useState({label:'',value: -1});
   const [department, setDepartment] = useState({"div_id": -1,"div_name": "","dpt_id": -1,"dpt_name": ""});
   const [strukturList, setStrukturList] = useState([]);
@@ -27,6 +28,7 @@ const MasterStruktur = () => {
   const state = {
     periode,
     company,
+    companyName,
     sidebarShow,
     structureType,
     department,
@@ -42,6 +44,7 @@ const MasterStruktur = () => {
   const dispatch = {
     setPeriodeList,
     setCompany,
+    setCompanyName,
     setStructureType,
     setDepartment,
     setStrukturList,
