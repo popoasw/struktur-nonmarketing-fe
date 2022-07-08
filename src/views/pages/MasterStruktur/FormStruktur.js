@@ -31,6 +31,7 @@ const FormStruktur = () => {
   const [IsBlur, setIsBlur] = useState(false);
   const [isShowRecent, setIsShowRecent] = useState(false);
 
+  const [dateNow, setDateNow] = useState("");
   const [dateMin, setDateMin] = useState("");
   const [dateMinShd, setDateMinShd] = useState("");
   const [dateMax, setDateMax] = useState("");
@@ -222,9 +223,13 @@ const FormStruktur = () => {
 //=============================================================================  
 //                                  code for buttons
 //=============================================================================  
-  const btnAddClick = async () => {
+  const btnAddClick = async () => {    
     if (ctx.state.isAvail === false || ctx.state.isAvail === undefined) {
       alert(language.pageContent[language.pageLanguage].MS.Error.Add);
+      return;
+    }
+    if ( ctx.state.periode.substring(0,7) !== dateNow.substring(0,7)) {
+      alert(language.pageContent[language.pageLanguage].MS.Error.AddPeriod + "(" + dateNow.substring(0,7) + ")");
       return;
     }
     await ctx.dispatch.setIsAdd(true);
@@ -354,7 +359,7 @@ const FormStruktur = () => {
 
   const saveStructure = async () => {
     await ctxspin.setSpinner(true);
-    let strukturListOld = ctx.state.strukturList;
+    // let strukturListOld = ctx.state.strukturList;
     const objStruktur = {
       "periode": ctx.state.periode.replace("-","").toString(),
       "company_id": (ctx.state.company).toString(),
@@ -381,18 +386,18 @@ const FormStruktur = () => {
       .then((res) => {
         res = res.data;
         if(res.error.status){
-          alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n" +
-                res.error.msg)
+          alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n" + res.error.msg)
         }
         else{
-          if (res.data.message === "Data added successfully") {
-            res.data.data.date_in = ( (res.data.data.date_in === null || res.data.data.date_in === "0000-00-00 00:00:00") ? null : res.data.data.date_in.split(' ')[0] );
-            res.data.data.date_out = ( (res.data.data.date_out === null || res.data.data.date_out === "0000-00-00 00:00:00") ? null : res.data.data.date_out.split(' ')[0] );
-            res.data.data.shadow_in = ( (res.data.data.shadow_in === null || res.data.data.shadow_in === "0000-00-00 00:00:00") ? null : res.data.data.shadow_in.split(' ')[0] );
-            res.data.data.shadow_out = ( (res.data.data.shadow_out === null || res.data.data.shadow_out === "0000-00-00 00:00:00") ? null : res.data.data.shadow_out.split(' ')[0] );
+          //if (res.data.message === "Data added successfully") {
+          if (res.data.data.code_group !== undefined) {
+            res.data.data.date_in = ( (res.data.data.date_in === "" || res.data.data.date_in === null || res.data.data.date_in === "0000-00-00 00:00:00") ? null : res.data.data.date_in.split(' ')[0] );
+            res.data.data.date_out = ( (res.data.data.date_out === "" || res.data.data.date_out === null || res.data.data.date_out === "0000-00-00 00:00:00") ? null : res.data.data.date_out.split(' ')[0] );
+            res.data.data.shadow_in = ( (res.data.data.shadow_in === "" || res.data.data.shadow_in === null || res.data.data.shadow_in === "0000-00-00 00:00:00") ? null : res.data.data.shadow_in.split(' ')[0] );
+            res.data.data.shadow_out = ( (res.data.data.shadow_out === "" || res.data.data.shadow_out === null || res.data.data.shadow_out === "0000-00-00 00:00:00") ? null : res.data.data.shadow_out.split(' ')[0] );
             alert(ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addsuccess : language.pageContent[language.pageLanguage].updatesuccess);
             ctx.dispatch.setStruktur(res.data.data);
-            ctx.dispatch.setStrukturList(strukturListOld.concat(res.data.data));
+            //ctx.dispatch.setStrukturList(strukturListOld.concat(res.data.data));
             btnCancelClick();
           }
           else {
@@ -403,7 +408,7 @@ const FormStruktur = () => {
       .catch((err) => {
         window.alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n(" + err + ")");
       });
-    ctxspin.setSpinner(false);
+    await ctxspin.setSpinner(false);
   };
 
   const btnCancelClick = () => {
@@ -418,7 +423,46 @@ const FormStruktur = () => {
       alert(language.pageContent[language.pageLanguage].MS.errorUpdate);
       return;
     }
-    await ctx.dispatch.setIsEdit(ctx.state.isAdd !== ctx.state.isUpdate ? true : false);
+    await ctxspin.setSpinner(true);
+    // let strukturListOld = ctx.state.strukturList;
+    const objStruktur = {
+      "periode": ctx.state.periode.replace("-","").toString(),
+      "company_id": (ctx.state.company).toString(),
+      "department_id": (ctx.state.department.dpt_id).toString(),
+      "code_group": structureCodeText.toString(),
+      "nip": employeeIdText.toString(),
+      "name": employeeNameText.toString(),
+      "position_id": (positionIdText).toString(),
+      "position_name": positionNameText.toString(),
+      "date_in": (dateInText === "" ? null : dateInText),
+      "dummy": dummyYN.toString(),
+      "branch_id": (branchIdText).toString(),
+      "city_id": (cityIdText).toString(),
+      "code_head": directSpvCodeText.toString(),
+    };
+    //console.log(JSON.stringify(objStruktur));
+    let url = get_struktur(ctx.state.structureType.value);
+    //url = url + '/' + h;
+    await axios({
+      method: "delete",
+      url: url,
+      data: JSON.stringify(objStruktur),
+    })
+      .then((res) => {
+        res = res.data;
+        if(res.error.status){
+          alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n" + res.error.msg)
+        }
+        else{
+          alert(language.pageContent[language.pageLanguage].deletesuccess);
+          ctx.dispatch.setStruktur(res.data.data);
+        }
+      })
+      .catch((err) => {
+        window.alert((ctx.state.isAdd === true ? language.pageContent[language.pageLanguage].addfailed : language.pageContent[language.pageLanguage].updatefailed) + "\n(" + err + ")");
+      });
+    await ctxspin.setSpinner(false);
+    await ctx.dispatch.setNeedRefresh(true);
   };
 
 //=============================================================================  
@@ -658,24 +702,28 @@ const FormStruktur = () => {
 //=============================================================================  
 
   const initialValue = () => {
+    const date  = new Date();
     const date1 = new Date();
     const date2 = new Date();
+    date.setDate(date.getDate());
     date1.setDate(date1.getDate());
     date2.setDate(date2.getDate() + 365);
+    setDateNow(date.getFullYear().toString() + "-" + 
+              ("0" + (date.getMonth() + 1)).slice(-2) + "-" + 
+              ("0" + (date.getDate())).slice(-2));
     setDateMin(date1.getFullYear().toString() + "-" + 
               ("0" + (date1.getMonth() + 1)).slice(-2) + "-" + 
               ("0" + (date1.getDate())).slice(-2));
     setDateMinShd(date1.getFullYear().toString() + "-" + 
-                  ("0" + (date1.getMonth() + 1)).slice(-2) + "-" + 
-                  ("0" + (date1.getDate())).slice(-2));
+                 ("0" + (date1.getMonth() + 1)).slice(-2) + "-" + 
+                 ("0" + (date1.getDate())).slice(-2));
     setDateMax(date2.getFullYear().toString() + "-" + 
               ("0" + (date2.getMonth() + 1)).slice(-2) + "-" + 
               ("0" + (date2.getDate())).slice(-2));
   }
 
   const setFormInput = () => {
-    if(ctx.state.isAdd === ctx.state.isUpdate){      
-      initialValue();
+    if(ctx.state.isAdd === ctx.state.isUpdate){
       setStructureCodeText(ctx.state.struktur.code_group === null ? "" : ctx.state.struktur.code_group);
       setDummyYN(ctx.state.struktur.dummy === null ? "" : ctx.state.struktur.dummy);
       setVaccantYN(ctx.state.struktur.nip === null ? "" : (ctx.state.struktur.nip.substring(0,1).toLowerCase() === 'v' ? 'Y' : 'N'));
@@ -729,6 +777,9 @@ const FormStruktur = () => {
 
   useEffect(() => {
     clearFormInput();
+    if (ctx.state.isAvail === true) {
+      initialValue();
+    }
     if (Object.keys(ctx.state.struktur).length !== 0 && Object.keys(ctx.state.struktur).length !== undefined) {
       setFormInput();
     }

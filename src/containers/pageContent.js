@@ -89,6 +89,8 @@ const pageContent = {
                "1. Pastikan ( Jenis Struktur - Periode - Divisi ), sudah terpilih \n" +
                "2. Tekan kembali tombol Pilih \n" +
                "3. Tekan kembali tombol Tambah",
+          AddPeriod: "Gagal melakukan proses Tambah, \n" +
+                     "hanya dapat melakukan penambahan pada periode saat ini ! \n",
           Update: "Gagal Ubah data, \n" +
                   "Pilih data terlebih dahulu !",
           dateinputempty: "Tanggal masuk tidak boleh kosong !",
@@ -208,6 +210,8 @@ const pageContent = {
                "1. Make sure ( Struktur Type - Periode - Divisi ), already selected \n" +
                "2. Press the Select button again \n" +
                "3. Press the Add button again",
+          AddPeriod: "Add proccess Fail, \n" +
+                     "only available for current period ! \n",
           Update: "Update data failed, \n" +
                   "Select the data first !",
           dateinputempty: "Entry Date cannot be empty !",
