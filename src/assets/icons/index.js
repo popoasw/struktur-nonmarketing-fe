@@ -29,6 +29,7 @@ import {
   cibCcAmex
 } from '@coreui/icons'
 import {
+  cifId,
   cifUs,
   cifBr,
   cifIn,
@@ -237,6 +238,7 @@ export const icons = Object.assign({}, {
   cilWarning,
   cilApps,
 }, {
+  cifId,
   cifUs,
   cifBr,
   cifIn,

@@ -330,14 +330,13 @@ const DataStruktur = () => {
             <DataTable
               items={ctx.state.strukturList}
               fields={fields}
-              // kalau "0000-00-00" maka akan error, 
-              // tidak digunakan HpDateFormat dulu sementara karena bisa jadi ada masalah lain
+              //tidak digunakan HpDateFormat dulu sementara karena bisa jadi ada masalah lain
               // scopedSlots={{
               //   'date_in': (item)=>(
-              //     <td align="left">{item.date_in === "" || item.date_in === null ? "-" : HpDateFormat(item.date_in)}</td>
+              //     <td align="left">{item.date_in === null ? "-" : HpDateFormat(item.date_in)}</td>
               //   ),
               //   'date_out': (item)=>(
-              //     <td align="left">{item.date_out === "" || item.date_out === null ? "-" : HpDateFormat(item.date_out)}</td>
+              //     <td align="left">{item.date_out === null ? "-" : HpDateFormat(item.date_out)}</td>
               //   ),
               // }}
               size="sm"
