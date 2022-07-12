@@ -323,6 +323,26 @@ const FormStruktur = () => {
               language.pageContent[language.pageLanguage].nosame); 
         document.getElementById("employee").focus(); return false;
       }
+    // validasi perubahan data
+      if (   ctx.state.struktur.nip === employeeIdText
+          && ctx.state.struktur.name === employeeNameText
+          && ctx.state.struktur.position_id === positionIdText
+          && ctx.state.struktur.position_name === positionNameText
+          && ctx.state.struktur.date_in === (dateInText === "" ? null : dateInText)
+          // && ctx.state.struktur.date_out === null,
+          && ctx.state.struktur.dummy === dummyYN
+          && ctx.state.struktur.branch_id === branchIdText
+          && ctx.state.struktur.city_id === cityIdText
+          && ctx.state.struktur.shadow_nip === shadowIdText
+          && ctx.state.struktur.shadow_name === shadowNameText
+          && ctx.state.struktur.shadow_in === (dateShadowInText === "" ? "-" : dateShadowInText)
+          // && ctx.state.struktur.shadow_out === null,
+          && ctx.state.struktur.shadow_dummy === ( dummyShadowYN === 'Y' ? "N" : "Y" )
+          && ctx.state.struktur.code_head === directSpvCodeText
+      ) {
+        alert(language.pageContent[language.pageLanguage].nodifferent + language.pageContent[language.pageLanguage].savefailed); 
+        return false;
+      }
   }
 
   const btnAddClick = async () => {
