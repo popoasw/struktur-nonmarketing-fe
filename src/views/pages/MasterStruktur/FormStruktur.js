@@ -986,6 +986,7 @@ const FormStruktur = () => {
                         onChange={(f) => handleEmployeeChange("main",f.target.value)}
                         onBlur={(f) => handleEmployeeBlur("main",f.target.value)}
                         disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : IsVaccant}
+                        autoComplete="off"
                       />
                     </CTooltip>
                   </CCol>
@@ -1089,6 +1090,7 @@ const FormStruktur = () => {
                         onChange={(f) => handleEmployeeChange("shadow",f.target.value)}
                         onBlur={(f) => handleEmployeeBlur("shadow",f.target.value)}
                         disabled={ctx.state.isUpdate === false ? true : IsDummyShadow}
+                        autoComplete="off"
                       />
                     </CTooltip>  
                   </CCol>
@@ -1152,6 +1154,7 @@ const FormStruktur = () => {
                         onChange={(e,f,g) => handleDirectSpvChange(e.target.value)}
                         onBlur={(e,f,g) => handleDirectSpvBlur(e.target.value)}
                         disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
+                        autoComplete="off"
                       />
                     </CTooltip>
                   </CCol>
@@ -1204,6 +1207,7 @@ const FormStruktur = () => {
                       onChange={(e) => handleCityChange(e.target.value)}
                       onBlur={(e) => handleCityBlur(e.target.value)}
                       disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
+                      autoComplete="off"
                     />
                     </CTooltip>
                   </CCol>
@@ -1246,6 +1250,7 @@ const FormStruktur = () => {
                         onKeyUp={(e) => handleBranchKeyUp(e)}
                         onChange={(e) => handleBranchChange(e.target.value)}
                         disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
+                        autoComplete="off"
                       />
                       </CTooltip>
                     </CCol>
