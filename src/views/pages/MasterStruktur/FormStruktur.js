@@ -358,11 +358,13 @@ const FormStruktur = () => {
     // validasi data
       if (dataValidation() === false) return;
     // simpan data
-      if (ctx.state.isAdd === true)
-        await addStructure();
-      else
-        await updateStructure();
-      await ctx.dispatch.setNeedRefresh(true);
+      if (window.confirm(language.pageContent[language.pageLanguage].saveconfirm)) {
+        if (ctx.state.isAdd === true)
+          await addStructure();
+        else
+          await updateStructure();
+        await ctx.dispatch.setNeedRefresh(true);
+      }
   }
 
   const addStructure = async () => {
