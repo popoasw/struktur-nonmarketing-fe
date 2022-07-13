@@ -838,11 +838,11 @@ const FormStruktur = () => {
       setEmployeeNameText(ctx.state.struktur.name === null ? "" : ctx.state.struktur.name);
       setPositionIdText(ctx.state.struktur.position_id === null ? "" : ctx.state.struktur.position_id);
       setPositionNameText(ctx.state.struktur.position_name === null ? "" : ctx.state.struktur.position_name);
-      setDateInText(ctx.state.struktur.date_in === null ? "" : ctx.state.struktur.date_in);
+      setDateInText(ctx.state.struktur.date_in === null || ctx.state.struktur.date_in === "-" ? "" : ctx.state.struktur.date_in);
       setDummyShadowYN(ctx.state.struktur.shadow_dummy === null ? "" : (ctx.state.struktur.shadow_dummy === 'Y' ? 'N' : 'Y'));
       setShadowIdText(ctx.state.struktur.shadow_nip === null ? "" : ctx.state.struktur.shadow_nip);
       setShadowNameText(ctx.state.struktur.shadow_name === null ? "" : ctx.state.struktur.shadow_name);
-      setDateShadowInText(ctx.state.struktur.shadow_in === null ? "" : ctx.state.struktur.shadow_in);
+      setDateShadowInText(ctx.state.struktur.shadow_in === null || ctx.state.struktur.shadow_in === "-" ? "" : ctx.state.struktur.shadow_in);
       setDirectSpvCodeText(ctx.state.struktur.code_head === null ? "" : ctx.state.struktur.code_head);
       setDirectSpvIdText(ctx.state.struktur.head_nip === null ? "" : ctx.state.struktur.head_nip);
       setDirectSpvNameText(ctx.state.struktur.head_name === null ? "" : ctx.state.struktur.head_name);
