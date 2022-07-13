@@ -1,8 +1,8 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  // faUsers,
-  // faColumns,
+  faUsers,
+  faColumns,
   faWindowMaximize,
   // faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
@@ -25,13 +25,13 @@ const _nav = [
     _tag: "CSidebarNavItem",
     name: "Master Karyawan",
     to: "/dashboard",
-    // icon: (
-    //   <FontAwesomeIcon
-    //     icon=""
-    //     size={"lg"}
-    //     className="c-sidebar-nav-icon"
-    //   />
-    // ),
+    icon: (
+      <FontAwesomeIcon
+        icon={faUsers}
+        size={"lg"}
+        className="c-sidebar-nav-icon"
+      />
+    ),
   },
 
   {
@@ -51,13 +51,13 @@ const _nav = [
     _tag: "CSidebarNavItem",
     name: "Laporan Vacant",
     to: "/dashboard",
-    // icon: (
-    //   <FontAwesomeIcon
-    //     icon=""
-    //     size={"lg"}
-    //     className="c-sidebar-nav-icon"
-    //   />
-    // ),
+    icon: (
+      <FontAwesomeIcon
+        icon={faColumns}
+        size={"lg"}
+        className="c-sidebar-nav-icon"
+      />
+    ),
   },
 ];
 
