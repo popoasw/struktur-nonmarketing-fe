@@ -736,7 +736,7 @@ const FormStruktur = () => {
     // e = city_id, f = city_name
     if (e === "" || e === undefined) {
       alert(language.pageContent[language.pageLanguage].MS.workcitynotfound);
-      return;
+      document.getElementById("workcity").focus(); return;
     }
     setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + 
                   language.pageContent[language.pageLanguage].MS.branch  + ' ' +
