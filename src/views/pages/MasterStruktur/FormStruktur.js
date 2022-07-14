@@ -203,22 +203,32 @@ const FormStruktur = () => {
   const handleCityBlur = async (e) => {
     if (e !== "" && IsBlur === true) {
       setCityIdText('');
-      setCityNameText(e);
-      await ModalCity(e);
+      setCityNameText(e.trim());
+      await ModalCity(e.trim());
       setIsBlur(false);
     }
   };
 
   const handleBranchChange = (e) => {
+    setIsBlur(true);
     setBranchIdText('');
     setBranchNameText(e);
   }
   const handleBranchKeyUp = async (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      await ModalBranch(cityIdText,cityNameText);
+      await ModalBranch(cityIdText,e.target.value.trim());
+      setIsBlur(false);
     }
   }
+  const handleBranchBlur = async (e) => {
+    if (e !== "" && IsBlur === true) {
+      setBranchIdText('');
+      setBranchNameText(e.trim());
+      await ModalBranch(cityIdText,e.trim());
+      setIsBlur(false);
+    }
+  };
   
 //=============================================================================  
 //                                  code for buttons
@@ -745,9 +755,14 @@ const FormStruktur = () => {
                   f);
     setSelectedModal('branch');
     await ctxspin.setSpinner(true);
+    const params = {
+      type: "name",
+      value: f,
+    }
     await axios({
       method: "get",
       url: get_branch + '/' + e,
+      params: params,
       responseType: "json",
     })
       .then((res) => {
@@ -1258,7 +1273,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pl-1 pr-0" md={6}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modal}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modalByText}
                       placement="top"
                     >
                       <CInput
@@ -1269,6 +1284,7 @@ const FormStruktur = () => {
                         placeholder=""
                         onKeyUp={(e) => handleBranchKeyUp(e)}
                         onChange={(e) => handleBranchChange(e.target.value)}
+                        onBlur={(e) => handleBranchBlur(e.target.value)}
                         disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                         autoComplete="off"
                       />
