@@ -172,7 +172,7 @@ const FormStruktur = () => {
   const handleDirectSpvKeyUp = async (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      await ModalDirectSpv();
+      await ModalDirectSpv(e.target.value.trim());
       setIsBlur(false);
     }
   }
@@ -181,7 +181,7 @@ const FormStruktur = () => {
       setDirectSpvCodeText('');
       setDirectSpvIdText(e);
       setDirectSpvNameText('');
-      await ModalDirectSpv(e);
+      await ModalDirectSpv(e.trim());
       setIsBlur(false);
     }
   };
@@ -663,7 +663,8 @@ const FormStruktur = () => {
     return false;
   };
 
-  const ModalDirectSpv = async () => {
+  const ModalDirectSpv = async (e) => {
+    //e = nip
     setTitleModal(language.pageContent[language.pageLanguage].list + ' ' + 
                   language.pageContent[language.pageLanguage].MS.directspv);
     setSelectedModal('directspv');
@@ -674,6 +675,7 @@ const FormStruktur = () => {
       periode: ctx.state.periode.replace("-",""),
       pt_id: ctx.state.company,
       dpt_id: ctx.state.department.dpt_id,
+      nip: e,
     }
     await axios({
       method: "get",

@@ -151,6 +151,7 @@ const DataStruktur = () => {
       periode: ctx.state.periode.replace("-",""),
       pt_id: ctx.state.company,
       dpt_id: ctx.state.department.dpt_id,
+      nip: "",
     }
     await axios({
       method: "get",
