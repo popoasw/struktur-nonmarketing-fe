@@ -1178,7 +1178,7 @@ const FormStruktur = () => {
                   </CCol>
                   <CCol className="pr-0" md={2}>
                     <CTooltip
-                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modal}
+                      content={language.pageContent[language.pageLanguage].MS.Tooltip.modalByText}
                       placement="top"
                     >
                       <CInput
