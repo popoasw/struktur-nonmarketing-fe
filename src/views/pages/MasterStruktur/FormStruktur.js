@@ -534,7 +534,7 @@ const FormStruktur = () => {
 
   const btnDeleteClick = async () => {
     if (Object.keys(ctx.state.struktur).length === 0 || Object.keys(ctx.state.struktur).length === undefined) {
-      alert(language.pageContent[language.pageLanguage].MS.errorUpdate);
+      alert(language.pageContent[language.pageLanguage].MS.Error.Delete);
       return;
     }
     if (window.confirm(language.pageContent[language.pageLanguage].deleteconfirm)) {

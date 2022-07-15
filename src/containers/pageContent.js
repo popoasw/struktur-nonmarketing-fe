@@ -96,6 +96,8 @@ const pageContent = {
                      "hanya dapat melakukan penambahan pada periode saat ini ! \n",
           Update: "Gagal Ubah data, \n" +
                   "Pilih data terlebih dahulu !",
+          Delete: "Gagal hapus data, \n" +
+                  "Pilih data terlebih dahulu !",
           dateinputempty: "Tanggal masuk tidak boleh kosong !",
           dateinputmin: "Tanggal masuk harus lebih besar dari ",
           nostucture: "Mohon pilih struktur terlebih dahulu !",
@@ -219,6 +221,8 @@ const pageContent = {
           AddPeriod: "Add proccess Fail, \n" +
                      "only available for current period ! \n",
           Update: "Update data failed, \n" +
+                  "Select the data first !",
+          Delete: "Delete data failed, \n" +
                   "Select the data first !",
           dateinputempty: "Entry Date cannot be empty !",
           dateinputmin: "Entry Date must be greater than ",
