@@ -186,6 +186,12 @@ const FormStruktur = () => {
     }
   };
 
+  const handleCityButton = async (e) => {
+    setIsBlur(true);
+    setBranchIdText('');
+    setBranchNameText('');
+    await ModalCity('');
+  }
   const handleCityChange = (e) => {
     setIsBlur(true);
     setBranchIdText('');
@@ -631,6 +637,7 @@ const FormStruktur = () => {
           alert(language.pageContent[language.pageLanguage].MS.employee + " " + language.pageContent[language.pageLanguage].datanotfound)
         }
         else{
+          setEmployeeList(res.data);
           if (res.data.length === 1) {
             if (e === "shadow") {
               setShadowIdText(res.data[0].nip);
@@ -650,7 +657,6 @@ const FormStruktur = () => {
             }
           }
           else {
-            setEmployeeList(res.data);
             setModal(!modal);
           }
         }
@@ -692,9 +698,16 @@ const FormStruktur = () => {
           for (const obj of res.data) {
             obj.date_in = ( obj.date_in === null ? null : obj.date_in.split(' ')[0] );
             obj.date_out = ( obj.date_out === null ? null : obj.date_out.split(' ')[0] );
-          }
+          }          
           setDirectSpvList(res.data);
-          setModal(!modal);
+          if (res.data.length === 1) {
+            setDirectSpvCodeText(res.data[0].code_group);
+            setDirectSpvIdText(res.data[0].nip);
+            setDirectSpvNameText(res.data[0].name);
+          }
+          else {
+            setModal(!modal);
+          }
         }
       })
       .catch((err) => {
@@ -725,13 +738,13 @@ const FormStruktur = () => {
           alert(language.pageContent[language.pageLanguage].MS.workcity + " " + language.pageContent[language.pageLanguage].datanotfound)
         }
         else{
+          setCityList(res.data);
           if (res.data.length === 1) {
             setCityIdText(res.data[0].city_id);
             setCityNameText(res.data[0].city_name);
-            ModalBranch(res.data[0].city_id,res.data[0].city_name,"");
+            ModalBranch(res.data[0].city_id,"");
           }
           else {
-            setCityList(res.data);
             setModal(!modal);
           }
         }
@@ -1209,7 +1222,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      onClick={() => ModalDirectSpv()}
+                      onClick={() => ModalDirectSpv('')}
                       disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     >
                       ...
@@ -1253,7 +1266,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      onClick={(e) => ModalCity("")}
+                      onClick={(e) => handleCityButton("")}
                       disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     >
                       ...
@@ -1297,7 +1310,7 @@ const FormStruktur = () => {
                       color="light"
                       block
                       size="sm"
-                      onClick={(e) => ModalBranch(cityIdText,cityNameText)}
+                      onClick={(e) => ModalBranch(cityIdText,"")}
                       disabled={ctx.state.isAdd === ctx.state.isUpdate ? true : false}
                     >
                       ...
